@@ -328,7 +328,10 @@ def index():
 
 @app.route('/assets/<path:filename>')
 def assets(filename):
-    return app.send_static_file('assets/' + filename)
+    import os
+    from flask import send_from_directory
+    assets_path = os.path.join(app.root_path, 'public', 'assets')
+    return send_from_directory(assets_path, filename)
 
 @app.route('/consult')
 def consult():
