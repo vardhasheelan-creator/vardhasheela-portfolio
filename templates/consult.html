@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Book a Session — Vardhasheela N</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#050508;--bg2:#08080E;--bg3:#0D0D16;
+  --surface:#0F0F1A;--surface2:#141422;
+  --border:rgba(255,44,243,0.12);--border-b:rgba(255,44,243,0.3);
+  --neon:#7B5CFA;--cyan:#00F5FF;--pink:#FF2CF3;
+  --white:#FFFFFF;--text:#E8E6F0;--muted:#AAA8C0;--dim:#5A5870;
+  --green:#00FF88;
+  --font:'Space Grotesk',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,44,243,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,44,243,0.02) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 5%;background:rgba(5,5,8,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--white);text-decoration:none;}
+.nav-logo span{color:var(--pink);}
+.nav-back{font-family:var(--mono);font-size:0.78rem;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:0.5rem;}
+.nav-back:hover{color:var(--cyan);}
+
+section{padding:5rem 5%;position:relative;z-index:1;}
+hr.divider{border:none;border-top:1px solid var(--border);margin:0;position:relative;z-index:1;}
+
+/* HERO */
+.hero{min-height:auto;padding:7rem 5% 4rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;max-width:1000px;margin:0 auto;}
+.hero-left h1{font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-0.03em;line-height:1.1;color:var(--white);margin-bottom:1rem;}
+.hero-left h1 span{background:linear-gradient(90deg,var(--pink),var(--neon));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-left p{font-size:0.95rem;color:var(--muted);line-height:1.75;margin-bottom:1.5rem;}
+.hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:2rem;}
+.hero-tag{font-family:var(--mono);font-size:0.72rem;padding:0.3rem 0.75rem;border-radius:3px;background:rgba(255,44,243,0.08);color:var(--pink);border:1px solid rgba(255,44,243,0.2);}
+.hero-img{width:100%;max-width:360px;border-radius:16px;border:2px solid rgba(255,44,243,0.25);box-shadow:0 0 40px rgba(255,44,243,0.1);justify-self:center;}
+.yt-link{display:inline-flex;align-items:center;gap:0.5rem;font-family:var(--mono);font-size:0.8rem;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:0.5rem 1rem;border-radius:4px;transition:all 0.2s;}
+.yt-link:hover{color:var(--pink);border-color:rgba(255,44,243,0.3);}
+.yt-link svg{fill:currentColor;}
+
+/* SESSIONS */
+.sessions-section{background:var(--bg2);}
+.sessions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin-top:2rem;}
+.session-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;}
+.session-card:hover,.session-card.active{border-color:var(--pink);background:rgba(255,44,243,0.06);}
+.session-card.active{box-shadow:0 0 20px rgba(255,44,243,0.15);}
+.session-card.popular::before{content:'Most popular';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--pink);color:var(--bg);font-family:var(--mono);font-size:0.65rem;font-weight:700;padding:0.2rem 0.75rem;border-radius:100px;letter-spacing:0.06em;white-space:nowrap;}
+.s-price{font-family:'Space Grotesk',sans-serif;font-size:2.5rem;font-weight:700;color:var(--pink);text-shadow:0 0 16px rgba(255,44,243,0.4);letter-spacing:-0.03em;line-height:1;margin-bottom:0.25rem;}
+.s-duration{font-family:var(--mono);font-size:0.72rem;color:var(--cyan);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.75rem;}
+.s-name{font-size:1rem;font-weight:600;color:var(--white);margin-bottom:0.5rem;}
+.s-desc{font-size:0.82rem;color:var(--muted);line-height:1.6;}
+.topics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1.5rem;}
+.topic-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;display:flex;align-items:flex-start;gap:0.75rem;}
+.topic-icon{font-size:1.25rem;flex-shrink:0;}
+.topic-card h4{font-size:0.9rem;font-weight:600;color:var(--white);margin-bottom:0.25rem;}
+.topic-card p{font-size:0.8rem;color:var(--muted);}
+
+/* BOOKING FORM */
+.booking-section{background:var(--bg3);}
+.booking-inner{display:grid;grid-template-columns:1fr 1.3fr;gap:4rem;align-items:start;max-width:960px;margin:0 auto;}
+.booking-info h3{font-size:1.1rem;font-weight:600;color:var(--white);margin-bottom:1rem;}
+.booking-info p{font-size:0.88rem;color:var(--muted);line-height:1.7;margin-bottom:1.5rem;}
+.info-list{list-style:none;display:flex;flex-direction:column;gap:0.75rem;}
+.info-list li{font-size:0.85rem;color:var(--muted);display:flex;align-items:center;gap:0.75rem;}
+.info-list li::before{content:'→';color:var(--pink);font-weight:700;}
+.form-box{background:var(--surface);border:1px solid var(--border-b);border-radius:8px;padding:2rem;}
+.form-group{display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1rem;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+label{font-family:var(--mono);font-size:0.72rem;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;}
+input,select,textarea{background:var(--bg3);border:1px solid rgba(255,44,243,0.15);border-radius:4px;padding:0.72rem 0.9rem;color:var(--text);font-family:var(--mono);font-size:0.82rem;transition:border-color 0.2s;outline:none;width:100%;}
+input:focus,select:focus,textarea:focus{border-color:var(--pink);box-shadow:0 0 0 1px rgba(255,44,243,0.2);}
+input::placeholder,textarea::placeholder{color:var(--dim);}
+select option{background:var(--surface);}
+textarea{resize:vertical;min-height:80px;}
+
+/* SLOTS */
+.slots-area{margin-top:0.5rem;}
+.slots-label{font-family:var(--mono);font-size:0.72rem;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.75rem;}
+.slots-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.slot-btn{font-family:var(--mono);font-size:0.75rem;padding:0.5rem;border-radius:4px;border:1px solid rgba(255,44,243,0.15);background:var(--bg3);color:var(--text);cursor:pointer;transition:all 0.15s;}
+.slot-btn:hover:not(.booked){border-color:var(--pink);color:var(--pink);}
+.slot-btn.selected{border-color:var(--pink);background:rgba(255,44,243,0.12);color:var(--pink);}
+.slot-btn.booked{opacity:0.3;cursor:not-allowed;text-decoration:line-through;color:var(--dim);}
+.slots-loading{font-family:var(--mono);font-size:0.8rem;color:var(--muted);padding:0.75rem 0;}
+
+/* PAYMENT BOX */
+.payment-box{background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:1.5rem;margin-top:1rem;display:none;}
+.payment-box h4{font-size:0.95rem;font-weight:600;color:var(--green);margin-bottom:1rem;}
+.upi-details{display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;}
+.upi-qr{width:120px;height:120px;background:white;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.upi-info p{font-size:0.85rem;color:var(--muted);margin-bottom:0.4rem;}
+.upi-info strong{color:var(--white);}
+.upi-amount{font-family:var(--mono);font-size:1.5rem;font-weight:700;color:var(--green);margin:0.5rem 0;}
+.upi-note{font-size:0.78rem;color:var(--dim);margin-top:0.75rem;font-family:var(--mono);}
+.upload-group{margin-top:1rem;}
+
+.btn-submit{font-family:var(--mono);font-size:0.82rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;background:var(--pink);color:var(--bg);padding:0.9rem;border-radius:4px;border:none;cursor:pointer;transition:all 0.2s;margin-top:0.5rem;width:100%;box-shadow:0 0 20px rgba(255,44,243,0.3);}
+.btn-submit:hover{box-shadow:0 0 28px rgba(255,44,243,0.5);transform:translateY(-1px);}
+.btn-submit:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.form-note{font-size:0.72rem;color:var(--dim);text-align:center;font-family:var(--mono);margin-top:0.5rem;}
+.form-msg{font-family:var(--mono);font-size:0.82rem;padding:0.75rem 1rem;border-radius:4px;margin-top:0.75rem;display:none;}
+.form-msg.success{background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);color:var(--green);}
+.form-msg.error{background:rgba(255,44,44,0.1);border:1px solid rgba(255,44,44,0.3);color:#ff6b6b;}
+
+footer{background:var(--bg);border-top:1px solid var(--border);padding:2rem 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;position:relative;z-index:1;}
+.footer-logo{font-family:var(--mono);font-size:0.95rem;font-weight:700;color:var(--white);text-decoration:none;}
+.footer-logo span{color:var(--pink);}
+footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
+
+@media(max-width:768px){
+  .hero{grid-template-columns:1fr;gap:2rem;text-align:center;}
+  .hero-img{max-width:240px;}
+  .hero-tags{justify-content:center;}
+  .booking-inner{grid-template-columns:1fr;gap:2.5rem;}
+  .form-row{grid-template-columns:1fr;}
+  .slots-grid{grid-template-columns:repeat(3,1fr);}
+  .upi-details{flex-direction:column;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">Vardhasheela<span>N</span></a>
+  <a class="nav-back" href="/">← back to agency site</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="home">
+  <div class="hero-left">
+    <h1>Learn, grow &<br/><span>get clarity</span><br/>with me.</h1>
+    <p>Hey! I'm Vardhasheela. I create content about English fluency, career guidance, and cabin crew life. For my YouTube community — I offer 1-on-1 sessions where we talk, plan, and figure things out together.</p>
+    <div class="hero-tags">
+      <span class="hero-tag">English fluency</span>
+      <span class="hero-tag">Cabin crew career</span>
+      <span class="hero-tag">Ground staff guidance</span>
+      <span class="hero-tag">Career planning</span>
+      <span class="hero-tag">AI & tech basics</span>
+    </div>
+    <a class="yt-link" href="https://youtube.com/@vardhasheela.n" target="_blank">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>
+      @vardhasheela.n on YouTube
+    </a>
+  </div>
+  <img class="hero-img" src="/assets/vardhasheela.jpeg" alt="Vardhasheela N"/>
+</div>
+
+<hr class="divider"/>
+
+<!-- SESSION TYPES -->
+<section class="sessions-section" id="sessions">
+  <div style="max-width:900px;margin:0 auto">
+    <div style="font-family:var(--mono);font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--pink);margin-bottom:0.75rem;border-left:2px solid var(--pink);padding-left:0.75rem;">pick your session</div>
+    <h2 style="font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;letter-spacing:-0.02em;color:var(--white);margin-bottom:0.5rem;">Choose what works for you</h2>
+    <p style="color:var(--muted);font-size:0.95rem;margin-bottom:0;">All sessions online via Google Meet. Affordable for students and working professionals.</p>
+    <div class="sessions-grid">
+      <div class="session-card" data-type="30min" onclick="selectSession('30min',this)">
+        <div class="s-price">₹199</div>
+        <div class="s-duration">30 minutes</div>
+        <div class="s-name">Quick chat</div>
+        <p class="s-desc">One specific question answered. Quick clarity on a career decision, grammar doubt, or next step.</p>
+      </div>
+      <div class="session-card popular active" data-type="1hr" onclick="selectSession('1hr',this)">
+        <div class="s-price">₹349</div>
+        <div class="s-duration">1 hour</div>
+        <div class="s-name">Deep dive</div>
+        <p class="s-desc">Walk through your situation together. Career plan, interview prep, English improvement roadmap, or AI basics.</p>
+      </div>
+      <div class="session-card" data-type="1.5hr" onclick="selectSession('1.5hr',this)">
+        <div class="s-price">₹499</div>
+        <div class="s-duration">1.5 hours</div>
+        <div class="s-name">Full session</div>
+        <p class="s-desc">Extended mentorship with action plan. Great for career switchers, interview preparation, or learning AI from scratch.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:3rem">
+      <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1.25rem;font-family:var(--mono);letter-spacing:0.04em;text-transform:uppercase;font-size:0.72rem;border-left:2px solid var(--pink);padding-left:0.75rem;">What we can talk about</p>
+      <div class="topics-grid">
+        <div class="topic-card">
+          <div class="topic-icon">✈️</div>
+          <div><h4>Cabin crew & aviation</h4><p>Interview prep, grooming, GD tips, airline hiring process</p></div>
+        </div>
+        <div class="topic-card">
+          <div class="topic-icon">🗣️</div>
+          <div><h4>English fluency</h4><p>Spoken English, communication skills, confidence building</p></div>
+        </div>
+        <div class="topic-card">
+          <div class="topic-icon">🤖</div>
+          <div><h4>AI & tech basics</h4><p>How to start with AI, tools to learn, career in tech</p></div>
+        </div>
+        <div class="topic-card">
+          <div class="topic-icon">🗺️</div>
+          <div><h4>Career planning</h4><p>Career switch, what to study, how to get your first job</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- BOOKING -->
+<section class="booking-section" id="book">
+  <div class="booking-inner">
+    <div class="booking-info">
+      <div style="font-family:var(--mono);font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--pink);margin-bottom:0.75rem;border-left:2px solid var(--pink);padding-left:0.75rem;">book your slot</div>
+      <h3>Pick a date & time</h3>
+      <p>Sessions run every day, 3 PM to 10 PM IST. Pick a slot, fill your details, and pay via UPI — done! You'll get a confirmation email once I accept.</p>
+      <ul class="info-list">
+        <li>Google Meet link sent on confirmation</li>
+        <li>Pay via UPI — no card needed</li>
+        <li>Reschedule with 24 hours notice</li>
+        <li>Reply to confirm email for WhatsApp</li>
+      </ul>
+    </div>
+    <div class="form-box">
+      <form id="booking-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>First name</label>
+            <input type="text" id="b-fname" placeholder="Priya" required/>
+          </div>
+          <div class="form-group">
+            <label>Last name</label>
+            <input type="text" id="b-lname" placeholder="Sharma"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="b-email" placeholder="priya@gmail.com" required/>
+        </div>
+        <div class="form-group">
+          <label>Phone (WhatsApp)</label>
+          <input type="tel" id="b-phone" placeholder="+91 98765 43210" required/>
+        </div>
+        <div class="form-group">
+          <label>Session type</label>
+          <select id="b-session" onchange="onSessionChange()">
+            <option value="30min">Quick chat — 30 min · ₹199</option>
+            <option value="1hr" selected>Deep dive — 1 hr · ₹349</option>
+            <option value="1.5hr">Full session — 1.5 hrs · ₹499</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Pick a date</label>
+          <input type="date" id="b-date" onchange="loadSlots()" required/>
+        </div>
+        <div class="slots-area" id="slots-area" style="display:none">
+          <div class="slots-label">Available slots — Indian Standard Time (IST)</div>
+          <div class="slots-grid" id="slots-grid"></div>
+          <input type="hidden" id="b-time"/>
+        </div>
+        <div class="form-group" style="margin-top:1rem">
+          <label>What do you want to discuss?</label>
+          <textarea id="b-topic" placeholder="e.g. I want to prepare for cabin crew interviews, I need help with spoken English, I want to learn AI basics..."></textarea>
+        </div>
+
+        <!-- PAYMENT BOX — shows after form filled -->
+        <div class="payment-box" id="payment-box">
+          <h4>Pay to confirm your slot</h4>
+          <div class="upi-details">
+            <div class="upi-qr">
+              <svg width="90" height="90" viewBox="0 0 90 90">
+                <rect width="90" height="90" fill="white"/>
+                <text x="45" y="30" text-anchor="middle" font-size="8" fill="#333" font-family="monospace">UPI QR</text>
+                <text x="45" y="45" text-anchor="middle" font-size="6" fill="#666" font-family="monospace">9113259228</text>
+                <text x="45" y="57" text-anchor="middle" font-size="6" fill="#666" font-family="monospace">@kotakbank</text>
+                <rect x="10" y="65" width="70" height="14" rx="3" fill="#7B5CFA"/>
+                <text x="45" y="74" text-anchor="middle" font-size="7" fill="white" font-family="monospace">Scan to pay</text>
+              </svg>
+            </div>
+            <div class="upi-info">
+              <p>UPI ID: <strong>9113259228@kotakbank</strong></p>
+              <p>Name: <strong>Vardhasheela N</strong></p>
+              <div class="upi-amount" id="upi-amount">₹349</div>
+              <p style="font-size:0.8rem;color:var(--muted)">Open any UPI app → Pay → Enter UPI ID</p>
+            </div>
+          </div>
+          <div class="upi-note">After paying, enter your UPI transaction ID below and submit.</div>
+          <div class="form-group" style="margin-top:0.75rem">
+            <label>UPI Transaction ID</label>
+            <input type="text" id="b-txn" placeholder="e.g. 123456789012" />
+          </div>
+        </div>
+
+        <button class="btn-submit" type="button" id="show-payment-btn" onclick="showPayment()">continue to payment →</button>
+        <button class="btn-submit" type="submit" id="book-btn" style="display:none">confirm booking →</button>
+        <p class="form-note">You'll get a confirmation email once Vardhasheela accepts your booking.</p>
+        <div class="form-msg" id="book-msg"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a class="footer-logo" href="/">← <span>Agency site</span></a>
+  <p>© 2026 Vardhasheela N · Bengaluru, India</p>
+</footer>
+
+<script>
+const PRICES = {'30min':199,'1hr':349,'1.5hr':499};
+let selectedSession = '1hr';
+let selectedSlot = null;
+let paymentShown = false;
+
+function selectSession(type, el) {
+  selectedSession = type;
+  document.querySelectorAll('.session-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('b-session').value = type;
+  document.getElementById('upi-amount').textContent = '₹' + PRICES[type];
+  if (selectedSlot) loadSlots();
+  document.getElementById('book').scrollIntoView({behavior:'smooth'});
+}
+
+function onSessionChange() {
+  selectedSession = document.getElementById('b-session').value;
+  document.getElementById('upi-amount').textContent = '₹' + PRICES[selectedSession];
+  document.querySelectorAll('.session-card').forEach(c => c.classList.remove('active'));
+  const match = document.querySelector(`[data-type="${selectedSession}"]`);
+  if (match) match.classList.add('active');
+  if (document.getElementById('b-date').value) loadSlots();
+}
+
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('b-date').min = today;
+
+async function loadSlots() {
+  const date = document.getElementById('b-date').value;
+  if (!date) return;
+  const area = document.getElementById('slots-area');
+  const grid = document.getElementById('slots-grid');
+  area.style.display = 'block';
+  grid.innerHTML = '<div class="slots-loading">loading available slots...</div>';
+  selectedSlot = null;
+  document.getElementById('b-time').value = '';
+  try {
+    const res = await fetch(`/api/slots?date=${date}&session_type=${selectedSession}`);
+    const data = await res.json();
+    if (!data.slots || !data.slots.length) {
+      grid.innerHTML = '<div class="slots-loading">no slots available for this date</div>';
+      return;
+    }
+    grid.innerHTML = '';
+    data.slots.forEach(slot => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'slot-btn' + (slot.booked ? ' booked' : '');
+      btn.textContent = slot.display;
+      btn.dataset.time = slot.time;
+      if (!slot.booked) {
+        btn.onclick = () => {
+          document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          selectedSlot = slot.time;
+          document.getElementById('b-time').value = slot.time;
+        };
+      }
+      grid.appendChild(btn);
+    });
+  } catch(e) {
+    grid.innerHTML = '<div class="slots-loading">error loading slots. please try again.</div>';
+  }
+}
+
+function showPayment() {
+  const fname = document.getElementById('b-fname').value;
+  const email = document.getElementById('b-email').value;
+  const phone = document.getElementById('b-phone').value;
+  const date = document.getElementById('b-date').value;
+  const time = document.getElementById('b-time').value;
+  if (!fname || !email || !phone || !date || !time) {
+    const msg = document.getElementById('book-msg');
+    msg.className = 'form-msg error';
+    msg.style.display = 'block';
+    msg.textContent = 'Please fill all fields and select a time slot first.';
+    return;
+  }
+  document.getElementById('book-msg').style.display = 'none';
+  document.getElementById('payment-box').style.display = 'block';
+  document.getElementById('show-payment-btn').style.display = 'none';
+  document.getElementById('book-btn').style.display = 'block';
+  document.getElementById('upi-amount').textContent = '₹' + PRICES[selectedSession];
+  document.getElementById('payment-box').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+document.getElementById('booking-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById('book-msg');
+  const btn = document.getElementById('book-btn');
+  if (!document.getElementById('b-time').value) {
+    msg.className = 'form-msg error';
+    msg.style.display = 'block';
+    msg.textContent = 'Please select a time slot.';
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = 'submitting...';
+  const payload = {
+    name: document.getElementById('b-fname').value + ' ' + (document.getElementById('b-lname').value || ''),
+    email: document.getElementById('b-email').value,
+    phone: document.getElementById('b-phone').value,
+    date: document.getElementById('b-date').value,
+    time: document.getElementById('b-time').value,
+    session_type: document.getElementById('b-session').value,
+    topic: document.getElementById('b-topic').value,
+    txn_id: document.getElementById('b-txn').value,
+  };
+  try {
+    const res = await fetch('/api/book', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const data = await res.json();
+    if (data.success) {
+      msg.className = 'form-msg success';
+      msg.style.display = 'block';
+      msg.innerHTML = '✓ Booking submitted! Check your email for confirmation.<br><br>Vardhasheela will confirm within a few hours. You\'ll get a Google Meet link once confirmed.';
+      btn.textContent = '✓ submitted!';
+      document.getElementById('payment-box').style.display = 'none';
+    } else {
+      msg.className = 'form-msg error';
+      msg.style.display = 'block';
+      msg.textContent = data.error || 'Something went wrong. Please try again.';
+      btn.disabled = false;
+      btn.textContent = 'confirm booking →';
+    }
+  } catch(ex) {
+    msg.className = 'form-msg error';
+    msg.style.display = 'block';
+    msg.textContent = 'Network error. Please try again.';
+    btn.disabled = false;
+    btn.textContent = 'confirm booking →';
+  }
+});
+</script>
+</body>
+</html>
