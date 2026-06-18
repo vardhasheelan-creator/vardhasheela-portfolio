@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 import pytz
 from functools import wraps
 
-app = Flask(__name__, static_folder='public', static_url_path='/public')
+app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-in-production")
 CORS(app)
 
@@ -328,10 +328,8 @@ def index():
 
 @app.route('/assets/<path:filename>')
 def assets(filename):
-    import os
     from flask import send_from_directory
-    assets_path = os.path.join(app.root_path, 'public', 'assets')
-    return send_from_directory(assets_path, filename)
+    return send_from_directory('public/assets', filename)
 
 @app.route('/consult')
 def consult():
