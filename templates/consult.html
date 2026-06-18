@@ -246,8 +246,10 @@ footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
           </select>
         </div>
         <div class="form-group">
-          <label>Pick a date</label>
-          <input type="date" id="b-date" onchange="loadSlots()" required/>
+          <label>Pick a date (DD-MM-YYYY)</label>
+          <input type="date" id="b-date" onchange="loadSlots()" required
+            style="color-scheme:dark;cursor:pointer;"
+            onfocus="this.showPicker && this.showPicker()"/>
         </div>
         <div class="slots-area" id="slots-area" style="display:none">
           <div class="slots-label">Available slots — Indian Standard Time (IST)</div>
@@ -326,13 +328,19 @@ function onSessionChange() {
   if (document.getElementById('b-date').value) loadSlots();
 }
 
-const today = new Date();
-const yyyy = today.getFullYear();
-const mm = String(today.getMonth()+1).padStart(2,'0');
-const dd = String(today.getDate()).padStart(2,'0');
-const minDate = yyyy + '-' + mm + '-' + dd;
-document.getElementById('b-date').min = minDate;
-document.getElementById('b-date').value = '';
+function getLocalDateStr() {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth()+1).padStart(2,'0');
+  const dd = String(today.getDate()).padStart(2,'0');
+  return yyyy + '-' + mm + '-' + dd;
+}
+const minDate = getLocalDateStr();
+const dateInput = document.getElementById('b-date');
+dateInput.min = minDate;
+dateInput.placeholder = 'Select a date';
+// Force dark color scheme for date picker
+dateInput.style.colorScheme = 'dark';
 
 async function loadSlots() {
   const date = document.getElementById('b-date').value;
