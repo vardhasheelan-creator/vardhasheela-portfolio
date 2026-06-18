@@ -265,15 +265,8 @@ footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
         <div class="payment-box" id="payment-box">
           <h4>Pay to confirm your slot</h4>
           <div class="upi-details">
-            <div class="upi-qr">
-              <svg width="90" height="90" viewBox="0 0 90 90">
-                <rect width="90" height="90" fill="white"/>
-                <text x="45" y="30" text-anchor="middle" font-size="8" fill="#333" font-family="monospace">UPI QR</text>
-                <text x="45" y="45" text-anchor="middle" font-size="6" fill="#666" font-family="monospace">9113259228</text>
-                <text x="45" y="57" text-anchor="middle" font-size="6" fill="#666" font-family="monospace">@kotakbank</text>
-                <rect x="10" y="65" width="70" height="14" rx="3" fill="#7B5CFA"/>
-                <text x="45" y="74" text-anchor="middle" font-size="7" fill="white" font-family="monospace">Scan to pay</text>
-              </svg>
+            <div class="upi-qr" style="padding:6px;width:140px;height:140px;">
+              <img src="/assets/upi-qr.png" alt="Scan to pay" style="width:100%;height:100%;object-fit:contain;border-radius:4px;"/>
             </div>
             <div class="upi-info">
               <p>UPI ID: <strong>9113259228@kotakbank</strong></p>
