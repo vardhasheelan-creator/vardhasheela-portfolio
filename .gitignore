@@ -1,0 +1,10 @@
+venv/
+__pycache__/
+*.pyc
+.env
+credentials.json
+token.json
+bookings.json
+*.xlsx
+*.csv
+.DS_Store
