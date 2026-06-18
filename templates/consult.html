@@ -145,7 +145,7 @@ footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
       @vardhasheela.n on YouTube
     </a>
   </div>
-  <img class="hero-img" src="/assets/vardhasheela.jpeg" alt="Vardhasheela N"/>
+  <img class="hero-img" src="/assets/vardhasheela.jpeg" onerror="this.style.background='#141422';this.alt=''" alt="Vardhasheela N"/>
 </div>
 
 <hr class="divider"/>
@@ -326,8 +326,13 @@ function onSessionChange() {
   if (document.getElementById('b-date').value) loadSlots();
 }
 
-const today = new Date().toISOString().split('T')[0];
-document.getElementById('b-date').min = today;
+const today = new Date();
+const yyyy = today.getFullYear();
+const mm = String(today.getMonth()+1).padStart(2,'0');
+const dd = String(today.getDate()).padStart(2,'0');
+const minDate = yyyy + '-' + mm + '-' + dd;
+document.getElementById('b-date').min = minDate;
+document.getElementById('b-date').value = '';
 
 async function loadSlots() {
   const date = document.getElementById('b-date').value;

@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 import pytz
 from functools import wraps
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='public', static_url_path='/public')
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-in-production")
 CORS(app)
 
@@ -326,7 +326,11 @@ def admin_action(booking_id, action):
 def index():
     return render_template("index.html", sessions=SESSION_DURATIONS)
 
-@app.route("/consult")
+@app.route('/assets/<path:filename>')
+def assets(filename):
+    return app.send_static_file('assets/' + filename)
+
+@app.route('/consult')
 def consult():
     return render_template("consult.html")
 

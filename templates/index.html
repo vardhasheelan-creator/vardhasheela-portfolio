@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Wenix AI — We automate the work. You grow the business.</title>
+<title>Vardhasheela N — AI Automation & Consultation</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#050508;--bg2:#08080E;--bg3:#0D0D16;
-  --surface:#0F0F1A;--surface2:#141422;
+  --bg:#070710;--bg2:#08080E;--bg3:#0D0D16;
+  --surface:#121220;--surface2:#181828;
   --border:rgba(120,100,255,0.12);--border-b:rgba(120,100,255,0.35);
   --neon:#7B5CFA;--cyan:#00F5FF;--pink:#FF2CF3;
-  --white:#FFFFFF;--text:#E8E6F0;--muted:#AAA8C0;--dim:#5A5870;
+  --white:#FFFFFF;--text:#E8E6F0;--muted:#AAA8C0;--dim:#6A6880;
   --green:#00FF88;
   --font:'Space Grotesk',sans-serif;--mono:'JetBrains Mono',monospace;
 }
@@ -20,51 +20,41 @@ html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(123,92,250,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(123,92,250,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
 
-/* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 5%;background:rgba(5,5,8,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
-.nav-logo{font-family:var(--mono);font-size:1.1rem;font-weight:700;color:var(--white);text-decoration:none;letter-spacing:-0.01em;}
+.nav-logo{font-family:var(--mono);font-size:1.1rem;font-weight:700;color:var(--white);text-decoration:none;}
 .nav-logo .bracket{color:var(--cyan);}
 .nav-logo .ai{color:var(--neon);}
-.nav-links{display:flex;gap:2rem;list-style:none;align-items:center;}
-.nav-links a{font-size:0.82rem;font-family:var(--mono);color:var(--muted);text-decoration:none;transition:color 0.2s;letter-spacing:0.03em;}
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{font-size:0.8rem;font-family:var(--mono);color:var(--muted);text-decoration:none;transition:color 0.2s;}
 .nav-links a:hover{color:var(--cyan);}
-.nav-consult{font-size:0.78rem;font-family:var(--mono);color:var(--pink);border:1px solid rgba(255,44,243,0.3);padding:0.4rem 0.9rem;border-radius:4px;text-decoration:none;transition:all 0.2s;}
-.nav-consult:hover{background:rgba(255,44,243,0.1);}
 .nav-cta{font-family:var(--mono);font-size:0.78rem;font-weight:700;color:var(--neon);border:1px solid var(--neon);padding:0.5rem 1.2rem;border-radius:4px;text-decoration:none;letter-spacing:0.04em;text-transform:uppercase;transition:all 0.2s;box-shadow:0 0 12px rgba(123,92,250,0.2);}
 .nav-cta:hover{background:var(--neon);color:var(--bg);box-shadow:0 0 24px rgba(123,92,250,0.5);}
 
-/* SECTIONS */
 section{padding:6rem 5%;position:relative;z-index:1;}
-.section-tag{font-family:var(--mono);font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--cyan);margin-bottom:0.75rem;border-left:2px solid var(--cyan);padding-left:0.75rem;}
+.section-tag{font-family:var(--mono);font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--cyan);margin-bottom:0.75rem;border-left:2px solid var(--cyan);padding-left:0.75rem;}
+.section-tag::before{content:'';display:none;}
 .section-title{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;letter-spacing:-0.025em;line-height:1.1;margin-bottom:0.75rem;color:var(--white);}
-.section-sub{color:var(--muted);max-width:540px;margin-bottom:3rem;font-size:0.95rem;}
+.section-sub{color:#A8A6BC;max-width:540px;margin-bottom:3rem;font-size:0.95rem;}
 hr.divider{border:none;border-top:1px solid var(--border);margin:0;position:relative;z-index:1;}
 
 /* HERO */
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8rem 5% 5rem;position:relative;}
-.hero-orb{position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(123,92,250,0.12) 0%,rgba(0,245,255,0.04) 50%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-55%);pointer-events:none;}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8rem 5% 5rem;}
+.hero-orb{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(123,92,250,0.12) 0%,rgba(0,245,255,0.04) 50%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-55%);pointer-events:none;}
 .hero-badge{display:inline-flex;align-items:center;gap:0.6rem;font-family:var(--mono);font-size:0.72rem;letter-spacing:0.08em;color:var(--cyan);border:1px solid rgba(0,245,255,0.25);background:rgba(0,245,255,0.05);border-radius:3px;padding:0.4rem 1rem;margin-bottom:2rem;text-transform:uppercase;}
-.dot{width:6px;height:6px;background:var(--green);border-radius:50%;box-shadow:0 0 6px var(--green);animation:blink 1.8s infinite;}
+.hero-badge .dot{width:6px;height:6px;background:var(--green);border-radius:50%;box-shadow:0 0 6px var(--green);animation:blink 1.8s infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.2;}}
 .hero h1{font-size:clamp(2.6rem,6.5vw,5rem);font-weight:700;line-height:1.05;letter-spacing:-0.03em;max-width:860px;margin-bottom:1.5rem;}
-.line1{color:var(--white);display:block;}
-.line2{display:block;background:linear-gradient(90deg,var(--neon) 0%,var(--cyan) 60%,var(--pink) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.hero-sub{font-size:1.05rem;color:var(--muted);max-width:520px;margin-bottom:2.5rem;line-height:1.7;}
+.hero h1 .line1{color:var(--white);display:block;}
+.hero h1 .line2{display:block;background:linear-gradient(90deg,var(--neon) 0%,var(--cyan) 60%,var(--pink) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:1.05rem;color:#B0AECC;max-width:500px;margin-bottom:2.5rem;}
 .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
 .btn-neon{font-family:var(--mono);font-size:0.85rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--bg);background:var(--neon);padding:0.85rem 2rem;border-radius:4px;text-decoration:none;transition:all 0.2s;box-shadow:0 0 20px rgba(123,92,250,0.4);}
 .btn-neon:hover{background:var(--cyan);box-shadow:0 0 28px rgba(0,245,255,0.5);transform:translateY(-2px);}
 .btn-outline{font-family:var(--mono);font-size:0.85rem;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:var(--text);background:transparent;padding:0.85rem 2rem;border-radius:4px;border:1px solid var(--border-b);text-decoration:none;transition:all 0.2s;}
 .btn-outline:hover{border-color:var(--cyan);color:var(--cyan);}
 .hero-stats{display:flex;gap:4rem;margin-top:4rem;flex-wrap:wrap;justify-content:center;padding-top:2.5rem;border-top:1px solid var(--border);width:100%;max-width:700px;}
-.hero-stat strong{display:block;font-family:'Space Grotesk',sans-serif;font-size:2.2rem;font-weight:700;color:var(--neon);text-shadow:0 0 20px rgba(123,92,250,0.6);letter-spacing:-0.03em;line-height:1;}
-.hero-stat span{font-size:0.72rem;color:var(--muted);letter-spacing:0.05em;font-family:var(--font);margin-top:0.3rem;display:block;}
-
-/* CURRENCY TOGGLE */
-.currency-wrap{display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem;}
-.currency-toggle{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
-.currency-toggle button{font-family:var(--mono);font-size:0.75rem;font-weight:600;padding:0.5rem 1rem;border:none;background:transparent;color:var(--muted);cursor:pointer;transition:all 0.15s;letter-spacing:0.05em;}
-.currency-toggle button.active{background:var(--neon);color:var(--bg);}
-.currency-note{font-family:var(--mono);font-size:0.72rem;color:var(--dim);}
+.hero-stat strong{display:block;font-family:'Space Grotesk',sans-serif;font-size:2.2rem;font-weight:700;color:var(--neon);text-shadow:0 0 20px rgba(123,92,250,0.6),0 0 40px rgba(123,92,250,0.2);letter-spacing:-0.03em;line-height:1;}
+.hero-stat span{font-size:0.72rem;color:#AAA8C0;letter-spacing:0.05em;font-family:var(--font);margin-top:0.3rem;display:block;}
 
 /* SERVICES */
 .services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
@@ -72,60 +62,34 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:0;position:rela
 .service-card:hover{background:var(--surface2);}
 .service-card.featured{background:linear-gradient(135deg,rgba(123,92,250,0.08) 0%,var(--surface) 60%);}
 .service-card.featured::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--neon),var(--cyan));box-shadow:0 0 12px rgba(123,92,250,0.6);}
-.s-badge{display:inline-block;font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--neon);border:1px solid rgba(123,92,250,0.3);padding:0.2rem 0.6rem;border-radius:3px;margin-bottom:1rem;}
-.s-badge.hot{color:var(--cyan);border-color:rgba(0,245,255,0.3);background:rgba(0,245,255,0.05);}
+.service-badge{display:inline-block;font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--neon);border:1px solid rgba(123,92,250,0.3);padding:0.2rem 0.6rem;border-radius:3px;margin-bottom:1rem;}
+.service-badge.hot{color:var(--cyan);border-color:rgba(0,245,255,0.3);background:rgba(0,245,255,0.05);}
 .service-card h3{font-size:1.1rem;font-weight:700;margin-bottom:0.75rem;color:var(--white);}
-.service-card p{font-size:0.85rem;color:var(--muted);line-height:1.65;margin-bottom:1.25rem;}
-.s-price{font-family:var(--mono);font-size:1.4rem;font-weight:700;color:var(--neon);text-shadow:0 0 12px rgba(123,92,250,0.4);letter-spacing:-0.02em;margin-bottom:0.25rem;}
-.s-price-sub{font-family:var(--mono);font-size:0.72rem;color:var(--dim);margin-bottom:1rem;}
-.s-list{list-style:none;display:flex;flex-direction:column;gap:0.4rem;}
-.s-list li{font-size:0.82rem;color:var(--muted);display:flex;align-items:center;gap:0.5rem;font-family:var(--mono);}
-.s-list li::before{content:'›';color:var(--cyan);font-weight:700;flex-shrink:0;}
+.service-card p{font-size:0.85rem;color:#A8A6BC;line-height:1.65;margin-bottom:1.25rem;}
+.service-list{list-style:none;display:flex;flex-direction:column;gap:0.4rem;}
+.service-list li{font-size:0.82rem;color:#AAA8C0;display:flex;align-items:center;gap:0.5rem;font-family:var(--mono);}
+.service-list li::before{content:'›';color:var(--cyan);font-weight:700;flex-shrink:0;}
 
-/* HOW IT WORKS */
-.how{background:var(--bg2);}
-.how-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--border);}
-.how-step{background:var(--surface);padding:2.5rem 2rem;transition:background 0.2s;}
-.how-step:hover{background:var(--surface2);}
-.step-num{font-family:var(--mono);font-size:2.5rem;font-weight:700;color:transparent;-webkit-text-stroke:1px rgba(123,92,250,0.3);line-height:1;margin-bottom:1.25rem;}
-.how-step h3{font-size:0.95rem;font-weight:600;margin-bottom:0.5rem;color:var(--white);}
-.how-step p{font-size:0.83rem;color:var(--muted);line-height:1.65;}
+/* CONSULTATION */
+.consult-section{background:var(--bg2);}
+.consult-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;}
+.consult-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2rem;text-align:center;cursor:pointer;transition:all 0.2s;}
+.consult-card:hover,.consult-card.active{border-color:var(--neon);background:rgba(123,92,250,0.08);}
+.consult-card.active{box-shadow:0 0 20px rgba(123,92,250,0.2);}
+.consult-price{font-family:var(--mono);font-size:2rem;font-weight:700;color:var(--neon);margin-bottom:0.25rem;text-shadow:0 0 12px rgba(123,92,250,0.4);}
+.consult-duration{font-family:var(--mono);font-size:0.75rem;color:var(--cyan);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.75rem;}
+.consult-name{font-size:1rem;font-weight:600;color:var(--white);margin-bottom:0.5rem;}
+.consult-desc{font-size:0.85rem;color:#B0AECC;}
 
-/* PORTFOLIO */
-.portfolio-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
-.p-card{background:var(--surface);padding:2rem;transition:background 0.2s;}
-.p-card:hover{background:var(--surface2);}
-.p-tag{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--pink);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;}
-.p-tag::before{content:'◆';font-size:0.5rem;}
-.p-card h3{font-size:0.95rem;font-weight:600;color:var(--white);margin-bottom:0.5rem;}
-.p-card p{font-size:0.83rem;color:var(--muted);line-height:1.65;margin-bottom:1.25rem;}
-.p-result{font-family:var(--mono);font-size:0.78rem;color:var(--green);display:flex;align-items:center;gap:0.4rem;text-shadow:0 0 8px rgba(0,255,136,0.4);}
-.p-result::before{content:'↑';font-weight:700;}
-.p-link{font-family:var(--mono);font-size:0.75rem;color:var(--cyan);text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem;margin-top:0.75rem;}
-.p-link:hover{text-shadow:0 0 8px rgba(0,245,255,0.5);}
-
-/* ABOUT */
-.about-section{background:var(--bg2);}
-.about-inner{display:grid;grid-template-columns:1fr 1.4fr;gap:4rem;align-items:center;max-width:960px;}
-.about-img-wrap{position:relative;}
-.about-img{width:100%;max-width:320px;border-radius:12px;border:2px solid rgba(123,92,250,0.3);box-shadow:0 0 40px rgba(123,92,250,0.12);}
-.about-img-badge{position:absolute;bottom:-16px;right:-16px;background:var(--surface2);border:1px solid var(--border-b);border-radius:8px;padding:0.75rem 1rem;font-family:var(--mono);font-size:0.72rem;color:var(--neon);}
-.about-content h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;letter-spacing:-0.02em;color:var(--white);margin-bottom:1rem;}
-.about-content p{font-size:0.92rem;color:var(--muted);line-height:1.8;margin-bottom:1.25rem;}
-.skill-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:1.5rem;}
-.skill-tag{font-family:var(--mono);font-size:0.72rem;padding:0.25rem 0.65rem;border-radius:3px;letter-spacing:0.04em;}
-.st-ai{background:rgba(123,92,250,0.15);color:var(--neon);border:1px solid rgba(123,92,250,0.3);}
-.st-tech{background:rgba(0,245,255,0.08);color:var(--cyan);border:1px solid rgba(0,245,255,0.2);}
-
-/* CONTACT */
-.contact-section{background:var(--bg3);}
-.contact-inner{display:grid;grid-template-columns:1fr 1.2fr;gap:4rem;align-items:start;max-width:960px;}
-.contact-left h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;letter-spacing:-0.02em;color:var(--white);margin-bottom:1rem;}
-.contact-left p{color:var(--muted);font-size:0.9rem;line-height:1.7;margin-bottom:2rem;}
-.contact-perks{list-style:none;display:flex;flex-direction:column;gap:0.85rem;}
-.contact-perks li{font-size:0.88rem;color:var(--muted);display:flex;align-items:center;gap:0.75rem;}
-.contact-perks li::before{content:'→';color:var(--cyan);font-weight:700;}
-.form-box{background:var(--surface);border:1px solid var(--border-b);border-radius:8px;padding:2rem;box-shadow:0 0 40px rgba(123,92,250,0.06);}
+/* BOOKING */
+.booking-section{background:var(--bg3);}
+.booking-inner{display:grid;grid-template-columns:1fr 1.2fr;gap:4rem;align-items:start;max-width:960px;}
+.booking-info h3{font-size:1.2rem;font-weight:600;color:var(--white);margin-bottom:1rem;}
+.booking-info p{font-size:0.9rem;color:#A8A6BC;line-height:1.7;margin-bottom:1.5rem;}
+.booking-perks{list-style:none;display:flex;flex-direction:column;gap:0.75rem;}
+.booking-perks li{font-family:var(--mono);font-size:0.8rem;color:var(--muted);display:flex;align-items:center;gap:0.75rem;}
+.booking-perks li::before{content:'✦';color:var(--cyan);font-size:0.6rem;}
+.booking-form-box{background:var(--surface);border:1px solid var(--border-b);border-radius:8px;padding:2rem;box-shadow:0 0 40px rgba(123,92,250,0.06);}
 .form-group{display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1rem;}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
 label{font-family:var(--mono);font-size:0.72rem;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;}
@@ -133,23 +97,60 @@ input,select,textarea{background:var(--bg3);border:1px solid var(--border);borde
 input:focus,select:focus,textarea:focus{border-color:var(--neon);box-shadow:0 0 0 1px rgba(123,92,250,0.3);}
 input::placeholder,textarea::placeholder{color:var(--dim);}
 select option{background:var(--surface);}
-textarea{resize:vertical;min-height:100px;}
+textarea{resize:vertical;min-height:80px;}
+
+/* CALENDAR SLOTS */
+.slots-container{margin-top:1rem;}
+.slots-label{font-family:var(--mono);font-size:0.72rem;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.75rem;}
+.slots-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.slot-btn{font-family:var(--mono);font-size:0.75rem;padding:0.5rem;border-radius:4px;border:1px solid var(--border);background:var(--bg3);color:var(--text);cursor:pointer;transition:all 0.15s;}
+.slot-btn:hover:not(.booked){border-color:var(--neon);color:var(--neon);}
+.slot-btn.selected{border-color:var(--neon);background:rgba(123,92,250,0.15);color:var(--neon);}
+.slot-btn.booked{opacity:0.3;cursor:not-allowed;text-decoration:line-through;color:var(--dim);}
+.slots-loading{font-family:var(--mono);font-size:0.8rem;color:var(--muted);padding:1rem 0;}
+
 .btn-submit{font-family:var(--mono);font-size:0.82rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;background:var(--neon);color:var(--bg);padding:0.9rem;border-radius:4px;border:none;cursor:pointer;transition:all 0.2s;margin-top:0.5rem;width:100%;box-shadow:0 0 20px rgba(123,92,250,0.35);}
 .btn-submit:hover{background:var(--cyan);box-shadow:0 0 28px rgba(0,245,255,0.4);transform:translateY(-1px);}
 .btn-submit:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-.form-note{font-size:0.72rem;color:var(--dim);text-align:center;font-family:var(--mono);margin-top:0.5rem;}
+.form-note{font-size:0.7rem;color:var(--dim);text-align:center;font-family:var(--mono);margin-top:0.5rem;}
 .form-msg{font-family:var(--mono);font-size:0.82rem;padding:0.75rem 1rem;border-radius:4px;margin-top:0.75rem;display:none;}
 .form-msg.success{background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);color:var(--green);}
 .form-msg.error{background:rgba(255,44,44,0.1);border:1px solid rgba(255,44,44,0.3);color:#ff6b6b;}
 
-/* CONSULT BANNER */
-.consult-banner{background:linear-gradient(135deg,rgba(255,44,243,0.08),rgba(123,92,250,0.08));border:1px solid rgba(255,44,243,0.2);border-radius:12px;padding:2rem 2.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;margin-top:4rem;}
-.consult-banner h3{font-size:1.1rem;font-weight:600;color:var(--white);margin-bottom:0.4rem;}
-.consult-banner p{font-size:0.88rem;color:var(--muted);}
-.btn-pink{font-family:var(--mono);font-size:0.82rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--bg);background:var(--pink);padding:0.8rem 1.75rem;border-radius:4px;text-decoration:none;transition:all 0.2s;box-shadow:0 0 16px rgba(255,44,243,0.3);white-space:nowrap;}
-.btn-pink:hover{box-shadow:0 0 28px rgba(255,44,243,0.5);transform:translateY(-2px);}
+/* PORTFOLIO */
+.portfolio-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.portfolio-card{background:var(--surface);padding:2rem;transition:background 0.2s;}
+.portfolio-card:hover{background:var(--surface2);}
+.p-tag{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--pink);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;}
+.p-tag::before{content:'◆';font-size:0.5rem;}
+.portfolio-card h3{font-size:0.95rem;font-weight:600;color:var(--white);margin-bottom:0.5rem;}
+.portfolio-card p{font-size:0.83rem;color:#AAA8C0;line-height:1.65;margin-bottom:1.25rem;}
+.p-link{font-family:var(--mono);font-size:0.75rem;color:var(--cyan);text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem;}
+.p-link:hover{text-shadow:0 0 8px rgba(0,245,255,0.5);}
 
-/* FOOTER */
+/* ABOUT */
+.about-section{background:var(--bg2);}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+.timeline{display:flex;flex-direction:column;gap:1.5rem;margin-top:1.5rem;}
+.timeline-item{display:flex;gap:1.5rem;align-items:flex-start;}
+.tl-year{font-family:var(--mono);font-size:0.75rem;color:var(--cyan);min-width:50px;margin-top:3px;}
+.tl-dot{width:8px;height:8px;border-radius:50%;background:var(--neon);flex-shrink:0;margin-top:6px;box-shadow:0 0 8px rgba(123,92,250,0.5);}
+.tl-content h4{font-size:0.95rem;font-weight:600;color:var(--white);margin-bottom:0.25rem;}
+.tl-content p{font-size:0.83rem;color:#AAA8C0;}
+.skills-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;}
+.skill-tag{display:inline-block;font-family:var(--mono);font-size:0.72rem;padding:0.25rem 0.65rem;border-radius:3px;margin:4px;letter-spacing:0.04em;}
+.skill-tag.ai{background:rgba(123,92,250,0.15);color:var(--neon);border:1px solid rgba(123,92,250,0.3);}
+.skill-tag.tech{background:rgba(0,245,255,0.08);color:var(--cyan);border:1px solid rgba(0,245,255,0.2);}
+.skill-tag.soft{background:rgba(255,44,243,0.08);color:var(--pink);border:1px solid rgba(255,44,243,0.2);}
+
+/* CONTACT */
+.contact-section{background:var(--bg3);}
+.contact-inner{display:grid;grid-template-columns:1fr 1.2fr;gap:4rem;align-items:start;max-width:900px;}
+.contact-info h3{font-size:1.1rem;font-weight:600;color:var(--white);margin-bottom:1rem;}
+.contact-detail{display:flex;align-items:center;gap:0.75rem;font-size:0.85rem;color:var(--muted);margin-bottom:0.75rem;}
+.contact-detail a{color:var(--cyan);text-decoration:none;}
+.contact-detail a:hover{text-shadow:0 0 8px rgba(0,245,255,0.5);}
+
 footer{background:var(--bg);border-top:1px solid var(--border);padding:2rem 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;position:relative;z-index:1;}
 .footer-logo{font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--white);text-decoration:none;}
 .footer-logo .bracket{color:var(--cyan);}
@@ -161,46 +162,45 @@ footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
 
 @media(max-width:768px){
   .nav-links{display:none;}
-  .about-inner,.contact-inner{grid-template-columns:1fr;gap:2.5rem;}
+  .about-grid,.booking-inner,.contact-inner{grid-template-columns:1fr;gap:2.5rem;}
   .form-row{grid-template-columns:1fr;}
+  .slots-grid{grid-template-columns:repeat(3,1fr);}
   footer{flex-direction:column;text-align:center;}
-  .consult-banner{flex-direction:column;}
 }
 </style>
 </head>
 <body>
 
 <nav>
-  <a class="nav-logo" href="#"><span class="bracket">[</span>Wenix<span class="ai">AI</span><span class="bracket">]</span></a>
+  <a class="nav-logo" href="#"><span class="bracket">[</span>Vardhasheela<span class="ai">N</span><span class="bracket">]</span></a>
   <ul class="nav-links">
     <li><a href="#services">services</a></li>
-    <li><a href="#how">process</a></li>
+    <li><a href="#consult">consult</a></li>
     <li><a href="#portfolio">portfolio</a></li>
     <li><a href="#about">about</a></li>
     <li><a href="#contact">contact</a></li>
-    <li><a class="nav-consult" href="/consult">consultations</a></li>
   </ul>
-  <a class="nav-cta" href="#contact">get a free audit →</a>
+  <a class="nav-cta" href="#book">book a session →</a>
 </nav>
 
 <!-- HERO -->
 <section class="hero" id="home">
   <div class="hero-orb"></div>
-  <div class="hero-badge"><span class="dot"></span>AI automation agency — Bengaluru, India</div>
+  <div class="hero-badge"><span class="dot"></span>AI automation · consultation · portfolio</div>
   <h1>
-    <span class="line1">We automate the work.</span>
-    <span class="line2">You grow the business.</span>
+    <span class="line1">I build AI systems.</span>
+    <span class="line2">I teach what I know.</span>
   </h1>
-  <p class="hero-sub">Wenix AI builds custom automations, AI agents, and smart workflows for startups and growing businesses — so your team can stop doing manual work and start scaling.</p>
+  <p class="hero-sub">Technical support engineer turned AI builder. I automate workflows, build AI agents, and help students and startups get started with AI — through real builds and 1-on-1 sessions.</p>
   <div class="hero-actions">
-    <a class="btn-neon" href="#contact">get a free audit →</a>
-    <a class="btn-outline" href="#services">see our services</a>
+    <a class="btn-neon" href="#book">book a session →</a>
+    <a class="btn-outline" href="#services">see my work</a>
   </div>
   <div class="hero-stats">
-    <div class="hero-stat"><strong>14</strong><span>day avg delivery</span></div>
     <div class="hero-stat"><strong>3+</strong><span>AI projects built</span></div>
-    <div class="hero-stat"><strong>7 years</strong><span>in tech & support</span></div>
-    <div class="hero-stat"><strong>$500+</strong><span>projects start at</span></div>
+    <div class="hero-stat"><strong>7 years</strong><span>in tech &amp; support</span></div>
+    <div class="hero-stat"><strong>100%</strong><span>sessions online</span></div>
+    <div class="hero-stat"><strong>₹299</strong><span>sessions start at</span></div>
   </div>
 </section>
 
@@ -208,69 +208,52 @@ footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
 
 <!-- SERVICES -->
 <section id="services">
-  <div class="section-tag">what we build</div>
-  <h2 class="section-title">Four services. Zero manual work.</h2>
-  <p class="section-sub">Every engagement starts with understanding your bottlenecks — then we build exactly what moves the needle.</p>
-
-  <div class="currency-wrap">
-    <div class="currency-toggle">
-      <button class="active" id="btn-usd" onclick="setCurrency('usd')">USD $</button>
-      <button id="btn-inr" onclick="setCurrency('inr')">INR ₹</button>
-    </div>
-    <span class="currency-note" id="currency-note">Showing prices in USD — for Indian clients switch to INR</span>
-  </div>
-
+  <div class="section-tag">what I offer</div>
+  <h2 class="section-title">AI builds, automations & consulting</h2>
+  <p class="section-sub">From building multi-project dashboards to full AI agents — real work for real problems.</p>
   <div class="services-grid">
     <div class="service-card featured">
-      <div class="s-badge hot">most popular</div>
+      <div class="service-badge hot">most popular</div>
       <h3>Workflow Automation</h3>
       <p>Connect your tools and eliminate manual work. CRM updates, email triggers, invoice flows — fully automated using n8n, Make, or Zapier.</p>
-      <div class="s-price" data-usd="$500" data-inr="₹42,000">$500</div>
-      <div class="s-price-sub">starting price / project</div>
-      <ul class="s-list">
+      <ul class="service-list">
         <li>Multi-step workflow design</li>
         <li>CRM & email automation</li>
-        <li>Zapier / Make / n8n builds</li>
-        <li>Full documentation & handoff</li>
+        <li>CSV / Google Sheets sync</li>
+        <li>Full documentation</li>
       </ul>
     </div>
     <div class="service-card">
-      <div class="s-badge">AI agents</div>
+      <div class="service-badge">AI agents</div>
       <h3>Custom AI Agents</h3>
-      <p>Autonomous agents that qualify leads, handle support, research, and execute tasks — without a human in the loop.</p>
-      <div class="s-price" data-usd="$1,500" data-inr="₹1,25,000">$1,500</div>
-      <div class="s-price-sub">starting price / project</div>
-      <ul class="s-list">
+      <p>Autonomous agents that qualify leads, handle support, and run tasks without human input. Built with Python and the latest AI APIs.</p>
+      <ul class="service-list">
         <li>Lead qualification agent</li>
-        <li>Customer support bot</li>
-        <li>Research & reporting agents</li>
-        <li>Monthly maintenance plan</li>
+        <li>Support & FAQ bot</li>
+        <li>Research & reporting agent</li>
+        <li>Multi-agent orchestration</li>
       </ul>
     </div>
     <div class="service-card">
-      <div class="s-badge">websites</div>
+      <div class="service-badge">dashboards</div>
+      <h3>Data Dashboards</h3>
+      <p>Multi-project ticket dashboards, SLA tracking, visual insights — built with Python, Streamlit, and Pandas. Drop a CSV and it works.</p>
+      <ul class="service-list">
+        <li>Multi-project support</li>
+        <li>SLA breach alerts</li>
+        <li>CSV & Excel ingestion</li>
+        <li>Dark-themed UI</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <div class="service-badge">websites</div>
       <h3>AI-Powered Websites</h3>
-      <p>Fast, conversion-focused sites with embedded AI chatbots, smart lead capture, and booking systems built in.</p>
-      <div class="s-price" data-usd="$800" data-inr="₹67,000">$800</div>
-      <div class="s-price-sub">starting price / project</div>
-      <ul class="s-list">
+      <p>Fast, conversion-focused websites with embedded AI chatbots, smart lead capture forms, and booking systems built in.</p>
+      <ul class="service-list">
         <li>Custom design & copy</li>
         <li>Embedded AI chatbot</li>
-        <li>Lead capture & CRM sync</li>
-        <li>Mobile-first & fast</li>
-      </ul>
-    </div>
-    <div class="service-card">
-      <div class="s-badge">strategy</div>
-      <h3>AI Workflow Strategy</h3>
-      <p>Not sure where AI fits? We audit your business, map your processes, and deliver a prioritised AI integration roadmap.</p>
-      <div class="s-price" data-usd="$300" data-inr="₹25,000">$300</div>
-      <div class="s-price-sub">per session</div>
-      <ul class="s-list">
-        <li>Full process audit</li>
-        <li>AI readiness assessment</li>
-        <li>Prioritised roadmap</li>
-        <li>Tool recommendations</li>
+        <li>Booking & contact system</li>
+        <li>Mobile-first</li>
       </ul>
     </div>
   </div>
@@ -278,31 +261,94 @@ footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
 
 <hr class="divider"/>
 
-<!-- HOW IT WORKS -->
-<section class="how" id="how">
-  <div class="section-tag">the process</div>
-  <h2 class="section-title">From first call to live in 14 days</h2>
-  <p class="section-sub">No lengthy onboarding. No bloated proposals. We move fast because your time is the resource we're protecting.</p>
-  <div class="how-steps">
-    <div class="how-step">
-      <div class="step-num">01</div>
-      <h3>Free audit call</h3>
-      <p>30 minutes mapping your workflows and identifying the highest-impact automation opportunities.</p>
+<!-- CONSULTATION -->
+<section class="consult-section" id="consult">
+  <div class="section-tag">1-on-1 sessions</div>
+  <h2 class="section-title">Book a consultation</h2>
+  <p class="section-sub">Whether you're a student curious about AI, a startup wanting to automate, or someone building their first project — let's talk. All sessions online via Google Meet.</p>
+  <div class="consult-grid">
+    <div class="consult-card" data-type="30min" onclick="selectSession('30min')">
+      <div class="consult-price">₹299</div>
+      <div class="consult-duration">30 minutes</div>
+      <div class="consult-name">Quick clarity call</div>
+      <p class="consult-desc">Got one specific question? Career advice, tool recommendation, or a quick concept explained.</p>
     </div>
-    <div class="how-step">
-      <div class="step-num">02</div>
-      <h3>Scoped proposal</h3>
-      <p>Clear, fixed-price proposal with timeline and deliverables. No surprises, no hourly billing.</p>
+    <div class="consult-card active" data-type="1hr" onclick="selectSession('1hr')">
+      <div class="consult-price">₹499</div>
+      <div class="consult-duration">1 hour</div>
+      <div class="consult-name">Deep dive session</div>
+      <p class="consult-desc">Walk through a topic together. AI fundamentals, how to start automating, career roadmap, or project review.</p>
     </div>
-    <div class="how-step">
-      <div class="step-num">03</div>
-      <h3>We build it</h3>
-      <p>Typical delivery is 7–14 days. You stay updated via Slack — as involved or hands-off as you want.</p>
+    <div class="consult-card" data-type="1.5hr" onclick="selectSession('1.5hr')">
+      <div class="consult-price">₹699</div>
+      <div class="consult-duration">1.5 hours</div>
+      <div class="consult-name">Full mentorship</div>
+      <p class="consult-desc">Extended session for deep-dive learning, hands-on building together, or full career planning with action steps.</p>
     </div>
-    <div class="how-step">
-      <div class="step-num">04</div>
-      <h3>Handoff & support</h3>
-      <p>Full documentation, walkthrough, and optional monthly retainer to keep things running perfectly.</p>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- BOOKING FORM -->
+<section class="booking-section" id="book">
+  <div class="booking-inner">
+    <div class="booking-info">
+      <div class="section-tag">schedule a session</div>
+      <h3>Pick a time that works</h3>
+      <p>Choose your session type above, then pick a date and available slot. All sessions run Mon–Sun, 3 PM – 10 PM IST.</p>
+      <ul class="booking-perks">
+        <li>Google Meet link sent instantly</li>
+        <li>Confirmation email to you</li>
+        <li>Pay via UPI before the session</li>
+        <li>Rescheduling with 24hr notice</li>
+      </ul>
+    </div>
+    <div class="booking-form-box">
+      <form id="booking-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>First name</label>
+            <input type="text" id="b-fname" placeholder="Arjun" required/>
+          </div>
+          <div class="form-group">
+            <label>Last name</label>
+            <input type="text" id="b-lname" placeholder="Sharma"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="b-email" placeholder="arjun@example.com" required/>
+        </div>
+        <div class="form-group">
+          <label>Phone number</label>
+          <input type="tel" id="b-phone" placeholder="+91 98765 43210" required/>
+        </div>
+        <div class="form-group">
+          <label>Session type</label>
+          <select id="b-session" onchange="onSessionChange()">
+            <option value="30min">Quick clarity call — 30 min · ₹299</option>
+            <option value="1hr" selected>Deep dive session — 1 hr · ₹499</option>
+            <option value="1.5hr">Full mentorship — 1.5 hrs · ₹699</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Pick a date</label>
+          <input type="date" id="b-date" onchange="loadSlots()" required/>
+        </div>
+        <div class="slots-container" id="slots-area" style="display:none">
+          <div class="slots-label">Available time slots — Indian Standard Time (IST)</div>
+          <div class="slots-grid" id="slots-grid"></div>
+          <input type="hidden" id="b-time"/>
+        </div>
+        <div class="form-group" style="margin-top:1rem">
+          <label>What do you want to discuss? (optional)</label>
+          <textarea id="b-topic" placeholder="e.g. I want to learn how to build AI agents, or I need career guidance for switching into tech..."></textarea>
+        </div>
+        <button class="btn-submit" type="submit" id="book-btn">confirm booking →</button>
+        <p class="form-note">A confirmation email will be sent immediately.</p>
+        <div class="form-msg" id="book-msg"></div>
+      </form>
     </div>
   </div>
 </section>
@@ -311,36 +357,32 @@ footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
 
 <!-- PORTFOLIO -->
 <section id="portfolio">
-  <div class="section-tag">our work</div>
-  <h2 class="section-title">Real automations. Real results.</h2>
-  <p class="section-sub">A sample of what we've built. Every project is custom — these show the range of what's possible.</p>
+  <div class="section-tag">my work</div>
+  <h2 class="section-title">Things I've built</h2>
+  <p class="section-sub">Real projects solving real problems — mostly Python, AI, and automation.</p>
   <div class="portfolio-grid">
-    <div class="p-card">
+    <div class="portfolio-card">
       <div class="p-tag">dashboard · python</div>
       <h3>Multi-project ticket dashboard</h3>
-      <p>Streamlit dashboard tracking tickets across 3 projects — CSV drop-in from any tool (Zoho, ServiceNow), SLA tracking, per-project metrics.</p>
-      <div class="p-result">Zero manual reporting — fully automated</div>
+      <p>Streamlit dashboard tracking tickets across PMP, Atlas, and eBooks projects — CSV drop-in, SLA tracking, per-project metrics, dark-themed charts.</p>
       <a class="p-link" href="https://github.com/vardhasheelan-creator/multi-project-ticket-dashboard" target="_blank">view on github →</a>
     </div>
-    <div class="p-card">
-      <div class="p-tag">workflow automation</div>
-      <h3>End-to-end lead & invoice automation</h3>
-      <p>Connected CRM → invoice generation → payment follow-up into a single zero-touch pipeline using Make and Stripe.</p>
-      <div class="p-result">20 hours saved per week</div>
-      <a class="p-link" href="#contact">discuss a similar project →</a>
+    <div class="portfolio-card">
+      <div class="p-tag">automation · workflow</div>
+      <h3>AI workflow automations</h3>
+      <p>Built end-to-end automations using n8n and Make — lead routing, CRM updates, email sequences, and Google Sheets sync for small teams.</p>
+      <a class="p-link" href="#contact">get in touch →</a>
     </div>
-    <div class="p-card">
-      <div class="p-tag">AI agent</div>
-      <h3>24/7 customer support agent</h3>
-      <p>Custom-trained agent handling FAQs, order status, and returns — escalates only when it truly can't resolve. Built for an e-commerce brand.</p>
-      <div class="p-result">Support tickets reduced by 65%</div>
-      <a class="p-link" href="#contact">build one for your business →</a>
+    <div class="portfolio-card">
+      <div class="p-tag">ai agent · python</div>
+      <h3>Custom AI agents</h3>
+      <p>Autonomous agents for lead qualification, support ticket triage, and research — built with Python and Claude/OpenAI APIs.</p>
+      <a class="p-link" href="#contact">discuss a project →</a>
     </div>
-    <div class="p-card">
-      <div class="p-tag">website + AI</div>
-      <h3>AI-embedded portfolio & booking site</h3>
-      <p>Full site with Google Calendar booking, Gmail automation, real-time slot availability, and admin panel — deployed on custom domain.</p>
-      <div class="p-result">This website — built in one day</div>
+    <div class="portfolio-card">
+      <div class="p-tag">website · flask</div>
+      <h3>This website</h3>
+      <p>Built with Flask + Google Calendar API + Gmail SMTP. Real-time slot availability, automatic booking confirmation, and email alerts.</p>
       <a class="p-link" href="https://github.com/vardhasheelan-creator" target="_blank">see github →</a>
     </div>
   </div>
@@ -350,39 +392,82 @@ footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
 
 <!-- ABOUT -->
 <section class="about-section" id="about">
-  <div class="about-inner">
-    <div class="about-img-wrap">
-      <img class="about-img" src="/assets/my pic.png" alt="Vardhasheela N — Founder, Wenix AI"/>
-      <div class="about-img-badge">Bengaluru, India 🇮🇳</div>
-    </div>
-    <div class="about-content">
-      <div class="section-tag">the founder</div>
-      <h2>Technical support engineer turned AI builder</h2>
-      <p>I'm Vardhasheela — 7 years in tech & customer operations, now building AI automations for startups and growing businesses.</p>
-      <p>I started Wenix AI because I saw the same problem everywhere: smart teams wasting hours on work that software should handle. Every build I do comes from understanding that frustration first-hand.</p>
-      <p>When I'm not building, I create content on <a href="https://youtube.com/@vardhasheela.n" target="_blank" style="color:var(--cyan);text-decoration:none;">YouTube</a> about AI, careers, and building in public.</p>
-      <div class="skill-tags">
-        <span class="skill-tag st-ai">Python</span>
-        <span class="skill-tag st-ai">Flask</span>
-        <span class="skill-tag st-ai">AI agents</span>
-        <span class="skill-tag st-ai">Claude API</span>
-        <span class="skill-tag st-tech">n8n</span>
-        <span class="skill-tag st-tech">Make</span>
-        <span class="skill-tag st-tech">Zapier</span>
-        <span class="skill-tag st-tech">Google APIs</span>
-        <span class="skill-tag st-tech">Streamlit</span>
-        <span class="skill-tag st-tech">Pandas</span>
+  <div class="section-tag">background</div>
+  <h2 class="section-title">The person behind the builds</h2>
+  <p class="section-sub">From cabin crew to AI builder — here's the journey.</p>
+  <div class="about-grid">
+    <div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="tl-year">2016</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <h4>Cabin crew</h4>
+            <p>Worked as cabin crew — passenger safety, service, and high-pressure customer interactions.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-year">2018</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <h4>Cabin crew instructor</h4>
+            <p>Trained new recruits on grooming, safety, and interview preparation.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-year">2019</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <h4>Freelance video editor</h4>
+            <p>Started creating content — reels, shorts, cashcow channels, and corporate edits.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-year">2023</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <h4>Technical support engineer</h4>
+            <p>L1/L2 support, ticket management, customer communication, and now — building AI tools.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-year">2025</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <h4>AI builder & consultant</h4>
+            <p>Building automations, dashboards, and AI agents. Teaching what I learn along the way.</p>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-
-  <!-- CONSULT BANNER -->
-  <div class="consult-banner">
     <div>
-      <h3>Watching my YouTube channel?</h3>
-      <p>I also do 1-on-1 consultation sessions for students — career advice, English fluency, cabin crew prep, and learning AI from scratch.</p>
+      <div class="skills-box">
+        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1.25rem">What I work with:</p>
+        <div>
+          <span class="skill-tag ai">Python</span>
+          <span class="skill-tag ai">Flask</span>
+          <span class="skill-tag ai">Streamlit</span>
+          <span class="skill-tag ai">AI agents</span>
+          <span class="skill-tag ai">Claude API</span>
+          <span class="skill-tag tech">n8n</span>
+          <span class="skill-tag tech">Make</span>
+          <span class="skill-tag tech">Zapier</span>
+          <span class="skill-tag tech">Google APIs</span>
+          <span class="skill-tag tech">Pandas</span>
+          <span class="skill-tag tech">SQL basics</span>
+          <span class="skill-tag tech">AWS basics</span>
+          <span class="skill-tag soft">Customer service</span>
+          <span class="skill-tag soft">Training & coaching</span>
+          <span class="skill-tag soft">Video editing</span>
+          <span class="skill-tag soft">Content creation</span>
+        </div>
+        <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border)">
+          <p style="font-family:var(--mono);font-size:0.72rem;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.75rem">Availability</p>
+          <p style="font-size:0.85rem;color:var(--muted)">Consultation sessions: <span style="color:var(--green)">Mon–Sun, 3 PM – 10 PM IST</span></p>
+          <p style="font-size:0.85rem;color:var(--muted);margin-top:0.5rem">Project work: <span style="color:var(--cyan)">currently accepting new clients</span></p>
+        </div>
+      </div>
     </div>
-    <a class="btn-pink" href="/consult">book a session →</a>
   </div>
 </section>
 
@@ -391,54 +476,34 @@ footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
 <!-- CONTACT -->
 <section class="contact-section" id="contact">
   <div class="contact-inner">
-    <div class="contact-left">
+    <div class="contact-info">
       <div class="section-tag">get in touch</div>
-      <h2>Let's find your biggest automation win</h2>
-      <p>Fill in the form and we'll reach out within 24 hours to schedule your free 30-minute audit call. No commitment, no pitch — just clarity on what AI can do for your business.</p>
-      <ul class="contact-perks">
-        <li>Free 30-min audit call</li>
-        <li>Fixed pricing — no hourly surprises</li>
-        <li>First 10 clients get a free build</li>
-        <li>Live in as little as 7 days</li>
-        <li>Based in India, serving global clients</li>
-      </ul>
+      <h3>Have a project or question?</h3>
+      <p style="font-size:0.9rem;color:var(--muted);margin-bottom:2rem">For project inquiries, collaboration, or anything else — send a message and I'll reply within 24 hours.</p>
+      <div class="contact-detail">📍 Bengaluru, India</div>
+      <div class="contact-detail">✉️ <a href="mailto:vardhasheelan@gmail.com">vardhasheelan@gmail.com</a></div>
+      <div class="contact-detail">📞 <a href="tel:+919113259228">+91 9113259228</a></div>
+      <div class="contact-detail">🐙 <a href="https://github.com/vardhasheelan-creator" target="_blank">github.com/vardhasheelan-creator</a></div>
+      <div style="margin-top:2rem;padding:1rem 1.25rem;background:rgba(123,92,250,0.08);border:1px solid rgba(123,92,250,0.2);border-radius:8px;">
+        <p style="font-family:var(--mono);font-size:0.75rem;color:var(--neon);margin-bottom:0.5rem">// agency work</p>
+        <p style="font-size:0.85rem;color:var(--muted)">Looking for AI automation for your startup or business? This site is also the home of my AI agency — reach out and let's scope your project.</p>
+      </div>
     </div>
-    <div class="form-box">
+    <div class="booking-form-box">
       <form id="contact-form">
-        <div class="form-row">
-          <div class="form-group">
-            <label>First name</label>
-            <input type="text" id="c-fname" placeholder="Alex" required/>
-          </div>
-          <div class="form-group">
-            <label>Last name</label>
-            <input type="text" id="c-lname" placeholder="Johnson"/>
-          </div>
+        <div class="form-group">
+          <label>Your name</label>
+          <input type="text" id="c-name" placeholder="Priya Sharma" required/>
         </div>
         <div class="form-group">
-          <label>Work email</label>
-          <input type="email" id="c-email" placeholder="alex@company.com" required/>
+          <label>Email</label>
+          <input type="email" id="c-email" placeholder="priya@example.com" required/>
         </div>
         <div class="form-group">
-          <label>Company name</label>
-          <input type="text" id="c-company" placeholder="Acme Inc."/>
+          <label>Message</label>
+          <textarea id="c-message" rows="5" placeholder="Tell me about your project or question..." required></textarea>
         </div>
-        <div class="form-group">
-          <label>What best describes you?</label>
-          <select id="c-type" required>
-            <option value="" disabled selected>Select one</option>
-            <option>Early-stage startup (pre-revenue)</option>
-            <option>Growing startup ($1K–$50K MRR)</option>
-            <option>Established business</option>
-            <option>Solo founder / freelancer</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Biggest pain point right now?</label>
-          <textarea id="c-message" placeholder="e.g. We spend 3 hours/day manually updating our CRM..." required></textarea>
-        </div>
-        <button class="btn-submit" type="submit" id="contact-btn">get a free audit →</button>
-        <p class="form-note">We respond within 24 hours. No spam, ever.</p>
+        <button class="btn-submit" type="submit" id="contact-btn">send message →</button>
         <div class="form-msg" id="contact-msg"></div>
       </form>
     </div>
@@ -446,29 +511,127 @@ footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
 </section>
 
 <footer>
-  <a class="footer-logo" href="#"><span class="bracket">[</span>Wenix<span class="ai">AI</span><span class="bracket">]</span></a>
-  <p>© 2026 Wenix AI · Bengaluru, India · vardhasheelan.com</p>
+  <a class="footer-logo" href="#"><span class="bracket">[</span>Vardhasheela<span class="ai">N</span><span class="bracket">]</span></a>
+  <p>// © 2026 Vardhasheela N · Bengaluru, India</p>
   <div class="footer-links">
     <a href="#services">services</a>
+    <a href="#consult">consult</a>
     <a href="#portfolio">portfolio</a>
-    <a href="/consult">consultations</a>
     <a href="https://github.com/vardhasheelan-creator" target="_blank">github</a>
   </div>
 </footer>
 
 <script>
-let currency = 'usd';
-function setCurrency(c) {
-  currency = c;
-  document.getElementById('btn-usd').classList.toggle('active', c === 'usd');
-  document.getElementById('btn-inr').classList.toggle('active', c === 'inr');
-  document.getElementById('currency-note').textContent = c === 'usd'
-    ? 'Showing prices in USD — for Indian clients switch to INR'
-    : 'Showing prices in INR — approx rates, final quote in proposal';
-  document.querySelectorAll('.s-price').forEach(el => {
-    el.textContent = c === 'usd' ? el.dataset.usd : el.dataset.inr;
-  });
+let selectedSession = '1hr';
+let selectedSlot = null;
+
+function selectSession(type) {
+  selectedSession = type;
+  document.querySelectorAll('.consult-card').forEach(c => c.classList.remove('active'));
+  document.querySelector(`[data-type="${type}"]`).classList.add('active');
+  document.getElementById('b-session').value = type;
+  if (document.getElementById('b-date').value) loadSlots();
+  document.getElementById('book').scrollIntoView({behavior:'smooth'});
 }
+
+function onSessionChange() {
+  selectedSession = document.getElementById('b-session').value;
+  if (document.getElementById('b-date').value) loadSlots();
+}
+
+const today = new Date();
+const minDate = today.toISOString().split('T')[0];
+document.getElementById('b-date').min = minDate;
+
+async function loadSlots() {
+  const date = document.getElementById('b-date').value;
+  if (!date) return;
+  const area = document.getElementById('slots-area');
+  const grid = document.getElementById('slots-grid');
+  area.style.display = 'block';
+  grid.innerHTML = '<div class="slots-loading">// loading available slots...</div>';
+  selectedSlot = null;
+  document.getElementById('b-time').value = '';
+  try {
+    const res = await fetch(`/api/slots?date=${date}&session_type=${selectedSession}`);
+    const data = await res.json();
+    if (!data.slots || data.slots.length === 0) {
+      grid.innerHTML = '<div class="slots-loading">// no slots available for this date</div>';
+      return;
+    }
+    grid.innerHTML = '';
+    data.slots.forEach(slot => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'slot-btn' + (slot.booked ? ' booked' : '');
+      btn.textContent = slot.display;
+      btn.dataset.time = slot.time;
+      if (!slot.booked) {
+        btn.onclick = () => {
+          document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          selectedSlot = slot.time;
+          document.getElementById('b-time').value = slot.time;
+        };
+      }
+      grid.appendChild(btn);
+    });
+  } catch(e) {
+    grid.innerHTML = '<div class="slots-loading">// error loading slots. please try again.</div>';
+  }
+}
+
+document.getElementById('booking-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById('book-msg');
+  const btn = document.getElementById('book-btn');
+  if (!document.getElementById('b-time').value) {
+    msg.className = 'form-msg error';
+    msg.style.display = 'block';
+    msg.textContent = '// please select a time slot';
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = 'booking...';
+  const fname = document.getElementById('b-fname').value;
+  const lname = document.getElementById('b-lname').value;
+  const payload = {
+    name: fname + (lname ? ' ' + lname : ''),
+    email: document.getElementById('b-email').value,
+    phone: document.getElementById('b-phone').value,
+    date: document.getElementById('b-date').value,
+    time: document.getElementById('b-time').value,
+    session_type: document.getElementById('b-session').value,
+    topic: document.getElementById('b-topic').value,
+  };
+  try {
+    const res = await fetch('/api/book', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+    const data = await res.json();
+    if (data.success) {
+      msg.className = 'form-msg success';
+      msg.style.display = 'block';
+      msg.innerHTML = '✓ ' + data.message + '<br><br>' +
+        '<strong style="color:#00FF88">Payment details:</strong><br>' +
+        'UPI ID: <strong>' + data.upi_id + '</strong><br>' +
+        'Amount: <strong>₹' + data.amount + '</strong><br>' +
+        '<span style="font-size:0.85em">Pay before the session & share screenshot on WhatsApp +91 9113259228</span>';
+      btn.textContent = '✓ booking received!';
+      loadSlots();
+    } else {
+      msg.className = 'form-msg error';
+      msg.style.display = 'block';
+      msg.textContent = '// ' + (data.error || 'booking failed. please try again.');
+      btn.disabled = false;
+      btn.textContent = 'confirm booking →';
+    }
+  } catch(e) {
+    msg.className = 'form-msg error';
+    msg.style.display = 'block';
+    msg.textContent = '// network error. please try again.';
+    btn.disabled = false;
+    btn.textContent = 'confirm booking →';
+  }
+});
 
 document.getElementById('contact-form').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -477,28 +640,26 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
   btn.disabled = true;
   btn.textContent = 'sending...';
   try {
-    const res = await fetch('/api/contact', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        name: document.getElementById('c-fname').value + ' ' + document.getElementById('c-lname').value,
-        email: document.getElementById('c-email').value,
-        message: `Company: ${document.getElementById('c-company').value}\nType: ${document.getElementById('c-type').value}\nPain point: ${document.getElementById('c-message').value}`,
-      })
-    });
+    const res = await fetch('/api/contact', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({
+      name: document.getElementById('c-name').value,
+      email: document.getElementById('c-email').value,
+      message: document.getElementById('c-message').value,
+    })});
     const data = await res.json();
     if (data.success) {
       msg.className = 'form-msg success';
       msg.style.display = 'block';
-      msg.textContent = 'Message sent! We\'ll be in touch within 24 hours.';
+      msg.textContent = '// message sent! i\'ll reply within 24 hours.';
       btn.textContent = '✓ sent!';
-    } else { throw new Error(); }
+    } else {
+      throw new Error();
+    }
   } catch(e) {
     msg.className = 'form-msg error';
     msg.style.display = 'block';
-    msg.textContent = 'Error sending. Please email vardhasheelan@gmail.com directly.';
+    msg.textContent = '// error sending. please email directly.';
     btn.disabled = false;
-    btn.textContent = 'get a free audit →';
+    btn.textContent = 'send message →';
   }
 });
 </script>
