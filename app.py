@@ -460,6 +460,12 @@ def book():
         "upi_name": UPI_NAME,
         "amount":   stype["price"],
     })
+@app.route('/assets/<path:filename>')
+def assets(filename):
+    import os
+    from flask import send_from_directory
+    assets_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'public', 'assets')
+    return send_from_directory(assets_dir, filename)
 
 @app.route("/api/contact", methods=["POST"])
 def contact():
