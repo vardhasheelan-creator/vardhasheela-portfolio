@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Book a Session — Vardhasheela N</title>
+<title>Book a 1-on-1 Session — Vardhasheela N</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -20,426 +20,726 @@ html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,44,243,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,44,243,0.02) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
 
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 5%;background:rgba(5,5,8,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 5%;background:rgba(5,5,8,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
 .nav-logo{font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--white);text-decoration:none;}
 .nav-logo span{color:var(--pink);}
-.nav-back{font-family:var(--mono);font-size:0.78rem;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:0.5rem;}
-.nav-back:hover{color:var(--cyan);}
-
-section{padding:5rem 5%;position:relative;z-index:1;}
-hr.divider{border:none;border-top:1px solid var(--border);margin:0;position:relative;z-index:1;}
+.nav-yt{font-family:var(--mono);font-size:0.75rem;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:0.4rem;border:1px solid rgba(255,44,243,0.2);padding:0.4rem 0.9rem;border-radius:4px;transition:all 0.2s;}
+.nav-yt:hover{color:var(--pink);border-color:rgba(255,44,243,0.4);}
 
 /* HERO */
-.hero{min-height:auto;padding:7rem 5% 4rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;max-width:1000px;margin:0 auto;}
-.hero-left h1{font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-0.03em;line-height:1.1;color:var(--white);margin-bottom:1rem;}
-.hero-left h1 span{background:linear-gradient(90deg,var(--pink),var(--neon));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.hero-left p{font-size:0.95rem;color:var(--muted);line-height:1.75;margin-bottom:1.5rem;}
-.hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:2rem;}
-.hero-tag{font-family:var(--mono);font-size:0.72rem;padding:0.3rem 0.75rem;border-radius:3px;background:rgba(255,44,243,0.08);color:var(--pink);border:1px solid rgba(255,44,243,0.2);}
-.hero-img{width:100%;max-width:360px;border-radius:16px;border:2px solid rgba(255,44,243,0.25);box-shadow:0 0 40px rgba(255,44,243,0.1);justify-self:center;}
-.yt-link{display:inline-flex;align-items:center;gap:0.5rem;font-family:var(--mono);font-size:0.8rem;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:0.5rem 1rem;border-radius:4px;transition:all 0.2s;}
-.yt-link:hover{color:var(--pink);border-color:rgba(255,44,243,0.3);}
-.yt-link svg{fill:currentColor;}
+.hero{min-height:auto;padding:8rem 5% 4rem;text-align:center;position:relative;z-index:1;}
+.hero-glow{position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(255,44,243,0.12) 0%,rgba(123,92,250,0.06) 50%,transparent 70%);pointer-events:none;}
+.hero-badge{display:inline-flex;align-items:center;gap:0.6rem;font-family:var(--mono);font-size:0.72rem;letter-spacing:0.08em;color:var(--cyan);border:1px solid rgba(0,245,255,0.25);background:rgba(0,245,255,0.05);border-radius:3px;padding:0.4rem 1rem;margin-bottom:1.5rem;text-transform:uppercase;}
+.live-dot{width:6px;height:6px;background:var(--green);border-radius:50%;box-shadow:0 0 6px var(--green);animation:blink 1.8s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.2;}}
+.hero h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:700;line-height:1.1;letter-spacing:-0.03em;color:var(--white);margin-bottom:1rem;}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--pink),var(--neon));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:1rem;color:var(--muted);max-width:520px;margin:0 auto 2rem;line-height:1.7;}
+.hero-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:2.5rem;}
+.hero-tag{font-family:var(--mono);font-size:0.72rem;padding:0.3rem 0.85rem;border-radius:3px;background:rgba(255,44,243,0.08);color:var(--pink);border:1px solid rgba(255,44,243,0.2);}
+.hero-tag.t2{background:rgba(123,92,250,0.08);color:var(--neon);border-color:rgba(123,92,250,0.2);}
+.hero-tag.t3{background:rgba(0,245,255,0.06);color:var(--cyan);border-color:rgba(0,245,255,0.18);}
+.hero-prices{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.5rem;}
+.price-pill{background:var(--surface);border:1px solid var(--border-b);border-radius:10px;padding:1rem 1.5rem;text-align:center;}
+.price-pill .amt{font-family:var(--mono);font-size:1.6rem;font-weight:700;color:var(--pink);text-shadow:0 0 12px rgba(255,44,243,0.4);}
+.price-pill .dur{font-size:0.78rem;color:var(--muted);margin-top:2px;}
+.btn-book{font-family:var(--mono);font-size:0.9rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--bg);background:var(--pink);padding:0.9rem 2.5rem;border-radius:4px;text-decoration:none;display:inline-block;box-shadow:0 0 24px rgba(255,44,243,0.35);transition:all 0.2s;}
+.btn-book:hover{box-shadow:0 0 36px rgba(255,44,243,0.55);transform:translateY(-2px);}
 
-/* SESSIONS */
-.sessions-section{background:var(--bg2);}
-.sessions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin-top:2rem;}
-.session-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;}
-.session-card:hover,.session-card.active{border-color:var(--pink);background:rgba(255,44,243,0.06);}
-.session-card.active{box-shadow:0 0 20px rgba(255,44,243,0.15);}
-.session-card.popular::before{content:'Most popular';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--pink);color:var(--bg);font-family:var(--mono);font-size:0.65rem;font-weight:700;padding:0.2rem 0.75rem;border-radius:100px;letter-spacing:0.06em;white-space:nowrap;}
-.s-price{font-family:'Space Grotesk',sans-serif;font-size:2.5rem;font-weight:700;color:var(--pink);text-shadow:0 0 16px rgba(255,44,243,0.4);letter-spacing:-0.03em;line-height:1;margin-bottom:0.25rem;}
-.s-duration{font-family:var(--mono);font-size:0.72rem;color:var(--cyan);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.75rem;}
-.s-name{font-size:1rem;font-weight:600;color:var(--white);margin-bottom:0.5rem;}
-.s-desc{font-size:0.82rem;color:var(--muted);line-height:1.6;}
+hr.divider{border:none;border-top:1px solid var(--border);margin:0;position:relative;z-index:1;}
+
+/* WHO IS THIS FOR */
+.topics-section{padding:4rem 5%;position:relative;z-index:1;background:var(--bg2);}
+.section-tag{font-family:var(--mono);font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--pink);margin-bottom:0.75rem;border-left:2px solid var(--pink);padding-left:0.75rem;}
+.section-title{font-size:clamp(1.4rem,2.5vw,2rem);font-weight:700;color:var(--white);margin-bottom:0.5rem;letter-spacing:-0.02em;}
 .topics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1.5rem;}
-.topic-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;display:flex;align-items:flex-start;gap:0.75rem;}
-.topic-icon{font-size:1.25rem;flex-shrink:0;}
-.topic-card h4{font-size:0.9rem;font-weight:600;color:var(--white);margin-bottom:0.25rem;}
-.topic-card p{font-size:0.8rem;color:var(--muted);}
+.topic-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;transition:border-color 0.2s;}
+.topic-card:hover{border-color:rgba(255,44,243,0.3);}
+.topic-icon{font-size:1.5rem;margin-bottom:0.6rem;}
+.topic-card h4{font-size:0.9rem;font-weight:600;color:var(--white);margin-bottom:0.3rem;}
+.topic-card p{font-size:0.8rem;color:var(--muted);line-height:1.5;}
 
-/* BOOKING FORM */
-.booking-section{background:var(--bg3);}
-.booking-inner{display:grid;grid-template-columns:1fr 1.3fr;gap:4rem;align-items:start;max-width:960px;margin:0 auto;}
-.booking-info h3{font-size:1.1rem;font-weight:600;color:var(--white);margin-bottom:1rem;}
-.booking-info p{font-size:0.88rem;color:var(--muted);line-height:1.7;margin-bottom:1.5rem;}
-.info-list{list-style:none;display:flex;flex-direction:column;gap:0.75rem;}
-.info-list li{font-size:0.85rem;color:var(--muted);display:flex;align-items:center;gap:0.75rem;}
-.info-list li::before{content:'→';color:var(--pink);font-weight:700;}
-.form-box{background:var(--surface);border:1px solid var(--border-b);border-radius:8px;padding:2rem;}
+/* MULTI-STEP FORM */
+.form-section{padding:5rem 5%;position:relative;z-index:1;}
+.form-wrap{max-width:680px;margin:0 auto;}
+
+/* Progress bar */
+.progress-bar{display:flex;gap:0;margin-bottom:2.5rem;position:relative;}
+.progress-bar::before{content:'';position:absolute;top:14px;left:0;right:0;height:2px;background:rgba(255,44,243,0.15);z-index:0;}
+.progress-bar::after{content:'';position:absolute;top:14px;left:0;height:2px;background:var(--pink);z-index:1;transition:width 0.4s ease;}
+.prog-step{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;z-index:2;}
+.prog-circle{width:28px;height:28px;border-radius:50%;border:2px solid rgba(255,44,243,0.25);background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:0.7rem;color:var(--dim);transition:all 0.3s;}
+.prog-step.active .prog-circle{border-color:var(--pink);color:var(--pink);box-shadow:0 0 10px rgba(255,44,243,0.3);}
+.prog-step.done .prog-circle{border-color:var(--pink);background:var(--pink);color:var(--bg);}
+.prog-label{font-family:var(--mono);font-size:0.65rem;color:var(--dim);text-align:center;transition:color 0.3s;white-space:nowrap;}
+.prog-step.active .prog-label,.prog-step.done .prog-label{color:var(--pink);}
+
+/* Form steps */
+.form-step{display:none;}
+.form-step.active{display:block;}
+.step-heading{font-size:1.2rem;font-weight:700;color:var(--white);margin-bottom:0.3rem;}
+.step-sub{font-size:0.88rem;color:var(--muted);margin-bottom:1.5rem;}
+
 .form-group{display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1rem;}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
 label{font-family:var(--mono);font-size:0.72rem;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;}
-input,select,textarea{background:var(--bg3);border:1px solid rgba(255,44,243,0.15);border-radius:4px;padding:0.72rem 0.9rem;color:var(--text);font-family:var(--mono);font-size:0.82rem;transition:border-color 0.2s;outline:none;width:100%;}
+label .opt{color:var(--dim);font-weight:400;}
+input,select,textarea{background:var(--bg3);border:1px solid rgba(255,44,243,0.15);border-radius:6px;padding:0.75rem 0.9rem;color:var(--text);font-family:var(--font);font-size:0.9rem;transition:border-color 0.2s;outline:none;width:100%;}
 input:focus,select:focus,textarea:focus{border-color:var(--pink);box-shadow:0 0 0 1px rgba(255,44,243,0.2);}
 input::placeholder,textarea::placeholder{color:var(--dim);}
 select option{background:var(--surface);}
-textarea{resize:vertical;min-height:80px;}
+textarea{resize:vertical;min-height:90px;}
 
-/* SLOTS */
-.slots-area{margin-top:0.5rem;}
+/* Goal + followup chips */
+.chip-group{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1rem;}
+.chip{font-family:var(--mono);font-size:0.78rem;padding:0.45rem 1rem;border-radius:20px;border:1px solid rgba(255,44,243,0.2);background:var(--surface);color:var(--muted);cursor:pointer;transition:all 0.15s;user-select:none;}
+.chip:hover{border-color:rgba(255,44,243,0.4);color:var(--text);}
+.chip.selected{border-color:var(--pink);background:rgba(255,44,243,0.12);color:var(--pink);}
+.chip-group.multi .chip.selected{border-color:var(--neon);background:rgba(123,92,250,0.12);color:var(--neon);}
+
+/* Follow-up questions (conditional) */
+.followup-block{display:none;background:rgba(255,44,243,0.04);border:1px solid rgba(255,44,243,0.15);border-radius:8px;padding:1.25rem;margin-bottom:1rem;}
+.followup-block.visible{display:block;}
+.followup-label{font-family:var(--mono);font-size:0.72rem;color:var(--pink);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.75rem;}
+
+/* Session cards */
+.session-cards{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.session-card{background:var(--surface);border:2px solid rgba(255,44,243,0.15);border-radius:10px;padding:1.25rem;cursor:pointer;transition:all 0.2s;text-align:center;}
+.session-card:hover{border-color:rgba(255,44,243,0.35);}
+.session-card.selected{border-color:var(--pink);background:rgba(255,44,243,0.07);box-shadow:0 0 16px rgba(255,44,243,0.15);}
+.sc-price{font-family:var(--mono);font-size:1.8rem;font-weight:700;color:var(--pink);text-shadow:0 0 10px rgba(255,44,243,0.4);line-height:1;margin-bottom:0.25rem;}
+.sc-dur{font-family:var(--mono);font-size:0.72rem;color:var(--cyan);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;}
+.sc-name{font-size:0.9rem;font-weight:600;color:var(--white);margin-bottom:0.3rem;}
+.sc-desc{font-size:0.78rem;color:var(--muted);line-height:1.5;}
+
+/* Slot picker */
 .slots-label{font-family:var(--mono);font-size:0.72rem;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.75rem;}
-.slots-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.slots-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1rem;}
 .slot-btn{font-family:var(--mono);font-size:0.75rem;padding:0.5rem;border-radius:4px;border:1px solid rgba(255,44,243,0.15);background:var(--bg3);color:var(--text);cursor:pointer;transition:all 0.15s;}
 .slot-btn:hover:not(.booked){border-color:var(--pink);color:var(--pink);}
 .slot-btn.selected{border-color:var(--pink);background:rgba(255,44,243,0.12);color:var(--pink);}
 .slot-btn.booked{opacity:0.3;cursor:not-allowed;text-decoration:line-through;color:var(--dim);}
-.slots-loading{font-family:var(--mono);font-size:0.8rem;color:var(--muted);padding:0.75rem 0;}
+.slots-info{font-family:var(--mono);font-size:0.78rem;color:var(--muted);padding:0.75rem 0;}
+.unavailable-msg{font-family:var(--mono);font-size:0.82rem;color:#f87171;background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.2);border-radius:6px;padding:0.75rem 1rem;display:none;}
 
-/* PAYMENT BOX */
-.payment-box{background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:1.5rem;margin-top:1rem;display:none;}
+/* Payment box */
+.payment-box{background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:1.5rem;margin-bottom:1rem;}
 .payment-box h4{font-size:0.95rem;font-weight:600;color:var(--green);margin-bottom:1rem;}
-.upi-details{display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;}
-.upi-qr{width:120px;height:120px;background:white;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.upi-info p{font-size:0.85rem;color:var(--muted);margin-bottom:0.4rem;}
+.upi-row{display:flex;gap:1.5rem;align-items:flex-start;flex-wrap:wrap;}
+.upi-qr{width:120px;height:120px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:6px;flex-shrink:0;}
+.upi-qr img{width:100%;height:100%;object-fit:contain;}
+.upi-info p{font-size:0.85rem;color:var(--muted);margin-bottom:0.3rem;}
 .upi-info strong{color:var(--white);}
-.upi-amount{font-family:var(--mono);font-size:1.5rem;font-weight:700;color:var(--green);margin:0.5rem 0;}
-.upi-note{font-size:0.78rem;color:var(--dim);margin-top:0.75rem;font-family:var(--mono);}
-.upload-group{margin-top:1rem;}
+.upi-amount{font-family:var(--mono);font-size:1.5rem;font-weight:700;color:var(--green);margin:0.4rem 0;}
+.upi-note{font-family:var(--mono);font-size:0.72rem;color:var(--dim);margin-top:0.6rem;}
 
-.btn-submit{font-family:var(--mono);font-size:0.82rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;background:var(--pink);color:var(--bg);padding:0.9rem;border-radius:4px;border:none;cursor:pointer;transition:all 0.2s;margin-top:0.5rem;width:100%;box-shadow:0 0 20px rgba(255,44,243,0.3);}
-.btn-submit:hover{box-shadow:0 0 28px rgba(255,44,243,0.5);transform:translateY(-1px);}
-.btn-submit:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-.form-note{font-size:0.72rem;color:var(--dim);text-align:center;font-family:var(--mono);margin-top:0.5rem;}
+/* Nav buttons */
+.btn-row{display:flex;gap:1rem;margin-top:1.5rem;}
+.btn-next{font-family:var(--mono);font-size:0.82rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;background:var(--pink);color:var(--bg);padding:0.85rem 2rem;border-radius:4px;border:none;cursor:pointer;transition:all 0.2s;box-shadow:0 0 16px rgba(255,44,243,0.3);flex:1;}
+.btn-next:hover{box-shadow:0 0 28px rgba(255,44,243,0.5);transform:translateY(-1px);}
+.btn-next:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.btn-back{font-family:var(--mono);font-size:0.82rem;font-weight:500;color:var(--muted);background:transparent;padding:0.85rem 1.5rem;border-radius:4px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;transition:all 0.2s;}
+.btn-back:hover{border-color:rgba(255,255,255,0.2);color:var(--text);}
+
 .form-msg{font-family:var(--mono);font-size:0.82rem;padding:0.75rem 1rem;border-radius:4px;margin-top:0.75rem;display:none;}
 .form-msg.success{background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);color:var(--green);}
 .form-msg.error{background:rgba(255,44,44,0.1);border:1px solid rgba(255,44,44,0.3);color:#ff6b6b;}
 
-footer{background:var(--bg);border-top:1px solid var(--border);padding:2rem 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;position:relative;z-index:1;}
+/* Success screen */
+.success-screen{display:none;text-align:center;padding:2rem 0;}
+.success-icon{font-size:3rem;margin-bottom:1rem;}
+.success-screen h2{font-size:1.5rem;font-weight:700;color:var(--green);margin-bottom:0.75rem;}
+.success-screen p{font-size:0.9rem;color:var(--muted);max-width:420px;margin:0 auto 1.5rem;line-height:1.7;}
+.success-detail{background:var(--surface);border:1px solid rgba(0,255,136,0.2);border-radius:8px;padding:1.25rem;margin:0 auto 1.5rem;max-width:360px;text-align:left;}
+.success-detail p{font-size:0.85rem;color:var(--muted);margin-bottom:0.4rem;}
+.success-detail strong{color:var(--white);}
+
+footer{background:var(--bg);border-top:1px solid var(--border);padding:1.5rem 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;position:relative;z-index:1;}
 .footer-logo{font-family:var(--mono);font-size:0.95rem;font-weight:700;color:var(--white);text-decoration:none;}
 .footer-logo span{color:var(--pink);}
 footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
 
-@media(max-width:768px){
-  .hero{grid-template-columns:1fr;gap:2rem;text-align:center;}
-  .hero-img{max-width:240px;}
-  .hero-tags{justify-content:center;}
-  .booking-inner{grid-template-columns:1fr;gap:2.5rem;}
-  .form-row{grid-template-columns:1fr;}
+@media(max-width:640px){
+  .form-row,.session-cards{grid-template-columns:1fr;}
   .slots-grid{grid-template-columns:repeat(3,1fr);}
-  .upi-details{flex-direction:column;align-items:flex-start;}
+  .hero-prices{gap:0.75rem;}
+  .btn-row{flex-direction:column-reverse;}
+  .upi-row{flex-direction:column;}
 }
 </style>
 </head>
 <body>
 
 <nav>
-  <a class="nav-logo" href="/">Vardhasheela<span>N</span></a>
-  <a class="nav-back" href="/">← back to agency site</a>
+  <a class="nav-logo" href="https://vardhasheelan.com">Vardhasheela<span>N</span></a>
+  <a class="nav-yt" href="https://youtube.com/@vardhasheela.n" target="_blank">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>
+    @vardhasheela.n
+  </a>
 </nav>
 
 <!-- HERO -->
-<div class="hero" id="home">
-  <div class="hero-left">
-    <h1>Learn, grow &<br/><span>get clarity</span><br/>with me.</h1>
-    <p>Hey! I'm Vardhasheela. I create content about English fluency, career guidance, and cabin crew life. For my YouTube community — I offer 1-on-1 sessions where we talk, plan, and figure things out together.</p>
-    <div class="hero-tags">
-      <span class="hero-tag">English fluency</span>
-      <span class="hero-tag">Cabin crew career</span>
-      <span class="hero-tag">Ground staff guidance</span>
-      <span class="hero-tag">Career planning</span>
-      <span class="hero-tag">AI & tech basics</span>
-    </div>
-    <a class="yt-link" href="https://youtube.com/@vardhasheela.n" target="_blank">
-      <svg width="16" height="16" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>
-      @vardhasheela.n on YouTube
-    </a>
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-badge"><span class="live-dot"></span>Now accepting bookings · Mon–Fri · 4 PM – 9 PM IST</div>
+  <h1>Book a 1-on-1 session<br/>with <em>Vardhasheela</em></h1>
+  <p class="hero-sub">For my YouTube community — let's talk career, English fluency, cabin crew prep, or anything else you're figuring out. Real conversation, real clarity.</p>
+  <div class="hero-tags">
+    <span class="hero-tag">✈️ Cabin crew career</span>
+    <span class="hero-tag">🛄 Ground staff guidance</span>
+    <span class="hero-tag t2">🗣️ English fluency</span>
+    <span class="hero-tag t2">💼 Interview prep</span>
+    <span class="hero-tag t3">🤖 AI & tech basics</span>
+    <span class="hero-tag t3">🗺️ Career planning</span>
   </div>
-  <img class="hero-img" src="/assets/vardhasheela.jpeg" onerror="this.style.background='#141422';this.alt=''" alt="Vardhasheela N"/>
+  <div class="hero-prices">
+    <div class="price-pill">
+      <div class="amt">₹2,500</div>
+      <div class="dur">30-min clarity call</div>
+    </div>
+    <div class="price-pill">
+      <div class="amt">₹3,000</div>
+      <div class="dur">1-hr deep dive</div>
+    </div>
+  </div>
+  <a class="btn-book" href="#book">book your slot →</a>
 </div>
 
 <hr class="divider"/>
 
-<!-- SESSION TYPES -->
-<section class="sessions-section" id="sessions">
-  <div style="max-width:900px;margin:0 auto">
-    <div style="font-family:var(--mono);font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--pink);margin-bottom:0.75rem;border-left:2px solid var(--pink);padding-left:0.75rem;">pick your session</div>
-    <h2 style="font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;letter-spacing:-0.02em;color:var(--white);margin-bottom:0.5rem;">Choose what works for you</h2>
-    <p style="color:var(--muted);font-size:0.95rem;margin-bottom:0;">All sessions online via Google Meet. Affordable for students and working professionals.</p>
-    <div class="sessions-grid">
-      <div class="session-card" data-type="30min" onclick="selectSession('30min',this)">
-        <div class="s-price">₹199</div>
-        <div class="s-duration">30 minutes</div>
-        <div class="s-name">Quick chat</div>
-        <p class="s-desc">One specific question answered. Quick clarity on a career decision, grammar doubt, or next step.</p>
-      </div>
-      <div class="session-card popular active" data-type="1hr" onclick="selectSession('1hr',this)">
-        <div class="s-price">₹349</div>
-        <div class="s-duration">1 hour</div>
-        <div class="s-name">Deep dive</div>
-        <p class="s-desc">Walk through your situation together. Career plan, interview prep, English improvement roadmap, or AI basics.</p>
-      </div>
-      <div class="session-card" data-type="1.5hr" onclick="selectSession('1.5hr',this)">
-        <div class="s-price">₹499</div>
-        <div class="s-duration">1.5 hours</div>
-        <div class="s-name">Full session</div>
-        <p class="s-desc">Extended mentorship with action plan. Great for career switchers, interview preparation, or learning AI from scratch.</p>
-      </div>
+<!-- WHO IS THIS FOR -->
+<div class="topics-section">
+  <div class="section-tag">who is this for</div>
+  <div class="section-title">What we can talk about</div>
+  <div class="topics-grid">
+    <div class="topic-card">
+      <div class="topic-icon">✈️</div>
+      <h4>Cabin crew & aviation</h4>
+      <p>Interview prep, grooming, group discussion tips, domestic vs international airline process</p>
     </div>
-
-    <div style="margin-top:3rem">
-      <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1.25rem;font-family:var(--mono);letter-spacing:0.04em;text-transform:uppercase;font-size:0.72rem;border-left:2px solid var(--pink);padding-left:0.75rem;">What we can talk about</p>
-      <div class="topics-grid">
-        <div class="topic-card">
-          <div class="topic-icon">✈️</div>
-          <div><h4>Cabin crew & aviation</h4><p>Interview prep, grooming, GD tips, airline hiring process</p></div>
-        </div>
-        <div class="topic-card">
-          <div class="topic-icon">🗣️</div>
-          <div><h4>English fluency</h4><p>Spoken English, communication skills, confidence building</p></div>
-        </div>
-        <div class="topic-card">
-          <div class="topic-icon">🤖</div>
-          <div><h4>AI & tech basics</h4><p>How to start with AI, tools to learn, career in tech</p></div>
-        </div>
-        <div class="topic-card">
-          <div class="topic-icon">🗺️</div>
-          <div><h4>Career planning</h4><p>Career switch, what to study, how to get your first job</p></div>
-        </div>
-      </div>
+    <div class="topic-card">
+      <div class="topic-icon">🛄</div>
+      <h4>Ground staff career</h4>
+      <p>Eligibility, how to apply, what the role actually looks like, airport operations</p>
+    </div>
+    <div class="topic-card">
+      <div class="topic-icon">🗣️</div>
+      <h4>English fluency</h4>
+      <p>Spoken English, communication confidence, pronunciation, interview English</p>
+    </div>
+    <div class="topic-card">
+      <div class="topic-icon">💼</div>
+      <h4>Interview preparation</h4>
+      <p>Mock interviews, how to answer common questions, body language, presentation</p>
+    </div>
+    <div class="topic-card">
+      <div class="topic-icon">🤖</div>
+      <h4>AI & tech basics</h4>
+      <p>How to start learning AI, tools to use, switching into tech, what to study first</p>
+    </div>
+    <div class="topic-card">
+      <div class="topic-icon">🗺️</div>
+      <h4>Career planning</h4>
+      <p>Career switch, what path to take, how to get your first job, action plan</p>
     </div>
   </div>
-</section>
+</div>
 
 <hr class="divider"/>
 
-<!-- BOOKING -->
-<section class="booking-section" id="book">
-  <div class="booking-inner">
-    <div class="booking-info">
-      <div style="font-family:var(--mono);font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--pink);margin-bottom:0.75rem;border-left:2px solid var(--pink);padding-left:0.75rem;">book your slot</div>
-      <h3>Pick a date & time</h3>
-      <p>Sessions run every day, 3 PM to 10 PM IST. Pick a slot, fill your details, and pay via UPI — done! You'll get a confirmation email once I accept.</p>
-      <ul class="info-list">
-        <li>Google Meet link sent on confirmation</li>
-        <li>Pay via UPI — no card needed</li>
-        <li>Reschedule with 24 hours notice</li>
-        <li>Reply to confirm email for WhatsApp</li>
-      </ul>
-    </div>
-    <div class="form-box">
-      <form id="booking-form">
-        <div class="form-row">
-          <div class="form-group">
-            <label>First name</label>
-            <input type="text" id="b-fname" placeholder="Priya" required/>
-          </div>
-          <div class="form-group">
-            <label>Last name</label>
-            <input type="text" id="b-lname" placeholder="Sharma"/>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" id="b-email" placeholder="priya@gmail.com" required/>
-        </div>
-        <div class="form-group">
-          <label>Phone (WhatsApp)</label>
-          <input type="tel" id="b-phone" placeholder="+91 98765 43210" required/>
-        </div>
-        <div class="form-group">
-          <label>Session type</label>
-          <select id="b-session" onchange="onSessionChange()">
-            <option value="30min">Quick chat — 30 min · ₹199</option>
-            <option value="1hr" selected>Deep dive — 1 hr · ₹349</option>
-            <option value="1.5hr">Full session — 1.5 hrs · ₹499</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Pick a date (DD-MM-YYYY)</label>
-          <input type="date" id="b-date" onchange="loadSlots()" required
-            style="color-scheme:dark;cursor:pointer;"
-            onfocus="this.showPicker && this.showPicker()"/>
-        </div>
-        <div class="slots-area" id="slots-area" style="display:none">
-          <div class="slots-label">Available slots — Indian Standard Time (IST)</div>
-          <div class="slots-grid" id="slots-grid"></div>
-          <input type="hidden" id="b-time"/>
-        </div>
-        <div class="form-group" style="margin-top:1rem">
-          <label>What do you want to discuss?</label>
-          <textarea id="b-topic" placeholder="e.g. I want to prepare for cabin crew interviews, I need help with spoken English, I want to learn AI basics..."></textarea>
-        </div>
+<!-- MULTI-STEP BOOKING FORM -->
+<div class="form-section" id="book">
+  <div class="form-wrap">
 
-        <!-- PAYMENT BOX — shows after form filled -->
-        <div class="payment-box" id="payment-box">
-          <h4>Pay to confirm your slot</h4>
-          <div class="upi-details">
-            <div class="upi-qr" style="padding:6px;width:140px;height:140px;">
-              <img src="/assets/upi-qr.png" alt="Scan to pay" style="width:100%;height:100%;object-fit:contain;border-radius:4px;"/>
-            </div>
-            <div class="upi-info">
-              <p>UPI ID: <strong>9113259228@kotakbank</strong></p>
-              <p>Name: <strong>Vardhasheela N</strong></p>
-              <div class="upi-amount" id="upi-amount">₹349</div>
-              <p style="font-size:0.8rem;color:var(--muted)">Open any UPI app → Pay → Enter UPI ID</p>
-            </div>
+    <!-- Progress bar -->
+    <div class="progress-bar" id="progress-bar">
+      <div class="prog-step active" id="ps-1">
+        <div class="prog-circle">1</div>
+        <div class="prog-label">Your details</div>
+      </div>
+      <div class="prog-step" id="ps-2">
+        <div class="prog-circle">2</div>
+        <div class="prog-label">Your goals</div>
+      </div>
+      <div class="prog-step" id="ps-3">
+        <div class="prog-circle">3</div>
+        <div class="prog-label">Pick a slot</div>
+      </div>
+      <div class="prog-step" id="ps-4">
+        <div class="prog-circle">4</div>
+        <div class="prog-label">Pay & confirm</div>
+      </div>
+    </div>
+
+    <!-- STEP 1: Personal details -->
+    <div class="form-step active" id="step-1">
+      <div class="step-heading">Let's start with your details</div>
+      <div class="step-sub">So I know who I'm speaking with before we meet.</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>First name</label>
+          <input type="text" id="b-fname" placeholder="Priya" required/>
+        </div>
+        <div class="form-group">
+          <label>Last name <span class="opt">(optional)</span></label>
+          <input type="text" id="b-lname" placeholder="Sharma"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email address</label>
+        <input type="email" id="b-email" placeholder="priya@gmail.com" required/>
+      </div>
+      <div class="form-group">
+        <label>WhatsApp number <span class="opt">(optional)</span></label>
+        <input type="tel" id="b-phone" placeholder="+91 98765 43210"/>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-next" onclick="goStep(2)">continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Goals + follow-up questions -->
+    <div class="form-step" id="step-2">
+      <div class="step-heading">Why are you here?</div>
+      <div class="step-sub">Select what you'd like to work on. This helps me prepare better for your session.</div>
+
+      <div class="form-group">
+        <label>I'm here for…</label>
+        <div class="chip-group" id="goal-chips">
+          <div class="chip" data-value="aviation" onclick="selectGoal(this)">✈️ Aviation career</div>
+          <div class="chip" data-value="communication" onclick="selectGoal(this)">🗣️ Communication skills</div>
+          <div class="chip" data-value="interview" onclick="selectGoal(this)">💼 Interview preparation</div>
+          <div class="chip" data-value="ai_tech" onclick="selectGoal(this)">🤖 AI & tech basics</div>
+          <div class="chip" data-value="career" onclick="selectGoal(this)">🗺️ Career planning</div>
+          <div class="chip" data-value="other" onclick="selectGoal(this)">💬 Something else</div>
+        </div>
+        <input type="hidden" id="b-goal"/>
+      </div>
+
+      <!-- Aviation follow-up -->
+      <div class="followup-block" id="fq-aviation">
+        <div class="followup-label">✈️ Tell me more about your aviation goal</div>
+        <div class="chip-group" id="avi-chips">
+          <div class="chip" data-value="cabin_crew" onclick="selectChip(this,'avi-chips')">I want to become cabin crew</div>
+          <div class="chip" data-value="ground_staff" onclick="selectChip(this,'avi-chips')">I want to join ground staff</div>
+          <div class="chip" data-value="interview_prep" onclick="selectChip(this,'avi-chips')">I have an interview coming up</div>
+          <div class="chip" data-value="just_exploring" onclick="selectChip(this,'avi-chips')">I'm just exploring the field</div>
+        </div>
+        <input type="hidden" id="avi-answer"/>
+      </div>
+
+      <!-- Communication follow-up -->
+      <div class="followup-block" id="fq-communication">
+        <div class="followup-label">🗣️ A bit more about your English learning</div>
+        <div class="form-group" style="margin-bottom:0.75rem">
+          <label>What is your mother tongue?</label>
+          <div class="chip-group" id="lang-chips">
+            <div class="chip" data-value="Tamil" onclick="selectChip(this,'lang-chips')">Tamil</div>
+            <div class="chip" data-value="Telugu" onclick="selectChip(this,'lang-chips')">Telugu</div>
+            <div class="chip" data-value="Kannada" onclick="selectChip(this,'lang-chips')">Kannada</div>
+            <div class="chip" data-value="Hindi" onclick="selectChip(this,'lang-chips')">Hindi</div>
+            <div class="chip" data-value="Malayalam" onclick="selectChip(this,'lang-chips')">Malayalam</div>
+            <div class="chip" data-value="Other" onclick="selectChip(this,'lang-chips')">Other</div>
           </div>
-          <div class="upi-note">After paying, enter your UPI transaction ID below and submit.</div>
-          <div class="form-group" style="margin-top:0.75rem">
-            <label>UPI Transaction ID</label>
-            <input type="text" id="b-txn" placeholder="e.g. 123456789012" />
+          <input type="hidden" id="lang-answer"/>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label>What difficulty are you facing? <span class="opt">(select all that apply)</span></label>
+          <div class="chip-group multi" id="diff-chips">
+            <div class="chip" data-value="speaking_confidence" onclick="toggleChip(this,'diff-chips')">Speaking confidence</div>
+            <div class="chip" data-value="pronunciation" onclick="toggleChip(this,'diff-chips')">Pronunciation</div>
+            <div class="chip" data-value="grammar" onclick="toggleChip(this,'diff-chips')">Grammar</div>
+            <div class="chip" data-value="fluency" onclick="toggleChip(this,'diff-chips')">Fluency & flow</div>
+            <div class="chip" data-value="interview_english" onclick="toggleChip(this,'diff-chips')">Interview English</div>
+            <div class="chip" data-value="vocabulary" onclick="toggleChip(this,'diff-chips')">Vocabulary</div>
+          </div>
+          <input type="hidden" id="diff-answer"/>
+        </div>
+      </div>
+
+      <!-- Interview follow-up -->
+      <div class="followup-block" id="fq-interview">
+        <div class="followup-label">💼 What kind of interview?</div>
+        <div class="chip-group" id="int-chips">
+          <div class="chip" data-value="cabin_crew_interview" onclick="selectChip(this,'int-chips')">Cabin crew / aviation</div>
+          <div class="chip" data-value="corporate" onclick="selectChip(this,'int-chips')">Corporate / office job</div>
+          <div class="chip" data-value="tech" onclick="selectChip(this,'int-chips')">Tech / IT role</div>
+          <div class="chip" data-value="bpo_customer_service" onclick="selectChip(this,'int-chips')">BPO / customer service</div>
+          <div class="chip" data-value="other_interview" onclick="selectChip(this,'int-chips')">Other</div>
+        </div>
+        <input type="hidden" id="int-answer"/>
+      </div>
+
+      <!-- Other follow-up -->
+      <div class="followup-block" id="fq-other">
+        <div class="followup-label">💬 Tell me what's on your mind</div>
+        <textarea id="other-text" placeholder="What would you like to discuss in our session?" style="margin-bottom:0"></textarea>
+      </div>
+
+      <div class="form-group" style="margin-top:1rem">
+        <label>Anything else you want to share? <span class="opt">(optional)</span></label>
+        <textarea id="b-topic" placeholder="e.g. I have a Star Air interview on 28th July, I've been trying to improve my spoken English for 6 months..."></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="goStep(1)">← back</button>
+        <button class="btn-next" onclick="goStep(3)">continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Session type + date + slot -->
+    <div class="form-step" id="step-3">
+      <div class="step-heading">Pick your session & slot</div>
+      <div class="step-sub">Sessions are available Mon–Fri, 4 PM – 9 PM IST.</div>
+
+      <div class="form-group">
+        <label>Session type</label>
+        <div class="session-cards">
+          <div class="session-card selected" id="sc-30" onclick="selectSession('30min')">
+            <div class="sc-price">₹2,500</div>
+            <div class="sc-dur">30 minutes</div>
+            <div class="sc-name">Clarity call</div>
+            <div class="sc-desc">One clear question, answered well. Quick and focused.</div>
+          </div>
+          <div class="session-card" id="sc-1hr" onclick="selectSession('1hr')">
+            <div class="sc-price">₹3,000</div>
+            <div class="sc-dur">1 hour</div>
+            <div class="sc-name">Deep dive</div>
+            <div class="sc-desc">Walk through your situation in depth with a full action plan.</div>
           </div>
         </div>
+        <input type="hidden" id="b-session" value="30min"/>
+      </div>
 
-        <button class="btn-submit" type="button" id="show-payment-btn" onclick="showPayment()">continue to payment →</button>
-        <button class="btn-submit" type="submit" id="book-btn" style="display:none">confirm booking →</button>
-        <p class="form-note">You'll get a confirmation email once Vardhasheela accepts your booking.</p>
-        <div class="form-msg" id="book-msg"></div>
-      </form>
+      <div class="form-group">
+        <label>Pick a date</label>
+        <input type="date" id="b-date" onchange="loadSlots()" style="color-scheme:dark;cursor:pointer;"/>
+        <div class="unavailable-msg" id="unavail-msg">Vardhasheela is available Mon–Fri only. Please pick a weekday.</div>
+      </div>
+
+      <div id="slots-area" style="display:none">
+        <div class="slots-label">Available time slots (IST)</div>
+        <div class="slots-grid" id="slots-grid"></div>
+        <input type="hidden" id="b-time"/>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="goStep(2)">← back</button>
+        <button class="btn-next" onclick="goStep(4)">continue to payment →</button>
+      </div>
     </div>
+
+    <!-- STEP 4: Payment + confirm -->
+    <div class="form-step" id="step-4">
+      <div class="step-heading">Almost done — pay to confirm</div>
+      <div class="step-sub">Pay via UPI and enter your transaction ID to submit your booking.</div>
+
+      <!-- Booking summary -->
+      <div style="background:var(--surface);border:1px solid rgba(255,44,243,0.2);border-radius:8px;padding:1.25rem;margin-bottom:1.25rem;">
+        <div style="font-family:var(--mono);font-size:0.7rem;color:var(--pink);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem;">booking summary</div>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:0.3rem 1rem;font-size:0.88rem;">
+          <span style="color:var(--muted)">Name</span><span id="sum-name" style="color:var(--white);font-weight:600"></span>
+          <span style="color:var(--muted)">Session</span><span id="sum-session" style="color:var(--white)"></span>
+          <span style="color:var(--muted)">Date</span><span id="sum-date" style="color:var(--white)"></span>
+          <span style="color:var(--muted)">Time</span><span id="sum-time" style="color:var(--white)"></span>
+          <span style="color:var(--muted)">Amount</span><span id="sum-amount" style="color:var(--pink);font-weight:700;font-family:var(--mono)"></span>
+        </div>
+      </div>
+
+      <!-- UPI payment -->
+      <div class="payment-box">
+        <h4>Pay via UPI</h4>
+        <div class="upi-row">
+          <div class="upi-qr">
+            <img src="/assets/upi-qr.png" alt="UPI QR code" onerror="this.parentElement.innerHTML='<span style=&quot;font-size:0.65rem;color:#555;text-align:center;padding:8px;&quot;>QR code</span>'"/>
+          </div>
+          <div class="upi-info">
+            <p>UPI ID: <strong>9113259228@kotakbank</strong></p>
+            <p>Name: <strong>Vardhasheela N</strong></p>
+            <div class="upi-amount" id="pay-amount">₹2,500</div>
+            <p style="font-size:0.8rem;color:var(--muted)">Open any UPI app → Scan QR or enter UPI ID</p>
+            <div class="upi-note">After paying, enter the transaction ID below</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>UPI Transaction ID <span class="opt">(optional but recommended)</span></label>
+        <input type="text" id="b-txn" placeholder="e.g. 123456789012"/>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="goStep(3)">← back</button>
+        <button class="btn-next" id="submit-btn" onclick="submitBooking()">confirm booking →</button>
+      </div>
+      <div class="form-msg" id="book-msg"></div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success-screen" id="success-screen">
+      <div class="success-icon">✅</div>
+      <h2>Booking submitted!</h2>
+      <p>I've received your booking request and you'll get a confirmation email shortly. Once I accept, you'll receive a Microsoft Teams link.</p>
+      <div class="success-detail">
+        <p>📧 Check your inbox at <strong id="suc-email"></strong></p>
+        <p>💰 Complete the UPI payment of <strong id="suc-amount"></strong> to secure your slot</p>
+        <p>📱 Share payment screenshot on WhatsApp: <strong>+91 9113259228</strong></p>
+      </div>
+      <p style="font-size:0.82rem;color:var(--dim);font-family:var(--mono)">// last-minute cancellations are non-refundable</p>
+    </div>
+
   </div>
-</section>
+</div>
 
 <footer>
-  <a class="footer-logo" href="/">← <span>Agency site</span></a>
+  <a class="footer-logo" href="https://vardhasheelan.com">Vardhasheela<span>N</span></a>
   <p>© 2026 Vardhasheela N · Bengaluru, India</p>
 </footer>
 
 <script>
-const PRICES = {'30min':199,'1hr':349,'1.5hr':499};
-let selectedSession = '1hr';
-let selectedSlot = null;
-let paymentShown = false;
+// ── State ────────────────────────────────────────────────────────
+const SESSIONS = {
+  '30min': {label:'30-min Clarity Call', price:'₹2,500'},
+  '1hr':   {label:'1-hr Deep Dive',      price:'₹3,000'},
+};
+let currentStep   = 1;
+let selectedGoal  = '';
+let selectedSlot  = null;
+let selectedSess  = '30min';
 
-function selectSession(type, el) {
-  selectedSession = type;
-  document.querySelectorAll('.session-card').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
+// ── Progress bar width ───────────────────────────────────────────
+function updateProgress(step) {
+  const pct = ((step-1)/3)*100;
+  document.querySelector('.progress-bar::after') // CSS approach — use width on a real element
+  // fallback: update via inline style on a pseudo-wrapper
+  document.getElementById('progress-bar').style.setProperty('--prog', pct+'%');
+  for(let i=1;i<=4;i++){
+    const ps = document.getElementById('ps-'+i);
+    ps.classList.toggle('active', i===step);
+    ps.classList.toggle('done',   i<step);
+  }
+}
+
+// inject progress width dynamically
+const styleEl = document.createElement('style');
+styleEl.textContent = '#progress-bar::after{width:var(--prog,0%)}';
+document.head.appendChild(styleEl);
+
+// ── Step navigation ──────────────────────────────────────────────
+function goStep(n) {
+  // Validate current step before advancing
+  if(n > currentStep) {
+    if(!validateStep(currentStep)) return;
+  }
+  document.getElementById('step-'+currentStep).classList.remove('active');
+  document.getElementById('step-'+n).classList.add('active');
+  currentStep = n;
+  updateProgress(n);
+  if(n===4) fillSummary();
+  document.getElementById('book').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function validateStep(step) {
+  const msg = document.getElementById('book-msg');
+  if(step===1){
+    const fname = document.getElementById('b-fname').value.trim();
+    const email = document.getElementById('b-email').value.trim();
+    if(!fname){ showErr('Please enter your first name.'); return false; }
+    if(!email || !email.includes('@')){ showErr('Please enter a valid email address.'); return false; }
+    return true;
+  }
+  if(step===2){
+    if(!selectedGoal){ showErr('Please select what you\'re here for.'); return false; }
+    return true;
+  }
+  if(step===3){
+    if(!document.getElementById('b-date').value){ showErr('Please pick a date.'); return false; }
+    if(!selectedSlot){ showErr('Please select a time slot.'); return false; }
+    return true;
+  }
+  return true;
+}
+
+function showErr(txt) {
+  const msg = document.getElementById('book-msg');
+  msg.className = 'form-msg error';
+  msg.style.display = 'block';
+  msg.textContent = txt;
+  setTimeout(()=>{ msg.style.display='none'; }, 4000);
+}
+
+// ── Goal selection ───────────────────────────────────────────────
+function selectGoal(el) {
+  document.querySelectorAll('#goal-chips .chip').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedGoal = el.dataset.value;
+  document.getElementById('b-goal').value = selectedGoal;
+  // show/hide follow-up blocks
+  ['aviation','communication','interview','other'].forEach(g=>{
+    document.getElementById('fq-'+g).classList.toggle('visible', g===selectedGoal);
+  });
+}
+
+// single-select chips
+function selectChip(el, groupId) {
+  document.querySelectorAll('#'+groupId+' .chip').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  const hiddenId = {
+    'avi-chips':'avi-answer','lang-chips':'lang-answer',
+    'int-chips':'int-answer'
+  }[groupId];
+  if(hiddenId) document.getElementById(hiddenId).value = el.dataset.value;
+}
+
+// multi-select chips
+function toggleChip(el, groupId) {
+  el.classList.toggle('selected');
+  const vals = [...document.querySelectorAll('#'+groupId+' .chip.selected')].map(c=>c.dataset.value);
+  document.getElementById('diff-answer').value = vals.join(', ');
+}
+
+// ── Session selection ────────────────────────────────────────────
+function selectSession(type) {
+  selectedSess = type;
   document.getElementById('b-session').value = type;
-  document.getElementById('upi-amount').textContent = '₹' + PRICES[type];
-  if (selectedSlot) loadSlots();
-  document.getElementById('book').scrollIntoView({behavior:'smooth'});
+  document.getElementById('sc-30').classList.toggle('selected', type==='30min');
+  document.getElementById('sc-1hr').classList.toggle('selected', type==='1hr');
+  document.getElementById('pay-amount').textContent = SESSIONS[type].price;
+  if(document.getElementById('b-date').value) loadSlots();
 }
 
-function onSessionChange() {
-  selectedSession = document.getElementById('b-session').value;
-  document.getElementById('upi-amount').textContent = '₹' + PRICES[selectedSession];
-  document.querySelectorAll('.session-card').forEach(c => c.classList.remove('active'));
-  const match = document.querySelector(`[data-type="${selectedSession}"]`);
-  if (match) match.classList.add('active');
-  if (document.getElementById('b-date').value) loadSlots();
-}
-
-function getLocalDateStr() {
-  const today = new Date();
-  const yyyy = today.getFullYear();
-  const mm = String(today.getMonth()+1).padStart(2,'0');
-  const dd = String(today.getDate()).padStart(2,'0');
-  return yyyy + '-' + mm + '-' + dd;
-}
-const minDate = getLocalDateStr();
-const dateInput = document.getElementById('b-date');
-dateInput.min = minDate;
-dateInput.placeholder = 'Select a date';
-// Force dark color scheme for date picker
-dateInput.style.colorScheme = 'dark';
+// ── Date + slots ─────────────────────────────────────────────────
+const today = new Date();
+const minDate = today.toISOString().split('T')[0];
+document.getElementById('b-date').min = minDate;
 
 async function loadSlots() {
-  const date = document.getElementById('b-date').value;
-  if (!date) return;
-  const area = document.getElementById('slots-area');
+  const dateVal = document.getElementById('b-date').value;
+  if(!dateVal) return;
+
+  // weekday check client-side (0=Sun,6=Sat)
+  const dow = new Date(dateVal+'T00:00:00').getDay();
+  const unavailMsg = document.getElementById('unavail-msg');
+  const slotsArea  = document.getElementById('slots-area');
+  if(dow===0||dow===6){
+    unavailMsg.style.display='block';
+    slotsArea.style.display='none';
+    selectedSlot=null; document.getElementById('b-time').value='';
+    return;
+  }
+  unavailMsg.style.display='none';
+
   const grid = document.getElementById('slots-grid');
-  area.style.display = 'block';
-  grid.innerHTML = '<div class="slots-loading">loading available slots...</div>';
-  selectedSlot = null;
-  document.getElementById('b-time').value = '';
+  slotsArea.style.display='block';
+  grid.innerHTML='<div class="slots-info">loading slots...</div>';
+  selectedSlot=null; document.getElementById('b-time').value='';
+
   try {
-    const res = await fetch(`/api/slots?date=${date}&session_type=${selectedSession}`);
+    const res  = await fetch(`/api/slots?date=${dateVal}&session_type=${selectedSess}`);
     const data = await res.json();
-    if (!data.slots || !data.slots.length) {
-      grid.innerHTML = '<div class="slots-loading">no slots available for this date</div>';
-      return;
+    if(!data.slots||!data.slots.length){
+      grid.innerHTML='<div class="slots-info">No slots available for this date.</div>'; return;
     }
-    grid.innerHTML = '';
-    data.slots.forEach(slot => {
+    grid.innerHTML='';
+    data.slots.forEach(slot=>{
       const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'slot-btn' + (slot.booked ? ' booked' : '');
-      btn.textContent = slot.display;
-      btn.dataset.time = slot.time;
-      if (!slot.booked) {
-        btn.onclick = () => {
-          document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+      btn.type='button';
+      btn.className='slot-btn'+(slot.booked?' booked':'');
+      btn.textContent=slot.display;
+      if(!slot.booked){
+        btn.onclick=()=>{
+          document.querySelectorAll('.slot-btn').forEach(b=>b.classList.remove('selected'));
           btn.classList.add('selected');
-          selectedSlot = slot.time;
-          document.getElementById('b-time').value = slot.time;
+          selectedSlot=slot.time;
+          document.getElementById('b-time').value=slot.time;
         };
       }
       grid.appendChild(btn);
     });
-  } catch(e) {
-    grid.innerHTML = '<div class="slots-loading">error loading slots. please try again.</div>';
+  } catch(e){
+    grid.innerHTML='<div class="slots-info">Error loading slots. Please try again.</div>';
   }
 }
 
-function showPayment() {
+// ── Summary fill ─────────────────────────────────────────────────
+function fillSummary() {
   const fname = document.getElementById('b-fname').value;
-  const email = document.getElementById('b-email').value;
-  const phone = document.getElementById('b-phone').value;
-  const date = document.getElementById('b-date').value;
-  const time = document.getElementById('b-time').value;
-  if (!fname || !email || !phone || !date || !time) {
-    const msg = document.getElementById('book-msg');
-    msg.className = 'form-msg error';
-    msg.style.display = 'block';
-    msg.textContent = 'Please fill all fields and select a time slot first.';
-    return;
-  }
-  document.getElementById('book-msg').style.display = 'none';
-  document.getElementById('payment-box').style.display = 'block';
-  document.getElementById('show-payment-btn').style.display = 'none';
-  document.getElementById('book-btn').style.display = 'block';
-  document.getElementById('upi-amount').textContent = '₹' + PRICES[selectedSession];
-  document.getElementById('payment-box').scrollIntoView({behavior:'smooth',block:'center'});
+  const lname = document.getElementById('b-lname').value;
+  const dateVal = document.getElementById('b-date').value;
+  const h = parseInt(selectedSlot?.split(':')[0]||0);
+  const m = parseInt(selectedSlot?.split(':')[1]||0);
+  const d = new Date(2000,0,1,h,m);
+  const timeStr = d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});
+  const dateStr = dateVal ? new Date(dateVal+'T00:00:00').toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) : '';
+  document.getElementById('sum-name').textContent    = fname+(lname?' '+lname:'');
+  document.getElementById('sum-session').textContent = SESSIONS[selectedSess].label;
+  document.getElementById('sum-date').textContent    = dateStr;
+  document.getElementById('sum-time').textContent    = timeStr+' IST';
+  document.getElementById('sum-amount').textContent  = SESSIONS[selectedSess].price;
+  document.getElementById('pay-amount').textContent  = SESSIONS[selectedSess].price;
 }
 
-document.getElementById('booking-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
+// ── Build followup string ────────────────────────────────────────
+function buildFollowup() {
+  if(selectedGoal==='aviation')     return 'Aviation: '+(document.getElementById('avi-answer').value||'not specified');
+  if(selectedGoal==='communication') return 'Mother tongue: '+(document.getElementById('lang-answer').value||'?')+' | Difficulties: '+(document.getElementById('diff-answer').value||'not specified');
+  if(selectedGoal==='interview')    return 'Interview type: '+(document.getElementById('int-answer').value||'not specified');
+  if(selectedGoal==='other')        return document.getElementById('other-text').value;
+  return '';
+}
+
+// ── Submit ───────────────────────────────────────────────────────
+async function submitBooking() {
+  const btn = document.getElementById('submit-btn');
   const msg = document.getElementById('book-msg');
-  const btn = document.getElementById('book-btn');
-  if (!document.getElementById('b-time').value) {
-    msg.className = 'form-msg error';
-    msg.style.display = 'block';
-    msg.textContent = 'Please select a time slot.';
-    return;
-  }
-  btn.disabled = true;
-  btn.textContent = 'submitting...';
+  btn.disabled=true; btn.textContent='submitting...';
+
+  const fname = document.getElementById('b-fname').value.trim();
+  const lname = document.getElementById('b-lname').value.trim();
+  const email = document.getElementById('b-email').value.trim();
+
   const payload = {
-    name: document.getElementById('b-fname').value + ' ' + (document.getElementById('b-lname').value || ''),
-    email: document.getElementById('b-email').value,
-    phone: document.getElementById('b-phone').value,
-    date: document.getElementById('b-date').value,
-    time: document.getElementById('b-time').value,
-    session_type: document.getElementById('b-session').value,
-    topic: document.getElementById('b-topic').value,
-    txn_id: document.getElementById('b-txn').value,
+    name:         fname+(lname?' '+lname:''),
+    email:        email,
+    phone:        document.getElementById('b-phone').value.trim(),
+    date:         document.getElementById('b-date').value,
+    time:         document.getElementById('b-time').value,
+    session_type: selectedSess,
+    goal:         selectedGoal,
+    followup:     buildFollowup(),
+    topic:        document.getElementById('b-topic').value,
+    txn_id:       document.getElementById('b-txn').value,
   };
+
   try {
-    const res = await fetch('/api/book', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const res  = await fetch('/api/book',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     const data = await res.json();
-    if (data.success) {
-      msg.className = 'form-msg success';
-      msg.style.display = 'block';
-      msg.innerHTML = '✓ Booking submitted! Check your email for confirmation.<br><br>Vardhasheela will confirm within a few hours. You\'ll get a Google Meet link once confirmed.';
-      btn.textContent = '✓ submitted!';
-      document.getElementById('payment-box').style.display = 'none';
+    if(data.success){
+      // show success screen
+      document.getElementById('step-4').style.display='none';
+      document.getElementById('progress-bar').style.display='none';
+      const ss = document.getElementById('success-screen');
+      ss.style.display='block';
+      document.getElementById('suc-email').textContent  = email;
+      document.getElementById('suc-amount').textContent = SESSIONS[selectedSess].price;
+      document.getElementById('book').scrollIntoView({behavior:'smooth'});
     } else {
-      msg.className = 'form-msg error';
-      msg.style.display = 'block';
-      msg.textContent = data.error || 'Something went wrong. Please try again.';
-      btn.disabled = false;
-      btn.textContent = 'confirm booking →';
+      msg.className='form-msg error'; msg.style.display='block';
+      msg.textContent = data.error||'Something went wrong. Please try again.';
+      btn.disabled=false; btn.textContent='confirm booking →';
     }
-  } catch(ex) {
-    msg.className = 'form-msg error';
-    msg.style.display = 'block';
-    msg.textContent = 'Network error. Please try again.';
-    btn.disabled = false;
-    btn.textContent = 'confirm booking →';
+  } catch(ex){
+    msg.className='form-msg error'; msg.style.display='block';
+    msg.textContent='Network error. Please try again.';
+    btn.disabled=false; btn.textContent='confirm booking →';
   }
-});
+}
+
+// init
+updateProgress(1);
 </script>
 </body>
 </html>
