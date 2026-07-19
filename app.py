@@ -162,7 +162,7 @@ def client_confirmed_email(name, session_type, date_str, time_str, meet_link="")
         </table>
       </div>
       {meet_section}
-      <p style="color:#9997aa;font-size:13px">See you then! To reschedule, reply to this email or WhatsApp +91 9113259228 at least 48 hours before. Last-minute cancellations are non-refundable.</p>
+      <p style="color:#9997aa;font-size:13px">See you then! To reschedule, please reply to this email at least 48 hours before your session. Last-minute cancellations are non-refundable.</p>
     </div>
     """
 
