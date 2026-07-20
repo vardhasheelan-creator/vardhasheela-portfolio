@@ -9,7 +9,7 @@ Usage: python seed_jobs.py
 import sqlite3
 from datetime import date
 
-DB_PATH = "jobs.db"
+DB_PATH = "/data/jobs.db"
 TODAY = date.today().isoformat()
 
 # Replace application_link values with the real, current careers-page URLs
