@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Aviation Careers Board — Vardhasheela N</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+
+<!-- Google Analytics — replace G-48HTQ1L8HE with your real Measurement ID -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-48HTQ1L8HE"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-48HTQ1L8HE');
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#050508;--bg2:#08080E;--bg3:#0D0D16;
+  --surface:#0F0F1A;--surface2:#141422;
+  --border:rgba(123,92,250,0.12);--border-b:rgba(123,92,250,0.3);
+  --neon:#7B5CFA;--cyan:#00F5FF;--pink:#FF2CF3;
+  --white:#FFFFFF;--text:#E8E6F0;--muted:#AAA8C0;--dim:#5A5870;
+  --green:#00FF88;--amber:#BA7517;
+  --font:'Space Grotesk',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(123,92,250,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(123,92,250,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 5%;background:rgba(5,5,8,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--white);text-decoration:none;}
+.nav-logo span{color:var(--pink);}
+.nav-right{display:flex;align-items:center;gap:0.9rem;}
+.nav-link{font-family:var(--mono);font-size:0.78rem;color:var(--muted);text-decoration:none;border:1px solid rgba(123,92,250,0.2);padding:0.45rem 0.95rem;border-radius:4px;transition:all 0.2s;}
+.nav-link:hover{color:var(--cyan);border-color:rgba(0,245,255,0.3);}
+.nav-cta{font-family:var(--mono);font-size:0.78rem;font-weight:700;color:var(--bg);background:var(--pink);padding:0.5rem 1.1rem;border-radius:4px;text-decoration:none;box-shadow:0 0 14px rgba(255,44,243,0.3);transition:all 0.2s;}
+.nav-cta:hover{box-shadow:0 0 24px rgba(255,44,243,0.5);transform:translateY(-1px);}
+
+/* HERO */
+.hero{padding:8rem 5% 3rem;position:relative;z-index:1;}
+.hero-glow{position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:600px;height:280px;background:radial-gradient(ellipse,rgba(123,92,250,0.12) 0%,rgba(0,245,255,0.05) 50%,transparent 70%);pointer-events:none;}
+.hero-badge{display:inline-flex;align-items:center;gap:0.6rem;font-family:var(--mono);font-size:0.72rem;letter-spacing:0.08em;color:var(--cyan);border:1px solid rgba(0,245,255,0.25);background:rgba(0,245,255,0.05);border-radius:3px;padding:0.4rem 1rem;margin-bottom:1.5rem;text-transform:uppercase;}
+.live-dot{width:6px;height:6px;background:var(--green);border-radius:50%;box-shadow:0 0 6px var(--green);animation:blink 1.8s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.2;}}
+.hero h1{font-size:clamp(2rem,4.5vw,3.2rem);font-weight:700;line-height:1.12;letter-spacing:-0.03em;color:var(--white);margin-bottom:1rem;max-width:720px;}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--neon),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:0.98rem;color:var(--muted);max-width:560px;line-height:1.75;margin-bottom:0;}
+
+hr.divider{border:none;border-top:1px solid var(--border);margin:0;position:relative;z-index:1;}
+
+/* FILTERS */
+.filters-wrap{padding:2rem 5% 0;position:relative;z-index:1;}
+.filters{display:flex;flex-wrap:wrap;gap:10px;}
+.filter-group{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:4px;}
+.filter-group a{font-family:var(--mono);font-size:0.75rem;text-decoration:none;color:var(--muted);padding:0.5rem 0.9rem;border-radius:5px;transition:all 0.15s;}
+.filter-group a.active{background:var(--neon);color:var(--white);font-weight:700;box-shadow:0 0 12px rgba(123,92,250,0.35);}
+.filter-group a:hover:not(.active){color:var(--text);}
+
+/* BOARD */
+.board-wrap{padding:2rem 5% 4rem;position:relative;z-index:1;}
+.board{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.board-head{display:grid;grid-template-columns:1.4fr 2fr 1.6fr 1fr 1fr;gap:12px;padding:14px 22px;font-family:var(--mono);font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim);border-bottom:1px solid var(--border);}
+.board-row{display:grid;grid-template-columns:1.4fr 2fr 1.6fr 1fr 1fr;gap:12px;padding:20px 22px;align-items:center;border-bottom:1px solid var(--border);transition:background 0.15s;}
+.board-row:hover{background:var(--surface2);}
+.board-row:last-child{border-bottom:none;}
+.col-airline{font-family:var(--mono);color:var(--cyan);font-weight:700;font-size:0.9rem;text-shadow:0 0 10px rgba(0,245,255,0.25);}
+.col-role{font-size:0.88rem;color:var(--text);}
+.col-role .location{display:block;color:var(--muted);font-size:0.75rem;margin-top:3px;}
+.col-eligibility{color:var(--muted);font-size:0.78rem;line-height:1.5;}
+.status{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.06em;text-transform:uppercase;font-weight:700;padding:4px 9px;border-radius:4px;display:inline-block;width:fit-content;}
+.status.open{color:var(--green);border:1px solid rgba(0,255,136,0.35);background:rgba(0,255,136,0.06);}
+.status.closing_soon{color:var(--amber);border:1px solid rgba(186,117,23,0.5);background:rgba(186,117,23,0.08);}
+.apply-btn{font-family:var(--mono);font-size:0.72rem;font-weight:700;text-decoration:none;color:var(--bg);background:var(--white);padding:0.55rem 0.8rem;border-radius:5px;text-align:center;transition:all 0.15s;}
+.apply-btn:hover{background:var(--cyan);box-shadow:0 0 14px rgba(0,245,255,0.4);}
+.board-empty{padding:60px 22px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:0.85rem;}
+.verified-note{margin-top:14px;font-size:0.72rem;color:var(--dim);font-family:var(--mono);}
+
+/* ALERT BOX */
+.alert-box{margin-top:3.5rem;background:var(--surface);border:1px solid var(--border-b);border-radius:10px;padding:2rem;box-shadow:0 0 30px rgba(123,92,250,0.06);}
+.alert-box h2{font-size:1.15rem;font-weight:700;color:var(--white);margin-bottom:0.4rem;}
+.alert-box p{color:var(--muted);font-size:0.85rem;margin-bottom:1.25rem;max-width:480px;}
+.alert-form{display:flex;gap:10px;flex-wrap:wrap;}
+.alert-form input[type="email"]{flex:1;min-width:220px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:0.8rem 1rem;color:var(--text);font-family:var(--mono);font-size:0.85rem;outline:none;transition:border-color 0.2s;}
+.alert-form input[type="email"]:focus{border-color:var(--neon);}
+.alert-form input::placeholder{color:var(--dim);}
+.alert-form button{font-family:var(--mono);font-weight:700;font-size:0.78rem;letter-spacing:0.05em;text-transform:uppercase;background:var(--neon);color:var(--white);border:none;border-radius:6px;padding:0.8rem 1.5rem;cursor:pointer;box-shadow:0 0 18px rgba(123,92,250,0.35);transition:all 0.2s;}
+.alert-form button:hover{background:var(--cyan);box-shadow:0 0 24px rgba(0,245,255,0.4);}
+.alert-msg{margin-top:10px;font-size:0.78rem;font-family:var(--mono);display:none;}
+.alert-msg.ok{color:var(--green);display:block;}
+.alert-msg.error{color:#ff6b6b;display:block;}
+
+/* CONSULT BANNER — matches vardhasheelan.com's consult-banner pattern */
+.consult-banner{background:linear-gradient(135deg,rgba(255,44,243,0.08),rgba(123,92,250,0.08));border:1px solid rgba(255,44,243,0.2);border-radius:12px;padding:1.75rem 2.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;margin-top:2.5rem;}
+.consult-banner h3{font-size:1.02rem;font-weight:600;color:var(--white);margin-bottom:0.35rem;}
+.consult-banner p{font-size:0.84rem;color:var(--muted);}
+.btn-pink{font-family:var(--mono);font-size:0.8rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--bg);background:var(--pink);padding:0.78rem 1.65rem;border-radius:4px;text-decoration:none;transition:all 0.2s;box-shadow:0 0 16px rgba(255,44,243,0.3);white-space:nowrap;}
+.btn-pink:hover{box-shadow:0 0 28px rgba(255,44,243,0.5);transform:translateY(-2px);}
+
+.disclaimer{margin-top:2.5rem;font-size:0.75rem;color:var(--dim);line-height:1.7;border-top:1px solid var(--border);padding-top:1.5rem;max-width:720px;}
+
+footer{background:var(--bg);border-top:1px solid var(--border);padding:1.5rem 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;position:relative;z-index:1;}
+.footer-logo{font-family:var(--mono);font-size:0.95rem;font-weight:700;color:var(--white);text-decoration:none;}
+.footer-logo span{color:var(--pink);}
+footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
+
+@media(max-width:720px){
+  .board-head{display:none;}
+  .board-row{grid-template-columns:1fr;gap:8px;padding:20px;}
+  .col-eligibility{order:3;}
+  .status{order:2;}
+  .apply-btn{order:4;width:100%;padding:0.7rem;}
+  .consult-banner{flex-direction:column;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="https://vardhasheelan.com">Vardhasheela<span>N</span></a>
+  <div class="nav-right">
+    <a class="nav-link" href="https://youtube.com/@vardhasheela.n" target="_blank">YouTube</a>
+    <a class="nav-cta" href="/">Book a session →</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-badge"><span class="live-dot"></span>Free · updated manually · no login required</div>
+  <h1>Every open cabin crew &amp; ground staff role, <em>in one place.</em></h1>
+  <p class="hero-sub">Manually verified airline job postings — domestic and international carriers hiring in India. We link straight to each airline's official careers page; always apply there directly.</p>
+</div>
+
+<hr class="divider"/>
+
+<div class="filters-wrap">
+  <div class="filters">
+    <div class="filter-group">
+      <a href="/jobs?category=all&role={{ active_role }}" class="{{ 'active' if active_category == 'all' }}">All Airlines</a>
+      <a href="/jobs?category=domestic&role={{ active_role }}" class="{{ 'active' if active_category == 'domestic' }}">Domestic</a>
+      <a href="/jobs?category=international&role={{ active_role }}" class="{{ 'active' if active_category == 'international' }}">International in India</a>
+    </div>
+    <div class="filter-group">
+      <a href="/jobs?category={{ active_category }}&role=all" class="{{ 'active' if active_role == 'all' }}">All Roles</a>
+      <a href="/jobs?category={{ active_category }}&role=cabin_crew" class="{{ 'active' if active_role == 'cabin_crew' }}">Cabin Crew</a>
+      <a href="/jobs?category={{ active_category }}&role=ground_staff" class="{{ 'active' if active_role == 'ground_staff' }}">Ground Staff</a>
+    </div>
+  </div>
+</div>
+
+<div class="board-wrap">
+  <div class="board">
+    {% if jobs %}
+    <div class="board-head">
+      <div>Airline</div>
+      <div>Role &amp; Base</div>
+      <div>Eligibility</div>
+      <div>Status</div>
+      <div>Apply</div>
+    </div>
+    {% for job in jobs %}
+    <div class="board-row">
+      <div class="col-airline">{{ job['airline_name'] }}</div>
+      <div class="col-role">
+        {{ job['role_title'] }}
+        <span class="location">{{ job['location'] }}</span>
+      </div>
+      <div class="col-eligibility">{{ job['eligibility_summary'] }}</div>
+      <div>
+        <span class="status {{ job['status'] }}">
+          {{ 'Closing Soon' if job['status'] == 'closing_soon' else 'Open' }}
+        </span>
+      </div>
+      <a class="apply-btn" href="{{ job['application_link'] }}" target="_blank" rel="noopener"
+         onclick="gtag('event', 'apply_click', {airline: '{{ job['airline_name'] }}', role_type: '{{ job['role_type'] }}', category: '{{ job['category'] }}'});">Apply →</a>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="board-empty">No open roles match these filters right now — check back soon, or set an alert below.</div>
+    {% endif %}
+  </div>
+  <div class="verified-note">Board last refreshed {{ today }}. All listings manually verified before posting.</div>
+
+  <div class="alert-box">
+    <h2>Get notified the moment a new role opens</h2>
+    <p>No spam — just a short email when an airline you're interested in starts hiring.</p>
+    <form class="alert-form" id="alertForm">
+      <input type="email" name="email" placeholder="your.email@example.com" required/>
+      <button type="submit">Alert Me</button>
+    </form>
+    <div class="alert-msg" id="alertMsg"></div>
+  </div>
+
+  <div class="consult-banner">
+    <div>
+      <h3>Not sure which role fits you?</h3>
+      <p>Book a 1-on-1 session — we'll go through your eligibility, interview prep, and pick a shortlist together.</p>
+    </div>
+    <a class="btn-pink" href="/" onclick="gtag('event', 'consult_banner_click', {source: 'jobs_board'});">Book a session →</a>
+  </div>
+
+  <p class="disclaimer">
+    This board aggregates publicly available job postings for informational purposes only. We are not affiliated with any airline listed here. Always apply through the airline's official careers page linked above — never pay anyone for an application or interview slot.
+  </p>
+</div>
+
+<footer>
+  <a class="footer-logo" href="https://vardhasheelan.com">Vardhasheela<span>N</span></a>
+  <p>© 2026 Vardhasheela N · Bengaluru, India</p>
+</footer>
+
+<script>
+document.getElementById('alertForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const form = e.target;
+  const msg = document.getElementById('alertMsg');
+  const email = form.email.value;
+  const btn = form.querySelector('button');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+
+  try {
+    const res = await fetch('/jobs/alert-me', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'email=' + encodeURIComponent(email)
+    });
+    const data = await res.json();
+    if (data.ok) {
+      msg.textContent = "You're on the list — we'll email you when new roles open.";
+      msg.className = 'alert-msg ok';
+      form.reset();
+      gtag('event', 'jobs_alert_signup', {email_domain: email.split('@')[1] || 'unknown'});
+    } else {
+      msg.textContent = data.error || 'Something went wrong.';
+      msg.className = 'alert-msg error';
+    }
+  } catch (err) {
+    msg.textContent = 'Network error — try again in a moment.';
+    msg.className = 'alert-msg error';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Alert Me';
+  }
+});
+</script>
+
+</body>
+</html>

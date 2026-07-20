@@ -3,12 +3,15 @@ from flask_cors import CORS
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
+from apscheduler.schedulers.background import BackgroundScheduler
+import atexit
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import os
 import json
-from datetime import datetime, timedelta
+import sqlite3
+from datetime import datetime, timedelta, date
 import pytz
 from functools import wraps
 
@@ -24,6 +27,7 @@ UPI_ID          = "9113259228@kotakbank"
 UPI_NAME        = "Vardhasheela N"
 IST             = pytz.timezone("Asia/Kolkata")
 BOOKINGS_FILE   = "bookings.json"
+JOBS_DB_PATH    = "jobs.db"
 SCOPES          = ["https://www.googleapis.com/auth/calendar"]
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
@@ -54,6 +58,106 @@ def save_booking(booking):
     bookings = load_bookings()
     bookings.append(booking)
     save_bookings(bookings)
+
+# ── JOBS BOARD (aviation careers aggregator) ─────────────────────
+
+JOBS_SCHEMA = """
+CREATE TABLE IF NOT EXISTS jobs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    airline_name TEXT NOT NULL,
+    category TEXT NOT NULL CHECK (category IN ('domestic', 'international')),
+    role_type TEXT NOT NULL CHECK (role_type IN ('cabin_crew', 'ground_staff', 'other')),
+    role_title TEXT NOT NULL,
+    location TEXT,
+    eligibility_summary TEXT,
+    application_link TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'closing_soon', 'closed')),
+    last_verified_date TEXT NOT NULL,
+    notes TEXT,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS job_alert_subscribers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT NOT NULL UNIQUE,
+    interested_category TEXT,
+    interested_role TEXT,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_jobs_category ON jobs(category);
+CREATE INDEX IF NOT EXISTS idx_jobs_role_type ON jobs(role_type);
+CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs(status);
+"""
+
+def get_jobs_db():
+    conn = sqlite3.connect(JOBS_DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def init_jobs_db():
+    conn = sqlite3.connect(JOBS_DB_PATH)
+    conn.executescript(JOBS_SCHEMA)
+    conn.commit()
+    conn.close()
+
+init_jobs_db()  # safe to call on every boot — CREATE TABLE IF NOT EXISTS
+
+# ── AUTOMATIC POST-SESSION FEEDBACK EMAILS ───────────────────────
+# Runs periodically in the background. For each confirmed booking whose
+# session has finished (plus a small buffer), sends the feedback-request
+# email once, then marks it so it's never sent twice.
+
+FEEDBACK_SEND_BUFFER_MINUTES = 30  # wait this long after the session ends
+
+def send_pending_feedback_emails():
+    bookings = load_bookings()
+    changed = False
+    now = datetime.now(IST)
+
+    for b in bookings:
+        if b.get("status") != "confirmed":
+            continue
+        if b.get("feedback_email_sent"):
+            continue
+        try:
+            d = datetime.strptime(b["date"], "%Y-%m-%d")
+            h, m = map(int, b["time"].split(":"))
+            stype = SESSION_DURATIONS.get(b.get("session_type", "1hr"), {"duration": 60, "label": "Session"})
+            session_start = IST.localize(datetime(d.year, d.month, d.day, h, m))
+            session_end = session_start + timedelta(minutes=stype["duration"])
+        except Exception as ex:
+            print(f"Feedback scheduler — skipping booking {b.get('id')}: {ex}")
+            continue
+
+        if now >= session_end + timedelta(minutes=FEEDBACK_SEND_BUFFER_MINUTES):
+            date_display = d.strftime("%d %B %Y")
+            time_display = datetime(2000, 1, 1, h, m).strftime("%I:%M %p")
+            sent = send_email(
+                b["email"], b["name"],
+                "How was your session? — Vardhasheela N",
+                feedback_request_email(b["name"], stype.get("label", ""), date_display, time_display, b["id"])
+            )
+            if sent:
+                b["feedback_email_sent"] = True
+                changed = True
+
+    if changed:
+        save_bookings(bookings)
+
+def start_feedback_scheduler():
+    scheduler = BackgroundScheduler(timezone="Asia/Kolkata")
+    scheduler.add_job(send_pending_feedback_emails, "interval", minutes=30,
+                       next_run_time=datetime.now(IST))
+    scheduler.start()
+    atexit.register(lambda: scheduler.shutdown(wait=False))
+
+# Avoid double-starting the scheduler under Flask's debug auto-reloader,
+# which spawns a second process — WERKZEUG_RUN_MAIN is only set in the
+# real worker process, not the reloader's watcher process.
+if not app.debug or os.environ.get("WERKZEUG_RUN_MAIN") == "true":
+    start_feedback_scheduler()
 
 def get_calendar_service():
     if "credentials" not in session:
@@ -166,6 +270,38 @@ def client_confirmed_email(name, session_type, date_str, time_str, meet_link="")
     </div>
     """
 
+def feedback_request_email(name, session_type_label, date_str, time_str, booking_id):
+    base_url = os.environ.get("BASE_URL", "https://consultation.vardhasheelan.com")
+    return f"""
+    <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a0a0b;color:#e8e6f0;padding:40px;border-radius:12px">
+      <h1 style="color:#FF2CF3;margin:0 0 16px">How was your session?</h1>
+      <p>Hi <strong>{name}</strong>,</p>
+      <p style="color:#9997aa">Hope your <strong style="color:#fff">{session_type_label}</strong> on {date_str} at {time_str} IST was useful! I'd love to hear how it went — takes less than a minute.</p>
+      <div style="text-align:center;margin:28px 0">
+        <a href="{base_url}/feedback/{booking_id}" style="background:#FF2CF3;color:#1a0518;padding:14px 28px;border-radius:6px;text-decoration:none;font-weight:700;font-size:14px;display:inline-block">Leave feedback →</a>
+      </div>
+      <p style="color:#5c5a6b;font-size:12px;margin-top:20px">Thanks for your time — Vardhasheela</p>
+    </div>
+    """
+
+def feedback_notification_email(booking, rating, comment):
+    stars = "⭐" * int(rating) + "☆" * (5 - int(rating))
+    return f"""
+    <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a0a0b;color:#e8e6f0;padding:40px;border-radius:12px">
+      <h2 style="color:#FF2CF3;margin:0 0 20px">💬 New session feedback</h2>
+      <div style="background:rgba(255,44,243,0.08);border:1px solid rgba(255,44,243,0.2);border-radius:8px;padding:20px;margin-bottom:20px">
+        <table style="width:100%;font-size:14px">
+          <tr><td style="color:#9997aa;padding:5px 0;width:110px">From</td><td style="color:#fff;font-weight:600">{booking.get('name','')}</td></tr>
+          <tr><td style="color:#9997aa;padding:5px 0">Email</td><td style="color:#00f5ff">{booking.get('email','')}</td></tr>
+          <tr><td style="color:#9997aa;padding:5px 0">Session</td><td style="color:#fff">{SESSION_DURATIONS.get(booking.get('session_type','1hr'),{}).get('label','')}</td></tr>
+          <tr><td style="color:#9997aa;padding:5px 0">Rating</td><td style="color:#FFD700;font-size:18px">{stars}</td></tr>
+        </table>
+        <p style="color:#9997aa;font-size:12px;margin:14px 0 4px">Comment:</p>
+        <p style="color:#fff;font-size:14px;white-space:pre-wrap">{comment or '(no comment left)'}</p>
+      </div>
+    </div>
+    """
+
 def client_declined_email(name, session_type, date_str, time_str):
     return f"""
     <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a0a0b;color:#e8e6f0;padding:40px;border-radius:12px">
@@ -226,6 +362,12 @@ def admin_panel():
           <a href="/admin/action/{bid}/confirm" style="background:#22C55E;color:#000;padding:5px 12px;border-radius:4px;text-decoration:none;font-size:12px;font-weight:600;margin-right:6px">Confirm</a>
           <a href="/admin/action/{bid}/decline" style="background:#EF4444;color:#fff;padding:5px 12px;border-radius:4px;text-decoration:none;font-size:12px;font-weight:600">Decline</a>
         ''' if status == "pending" else f'<span style="color:{sc};font-size:12px;font-weight:600">{status.upper()}</span>'
+        fb = b.get("feedback")
+        if fb:
+            stars_html = "★" * int(fb.get("rating",0)) + "☆" * (5-int(fb.get("rating",0)))
+            fb_cell = f'<span style="color:#FFD700">{stars_html}</span><br><span style="color:#9997aa;font-size:11px">{(fb.get("comment","") or "—")[:60]}</span>'
+        else:
+            fb_cell = '<span style="color:#5c5a6b;font-size:11px">—</span>'
         rows += f"""<tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
           <td style="padding:12px 8px;color:#fff;font-size:13px">{b.get('name','')}</td>
           <td style="padding:12px 8px;color:#9997aa;font-size:12px">{b.get('email','')}</td>
@@ -234,6 +376,7 @@ def admin_panel():
           <td style="padding:12px 8px;color:#7b5cfa;font-size:12px">{stype.get('label','')}<br><span style="color:#9997aa">₹{stype.get('price','')}</span></td>
           <td style="padding:12px 8px;color:#9997aa;font-size:12px">{b.get('goal','—')}</td>
           <td style="padding:12px 8px;color:#9997aa;font-size:12px;max-width:140px">{(b.get('topic','') or '—')[:50]}</td>
+          <td style="padding:12px 8px">{fb_cell}</td>
           <td style="padding:12px 8px">{actions}</td></tr>"""
     pending   = sum(1 for b in bookings if b.get("status","pending")=="pending")
     confirmed = sum(1 for b in bookings if b.get("status")=="confirmed")
@@ -258,12 +401,19 @@ def admin_panel():
         <div class="stat"><strong style="color:#BA7517">{pending}</strong><span>PENDING</span></div>
         <div class="stat"><strong style="color:#22C55E">{confirmed}</strong><span>CONFIRMED</span></div>
       </div>
+      <a href="/admin/send-feedback-emails-now" class="logout" style="color:#FF2CF3;border-color:rgba(255,44,243,0.3)">Send due feedback emails now</a>
       <a href="/admin/logout" class="logout">Logout</a>
     </div>
     <div style="overflow-x:auto"><table>
-      <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Date & Time</th><th>Session</th><th>Goal</th><th>Notes</th><th>Action</th></tr></thead>
-      <tbody>{rows or '<tr><td colspan="8" style="padding:2rem;text-align:center;color:#9997aa">No bookings yet</td></tr>'}</tbody>
+      <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Date & Time</th><th>Session</th><th>Goal</th><th>Notes</th><th>Feedback</th><th>Action</th></tr></thead>
+      <tbody>{rows or '<tr><td colspan="9" style="padding:2rem;text-align:center;color:#9997aa">No bookings yet</td></tr>'}</tbody>
     </table></div></body></html>"""
+
+@app.route("/admin/send-feedback-emails-now")
+@admin_required
+def admin_send_feedback_emails_now():
+    send_pending_feedback_emails()
+    return redirect("/admin")
 
 @app.route("/admin/action/<booking_id>/<action>")
 @admin_required
@@ -479,6 +629,125 @@ def contact():
       <p><strong>Message:</strong><br>{data['message']}</p></div>"""
     send_email(GMAIL_USER,"Vardhasheela",f"New message from {data.get('name',data['email'])}",body)
     return jsonify({"success":True})
+
+@app.route("/feedback/<booking_id>")
+def feedback_form(booking_id):
+    bookings = load_bookings()
+    booking = next((b for b in bookings if b.get("id") == booking_id), None)
+    if not booking:
+        return "This feedback link isn't valid. If you think that's a mistake, reply to your confirmation email.", 404
+
+    stype = SESSION_DURATIONS.get(booking.get("session_type", "1hr"), {})
+    date_obj = datetime.strptime(booking["date"], "%Y-%m-%d")
+    date_display = date_obj.strftime("%d %B %Y")
+
+    return render_template(
+        "feedback.html",
+        booking_id=booking_id,
+        name=booking.get("name", ""),
+        session_label=stype.get("label", ""),
+        date_display=date_display,
+        already_submitted=bool(booking.get("feedback")),
+        existing=booking.get("feedback"),
+    )
+
+@app.route("/api/feedback/<booking_id>", methods=["POST"])
+def submit_feedback(booking_id):
+    data = request.json or {}
+    try:
+        rating = int(data.get("rating", 0))
+    except (TypeError, ValueError):
+        rating = 0
+    if rating < 1 or rating > 5:
+        return jsonify({"error": "Please select a star rating."}), 400
+
+    comment = (data.get("comment") or "").strip()
+
+    bookings = load_bookings()
+    booking = next((b for b in bookings if b.get("id") == booking_id), None)
+    if not booking:
+        return jsonify({"error": "Booking not found."}), 404
+
+    booking["feedback"] = {
+        "rating": rating,
+        "comment": comment,
+        "submitted_at": datetime.now().isoformat(),
+    }
+    save_bookings(bookings)
+
+    send_email(
+        GMAIL_USER, "Vardhasheela",
+        f"New feedback from {booking.get('name','')} — {rating}★",
+        feedback_notification_email(booking, rating, comment)
+    )
+
+    return jsonify({"success": True})
+
+@app.route("/jobs")
+def jobs_board():
+    category = request.args.get("category", "all")   # all | domestic | international
+    role_type = request.args.get("role", "all")       # all | cabin_crew | ground_staff | other
+
+    query = "SELECT * FROM jobs WHERE status != 'closed'"
+    params = []
+
+    if category in ("domestic", "international"):
+        query += " AND category = ?"
+        params.append(category)
+
+    if role_type in ("cabin_crew", "ground_staff", "other"):
+        query += " AND role_type = ?"
+        params.append(role_type)
+
+    query += " ORDER BY status = 'closing_soon' DESC, airline_name ASC"
+
+    conn = get_jobs_db()
+    jobs = conn.execute(query, params).fetchall()
+    conn.close()
+
+    return render_template(
+        "jobs.html",
+        jobs=jobs,
+        active_category=category,
+        active_role=role_type,
+        today=date.today().isoformat(),
+    )
+
+@app.route("/jobs/alert-me", methods=["POST"])
+def jobs_alert_me():
+    email    = (request.form.get("email") or "").strip().lower()
+    category = request.form.get("interested_category", "both")
+    role     = request.form.get("interested_role", "all")
+
+    if not email or "@" not in email:
+        return jsonify({"ok": False, "error": "Enter a valid email."}), 400
+
+    conn = get_jobs_db()
+    try:
+        conn.execute(
+            """INSERT INTO job_alert_subscribers (email, interested_category, interested_role)
+               VALUES (?, ?, ?)
+               ON CONFLICT(email) DO UPDATE SET
+                 interested_category = excluded.interested_category,
+                 interested_role = excluded.interested_role""",
+            (email, category, role),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+    # Notify Vardhasheela of the new lead — same pattern as booking notifications
+    send_email(
+        GMAIL_USER, "Vardhasheela",
+        f"New jobs board subscriber: {email}",
+        f"""<div style="font-family:sans-serif;background:#0a0a0b;color:#e8e6f0;padding:32px;border-radius:12px">
+          <h3 style="color:#7b5cfa">✈️ New jobs board alert subscriber</h3>
+          <p><strong>Email:</strong> {email}</p>
+          <p><strong>Interested in:</strong> {category} / {role}</p>
+        </div>"""
+    )
+
+    return jsonify({"ok": True})
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
