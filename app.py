@@ -26,8 +26,8 @@ ADMIN_PASSWORD  = os.environ.get("ADMIN_PASSWORD", "wenixai2026")
 UPI_ID          = "9113259228@kotakbank"
 UPI_NAME        = "Vardhasheela N"
 IST             = pytz.timezone("Asia/Kolkata")
-BOOKINGS_FILE   = "bookings.json"
-JOBS_DB_PATH    = "jobs.db"
+BOOKINGS_FILE   = "/data/bookings.json"
+JOBS_DB_PATH    = "/data/jobs.db"
 SCOPES          = ["https://www.googleapis.com/auth/calendar"]
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
