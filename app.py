@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, render_template, redirect, session, send_file
+from werkzeug.utils import secure_filename
 from flask_cors import CORS
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
@@ -93,7 +94,20 @@ CREATE INDEX IF NOT EXISTS idx_jobs_category ON jobs(category);
 CREATE INDEX IF NOT EXISTS idx_jobs_role_type ON jobs(role_type);
 CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs(status);
 """
+RESOURCES_DIR = "/data/resources"
+os.makedirs(RESOURCES_DIR, exist_ok=True)
 
+RESOURCES_SCHEMA = """
+CREATE TABLE IF NOT EXISTS resources (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    description TEXT,
+    category TEXT NOT NULL CHECK (category IN ('cabin_crew', 'ground_staff', 'all')),
+    filename TEXT NOT NULL,
+    sent_count INTEGER DEFAULT 0,
+    uploaded_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+"""
 def get_jobs_db():
     conn = sqlite3.connect(JOBS_DB_PATH)
     conn.row_factory = sqlite3.Row
@@ -102,6 +116,7 @@ def get_jobs_db():
 def init_jobs_db():
     conn = sqlite3.connect(JOBS_DB_PATH)
     conn.executescript(JOBS_SCHEMA)
+    conn.executescript(RESOURCES_SCHEMA)
     conn.commit()
     conn.close()
 
@@ -225,7 +240,29 @@ def client_confirmation_email(name, session_type, date_str, time_str):
       </div>
     </div>
     """
+def get_matching_subscribers(category):
+    conn = get_jobs_db()
+    if category == "all":
+        rows = conn.execute("SELECT email FROM job_alert_subscribers").fetchall()
+    else:
+        rows = conn.execute(
+            "SELECT email FROM job_alert_subscribers WHERE interested_role = ? OR interested_role = 'all'",
+            (category,)
+        ).fetchall()
+    conn.close()
+    return [r["email"] for r in rows]
 
+def resource_email(title, description, download_url):
+    return f"""
+    <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a0a0b;color:#e8e6f0;padding:40px;border-radius:12px">
+      <h1 style="color:#FF2CF3;margin:0 0 16px">{title}</h1>
+      <p style="color:#e8e6f0;white-space:pre-wrap">{description}</p>
+      <div style="text-align:center;margin:28px 0">
+        <a href="{download_url}" style="background:#FF2CF3;color:#1a0518;padding:14px 28px;border-radius:6px;text-decoration:none;font-weight:700;font-size:14px;display:inline-block">Download PDF →</a>
+      </div>
+      <p style="color:#5c5a6b;font-size:12px;margin-top:20px">You're receiving this because you subscribed to job alerts on the aviation careers board.<br>Vardhasheela N — @vardhasheela.n</p>
+    </div>
+    """
 def owner_notification_email(name, email, phone, session_type, date_str, time_str, goal, followup, topic, booking_id):
     stype = SESSION_DURATIONS[session_type]
     base_url = os.environ.get("BASE_URL", "https://consultation.vardhasheelan.com")
@@ -359,7 +396,137 @@ def admin_login():
     <form method="POST">{'<p class="err">'+error+'</p>' if error else ''}
     <input type="password" name="password" placeholder="Password" autofocus/>
     <button type="submit">Login →</button></form></div></body></html>"""
+@app.route("/admin/resources")
+@admin_required
+def admin_resources():
+    conn = get_jobs_db()
+    resources = conn.execute("SELECT * FROM resources ORDER BY uploaded_at DESC").fetchall()
+    conn.close()
+    rows = ""
+    for r in resources:
+        rows += f"""<tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
+          <td style="padding:12px 8px;color:#fff;font-size:13px">{r['title']}</td>
+          <td style="padding:12px 8px;color:#9997aa;font-size:12px">{r['category']}</td>
+          <td style="padding:12px 8px;color:#00f5ff;font-size:12px">{r['sent_count']} sent</td>
+          <td style="padding:12px 8px;color:#9997aa;font-size:12px">{r['uploaded_at']}</td>
+          <td style="padding:12px 8px">
+            <a href="/resources/{r['filename']}" target="_blank" style="color:#7b5cfa;font-size:12px;margin-right:10px">View PDF</a>
+            <a href="/admin/resources/{r['id']}/resend" style="color:#FF2CF3;font-size:12px">Resend to new subscribers</a>
+          </td></tr>"""
+    return f"""<!DOCTYPE html><html><head><title>Resources & Freebies</title>
+    <style>*{{box-sizing:border-box;margin:0;padding:0;}}
+    body{{background:#050508;color:#e8e6f0;font-family:sans-serif;padding:2rem;}}
+    h1{{color:#FF2CF3;font-size:1.4rem;margin-bottom:0.5rem;}}
+    .back{{display:inline-block;color:#9997aa;text-decoration:none;font-size:13px;margin-bottom:1.5rem;border:1px solid rgba(255,255,255,0.1);padding:8px 16px;border-radius:6px;}}
+    .upload-box{{background:#0f0f1a;border:1px solid rgba(255,44,243,0.2);border-radius:10px;padding:1.5rem;margin-bottom:2rem;max-width:500px;}}
+    label{{display:block;font-size:12px;color:#9997aa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;margin-top:14px;}}
+    input,select,textarea{{width:100%;background:#070710;border:1px solid rgba(123,92,250,0.2);border-radius:6px;padding:0.7rem 0.9rem;color:#e8e6f0;font-size:0.9rem;outline:none;}}
+    textarea{{min-height:80px;resize:vertical;}}
+    button{{margin-top:18px;width:100%;background:#FF2CF3;color:#1a0518;border:none;border-radius:6px;padding:0.85rem;font-size:0.9rem;font-weight:700;cursor:pointer;}}
+    table{{width:100%;border-collapse:collapse;background:#0f0f1a;border:1px solid rgba(255,44,243,0.15);border-radius:8px;overflow:hidden;}}
+    th{{padding:12px 8px;text-align:left;font-size:11px;color:#9997aa;letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.08);}}
+    </style></head><body>
+    <a class="back" href="/admin">← Back to bookings</a>
+    <h1>Send a freebie / resource</h1>
+    <p style="color:#9997aa;font-size:13px;margin-bottom:1.5rem">Upload a PDF, pick who it's for — it emails everyone matching that category automatically.</p>
 
+    <div class="upload-box">
+      <form action="/admin/resources/upload" method="POST" enctype="multipart/form-data">
+        <label>Title (used as email subject)</label>
+        <input type="text" name="title" placeholder="e.g. 30-Day Cabin Crew Prep Plan" required/>
+
+        <label>Short description (goes in the email body)</label>
+        <textarea name="description" placeholder="A quick note about what's inside and why it's useful..." required></textarea>
+
+        <label>Who is this for?</label>
+        <select name="category" required>
+          <option value="cabin_crew">Cabin crew subscribers</option>
+          <option value="ground_staff">Ground staff subscribers</option>
+          <option value="all">Everyone (all subscribers)</option>
+        </select>
+
+        <label>PDF file</label>
+        <input type="file" name="file" accept="application/pdf" required/>
+
+        <button type="submit">Upload and send now</button>
+      </form>
+    </div>
+
+    <table>
+      <thead><tr><th>Title</th><th>Category</th><th>Sent</th><th>Uploaded</th><th>Actions</th></tr></thead>
+      <tbody>{rows or '<tr><td colspan="5" style="padding:2rem;text-align:center;color:#9997aa">No resources uploaded yet</td></tr>'}</tbody>
+    </table>
+    </body></html>"""
+
+@app.route("/admin/resources/upload", methods=["POST"])
+@admin_required
+def admin_resources_upload():
+    title = request.form.get("title", "").strip()
+    description = request.form.get("description", "").strip()
+    category = request.form.get("category", "all")
+    file = request.files.get("file")
+
+    if not title or not file or file.filename == "":
+        return "Title and PDF file are required.", 400
+
+    filename = secure_filename(f"{int(datetime.now().timestamp())}_{file.filename}")
+    filepath = os.path.join(RESOURCES_DIR, filename)
+    file.save(filepath)
+
+    conn = get_jobs_db()
+    cur = conn.execute(
+        "INSERT INTO resources (title, description, category, filename) VALUES (?, ?, ?, ?)",
+        (title, description, category, filename)
+    )
+    resource_id = cur.lastrowid
+    conn.commit()
+    conn.close()
+
+    base_url = os.environ.get("BASE_URL", "https://consultation.vardhasheelan.com")
+    download_url = f"{base_url}/resources/{filename}"
+    recipients = get_matching_subscribers(category)
+
+    sent = 0
+    for email in recipients:
+        if send_email(email, "", title, resource_email(title, description, download_url)):
+            sent += 1
+
+    conn = get_jobs_db()
+    conn.execute("UPDATE resources SET sent_count = ? WHERE id = ?", (sent, resource_id))
+    conn.commit()
+    conn.close()
+
+    return redirect("/admin/resources")
+
+@app.route("/admin/resources/<int:resource_id>/resend")
+@admin_required
+def admin_resources_resend(resource_id):
+    conn = get_jobs_db()
+    r = conn.execute("SELECT * FROM resources WHERE id = ?", (resource_id,)).fetchone()
+    conn.close()
+    if not r:
+        return "Resource not found", 404
+
+    base_url = os.environ.get("BASE_URL", "https://consultation.vardhasheelan.com")
+    download_url = f"{base_url}/resources/{r['filename']}"
+    recipients = get_matching_subscribers(r["category"])
+
+    sent = 0
+    for email in recipients:
+        if send_email(email, "", r["title"], resource_email(r["title"], r["description"], download_url)):
+            sent += 1
+
+    conn = get_jobs_db()
+    conn.execute("UPDATE resources SET sent_count = sent_count + ? WHERE id = ?", (sent, resource_id))
+    conn.commit()
+    conn.close()
+
+    return redirect("/admin/resources")
+
+@app.route("/resources/<path:filename>")
+def serve_resource(filename):
+    from flask import send_from_directory
+    return send_from_directory(RESOURCES_DIR, filename)
 @app.route("/admin/logout")
 def admin_logout():
     session.pop("admin_logged_in", None)
@@ -419,6 +586,7 @@ def admin_panel():
         <div class="stat"><strong style="color:#22C55E">{confirmed}</strong><span>CONFIRMED</span></div>
       </div>
       <a href="/admin/subscribers" class="logout" style="color:#00f5ff;border-color:rgba(0,245,255,0.3)">Jobs board subscribers</a>
+      <a href="/admin/resources" class="logout" style="color:#22C55E;border-color:rgba(34,197,94,0.3)">Send freebies</a>
       <a href="/admin/send-feedback-emails-now" class="logout" style="color:#FF2CF3;border-color:rgba(255,44,243,0.3)">Send due feedback emails now</a>
       <a href="/admin/logout" class="logout">Logout</a>
     </div>
