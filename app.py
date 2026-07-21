@@ -1,9 +1,10 @@
-from flask import Flask, request, jsonify, render_template, redirect, session
+from flask import Flask, request, jsonify, render_template, redirect, session, send_file
 from flask_cors import CORS
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
 from apscheduler.schedulers.background import BackgroundScheduler
+from dotenv import load_dotenv
 import atexit
 import smtplib
 from email.mime.text import MIMEText
@@ -14,6 +15,8 @@ import sqlite3
 from datetime import datetime, timedelta, date
 import pytz
 from functools import wraps
+
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-in-production")
@@ -233,7 +236,7 @@ def owner_notification_email(name, email, phone, session_type, date_str, time_st
         <table style="width:100%;font-size:14px">
           <tr><td style="color:#9997aa;padding:5px 0;width:120px">Name</td><td style="color:#fff;font-weight:600">{name}</td></tr>
           <tr><td style="color:#9997aa;padding:5px 0">Email</td><td style="color:#00f5ff">{email}</td></tr>
-          <tr><td style="color:#9997aa;padding:5px 0">Phone</td><td style="color:#fff">{phone}</td></tr>
+          <tr><td style="color:#9997aa;padding:5px 0">Phone</td><td style="color:#fff">{phone or 'Not provided'}</td></tr>
           <tr><td style="color:#9997aa;padding:5px 0">Session</td><td style="color:#fff">{stype['label']} ({stype['duration']} min)</td></tr>
           <tr><td style="color:#9997aa;padding:5px 0">Date</td><td style="color:#fff">{date_str}</td></tr>
           <tr><td style="color:#9997aa;padding:5px 0">Time</td><td style="color:#fff">{time_str} IST</td></tr>
@@ -284,6 +287,16 @@ def feedback_request_email(name, session_type_label, date_str, time_str, booking
     </div>
     """
 
+def client_declined_email(name, session_type, date_str, time_str):
+    return f"""
+    <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a0a0b;color:#e8e6f0;padding:40px;border-radius:12px">
+      <h1 style="color:#EF4444;margin:0 0 20px">Session request update</h1>
+      <p>Hi <strong>{name}</strong>,</p>
+      <p style="color:#9997aa">Unfortunately the slot on <strong style="color:#fff">{date_str} at {time_str} IST</strong> is no longer available. Please visit <a href="https://consultation.vardhasheelan.com" style="color:#00f5ff">consultation.vardhasheelan.com</a> to book another slot.</p>
+      <p style="color:#9997aa;font-size:13px">Sorry for the inconvenience! — Vardhasheela</p>
+    </div>
+    """
+
 def feedback_notification_email(booking, rating, comment):
     stars = "⭐" * int(rating) + "☆" * (5 - int(rating))
     return f"""
@@ -302,13 +315,17 @@ def feedback_notification_email(booking, rating, comment):
     </div>
     """
 
-def client_declined_email(name, session_type, date_str, time_str):
+def subscriber_welcome_email(email):
+    base_url = os.environ.get("BASE_URL", "https://consultation.vardhasheelan.com")
     return f"""
     <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a0a0b;color:#e8e6f0;padding:40px;border-radius:12px">
-      <h1 style="color:#EF4444;margin:0 0 20px">Session request update</h1>
-      <p>Hi <strong>{name}</strong>,</p>
-      <p style="color:#9997aa">Unfortunately the slot on <strong style="color:#fff">{date_str} at {time_str} IST</strong> is no longer available. Please visit <a href="https://consultation.vardhasheelan.com" style="color:#00f5ff">consultation.vardhasheelan.com</a> to book another slot.</p>
-      <p style="color:#9997aa;font-size:13px">Sorry for the inconvenience! — Vardhasheela</p>
+      <h1 style="color:#FF2CF3;margin:0 0 16px">You're on the list!</h1>
+      <p style="color:#e8e6f0">Thanks for subscribing to the aviation jobs board alert.</p>
+      <p style="color:#9997aa">I'll email you the moment a new cabin crew or ground staff role opens up matching your interest. No spam — just real openings, manually verified.</p>
+      <div style="text-align:center;margin:28px 0">
+        <a href="{base_url}/jobs" style="background:#FF2CF3;color:#1a0518;padding:14px 28px;border-radius:6px;text-decoration:none;font-weight:700;font-size:14px;display:inline-block">Browse current openings →</a>
+      </div>
+      <p style="color:#5c5a6b;font-size:12px;margin-top:20px">Vardhasheela N — @vardhasheela.n</p>
     </div>
     """
 
@@ -371,7 +388,7 @@ def admin_panel():
         rows += f"""<tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
           <td style="padding:12px 8px;color:#fff;font-size:13px">{b.get('name','')}</td>
           <td style="padding:12px 8px;color:#9997aa;font-size:12px">{b.get('email','')}</td>
-          <td style="padding:12px 8px;color:#9997aa;font-size:12px">{b.get('phone','')}</td>
+          <td style="padding:12px 8px;color:#9997aa;font-size:12px">{b.get('phone','') or '—'}</td>
           <td style="padding:12px 8px;color:#00f5ff;font-size:12px">{b.get('date','')} {b.get('time','')}</td>
           <td style="padding:12px 8px;color:#7b5cfa;font-size:12px">{stype.get('label','')}<br><span style="color:#9997aa">₹{stype.get('price','')}</span></td>
           <td style="padding:12px 8px;color:#9997aa;font-size:12px">{b.get('goal','—')}</td>
@@ -401,6 +418,7 @@ def admin_panel():
         <div class="stat"><strong style="color:#BA7517">{pending}</strong><span>PENDING</span></div>
         <div class="stat"><strong style="color:#22C55E">{confirmed}</strong><span>CONFIRMED</span></div>
       </div>
+      <a href="/admin/subscribers" class="logout" style="color:#00f5ff;border-color:rgba(0,245,255,0.3)">Jobs board subscribers</a>
       <a href="/admin/send-feedback-emails-now" class="logout" style="color:#FF2CF3;border-color:rgba(255,44,243,0.3)">Send due feedback emails now</a>
       <a href="/admin/logout" class="logout">Logout</a>
     </div>
@@ -414,6 +432,63 @@ def admin_panel():
 def admin_send_feedback_emails_now():
     send_pending_feedback_emails()
     return redirect("/admin")
+
+@app.route("/admin/subscribers")
+@admin_required
+def admin_subscribers():
+    conn = get_jobs_db()
+    subs = conn.execute("SELECT * FROM job_alert_subscribers ORDER BY created_at DESC").fetchall()
+    conn.close()
+    rows = ""
+    for s in subs:
+        rows += f"""<tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
+          <td style="padding:12px 8px;color:#00f5ff;font-size:13px">{s['email']}</td>
+          <td style="padding:12px 8px;color:#9997aa;font-size:12px">{s['interested_category']}</td>
+          <td style="padding:12px 8px;color:#9997aa;font-size:12px">{s['interested_role']}</td>
+          <td style="padding:12px 8px;color:#9997aa;font-size:12px">{s['created_at']}</td></tr>"""
+    return f"""<!DOCTYPE html><html><head><title>Jobs Board Subscribers</title>
+    <style>*{{box-sizing:border-box;margin:0;padding:0;}}
+    body{{background:#050508;color:#e8e6f0;font-family:sans-serif;padding:2rem;}}
+    h1{{color:#FF2CF3;font-size:1.4rem;margin-bottom:1.5rem;}}
+    table{{width:100%;border-collapse:collapse;background:#0f0f1a;border:1px solid rgba(255,44,243,0.15);border-radius:8px;overflow:hidden;}}
+    th{{padding:12px 8px;text-align:left;font-size:11px;color:#9997aa;letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.08);}}
+    .btn{{display:inline-block;background:#FF2CF3;color:#1a0518;padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:700;font-size:13px;margin-bottom:1.5rem;margin-right:10px;}}
+    .back{{display:inline-block;color:#9997aa;text-decoration:none;font-size:13px;margin-bottom:1.5rem;border:1px solid rgba(255,255,255,0.1);padding:10px 20px;border-radius:6px;}}
+    </style></head><body>
+    <h1>Jobs board subscribers ({len(subs)})</h1>
+    <a class="btn" href="/admin/subscribers/export">Download as Excel</a>
+    <a class="back" href="/admin">← Back to bookings</a>
+    <table>
+      <thead><tr><th>Email</th><th>Category</th><th>Role</th><th>Subscribed</th></tr></thead>
+      <tbody>{rows or '<tr><td colspan="4" style="padding:2rem;text-align:center;color:#9997aa">No subscribers yet</td></tr>'}</tbody>
+    </table></body></html>"""
+
+@app.route("/admin/subscribers/export")
+@admin_required
+def admin_subscribers_export():
+    from openpyxl import Workbook
+    from io import BytesIO
+
+    conn = get_jobs_db()
+    subs = conn.execute("SELECT * FROM job_alert_subscribers ORDER BY created_at DESC").fetchall()
+    conn.close()
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Subscribers"
+    ws.append(["Email", "Interested Category", "Interested Role", "Subscribed At"])
+    for s in subs:
+        ws.append([s["email"], s["interested_category"], s["interested_role"], s["created_at"]])
+
+    buffer = BytesIO()
+    wb.save(buffer)
+    buffer.seek(0)
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name="jobs_board_subscribers.xlsx",
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
 
 @app.route("/admin/action/<booking_id>/<action>")
 @admin_required
@@ -565,7 +640,7 @@ def book():
             end_dt     = start_dt + timedelta(minutes=stype["duration"])
             event      = {
                 "summary": f"Consultation: {data['name']} — {stype['label']}",
-                "description": f"Client: {data['name']}\nEmail: {data['email']}\nPhone: {data['phone']}\nGoal: {data.get('goal','N/A')}\nNotes: {data.get('topic','N/A')}",
+                "description": f"Client: {data['name']}\nEmail: {data['email']}\nPhone: {data.get('phone','Not provided')}\nGoal: {data.get('goal','N/A')}\nNotes: {data.get('topic','N/A')}",
                 "start": {"dateTime":start_dt.isoformat(),"timeZone":"Asia/Kolkata"},
                 "end":   {"dateTime":end_dt.isoformat(),  "timeZone":"Asia/Kolkata"},
                 "conferenceData": {"createRequest":{"requestId":booking_id}},
@@ -583,7 +658,7 @@ def book():
 
     booking = {
         "id": booking_id,
-        "name": data["name"], "email": data["email"], "phone": data["phone"],
+        "name": data["name"], "email": data["email"], "phone": data.get("phone",""),
         "date": data["date"], "time": data["time"], "session_type": data["session_type"],
         "goal": data.get("goal",""), "followup": data.get("followup",""),
         "topic": data.get("topic",""), "txn_id": data.get("txn_id",""),
@@ -599,7 +674,7 @@ def book():
     send_email(GMAIL_USER, "Vardhasheela",
                f"New booking: {data['name']} — {date_display} {time_display}",
                owner_notification_email(
-                   data["name"], data["email"], data["phone"],
+                   data["name"], data["email"], data.get("phone",""),
                    data["session_type"], date_display, time_display,
                    data.get("goal",""), data.get("followup",""), data.get("topic",""), booking_id))
 
@@ -610,6 +685,7 @@ def book():
         "upi_name": UPI_NAME,
         "amount":   stype["price"],
     })
+
 @app.route('/assets/<path:filename>')
 def assets(filename):
     import os
@@ -745,6 +821,12 @@ def jobs_alert_me():
           <p><strong>Email:</strong> {email}</p>
           <p><strong>Interested in:</strong> {category} / {role}</p>
         </div>"""
+    )
+
+    send_email(
+        email, "",
+        "You're on the list! — Aviation Jobs Board",
+        subscriber_welcome_email(email)
     )
 
     return jsonify({"ok": True})
