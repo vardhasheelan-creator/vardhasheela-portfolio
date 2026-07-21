@@ -533,8 +533,8 @@ def get_slots():
 def book():
     data = request.json
     for field in ["name","email","date","time","session_type"]:
-    if not data.get(field):
-        return jsonify({"error":f"{field} is required"}), 400
+        if not data.get(field):
+            return jsonify({"error":f"{field} is required"}), 400
 
     # ── weekday check ──
     try:
