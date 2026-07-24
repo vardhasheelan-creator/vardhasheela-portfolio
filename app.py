@@ -32,6 +32,7 @@ UPI_NAME           = "Vardhasheela N"
 IST                = pytz.timezone("Asia/Kolkata")
 BOOKINGS_FILE      = "/data/bookings.json"
 JOBS_DB_PATH       = "/data/jobs.db"
+TESTIMONIALS_FILE  = "/data/testimonials.json"
 SCOPES             = ["https://www.googleapis.com/auth/calendar"]
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
@@ -1128,14 +1129,11 @@ def jobs_alert_me():
 
     return jsonify({"ok": True})
 
-if __name__ == "__main__":
-    app.run(debug=True, port=5000)
-
 # ── PUBLIC FEEDBACK & TESTIMONIALS ───────────────────────────────
 # Stored separately from booking-linked feedback so offline sessions
 # (like Sumithra's) can also leave reviews that show on the site.
 
-TESTIMONIALS_FILE = "/data/testimonials.json"
+
 
 def load_testimonials():
     if not os.path.exists(TESTIMONIALS_FILE):
@@ -1306,3 +1304,6 @@ def admin_testimonial_toggle(t_id, action):
             break
     save_testimonials(testimonials)
     return redirect("/admin/testimonials")
+
+if __name__ == "__main__":
+    app.run(debug=True, port=5000)
