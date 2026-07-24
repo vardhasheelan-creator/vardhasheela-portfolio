@@ -182,8 +182,24 @@ def start_feedback_scheduler():
     scheduler.start()
     atexit.register(lambda: scheduler.shutdown(wait=False))
 
+# ── Only start scheduler in worker 0 to avoid duplicate emails ──
+# Gunicorn runs multiple workers — APScheduler must only run in one.
+# We use a file-based lock so only the first worker that boots runs it.
+import fcntl, tempfile
+
+def start_scheduler_once():
+    lock_path = "/tmp/feedback_scheduler.lock"
+    try:
+        lock_file = open(lock_path, "w")
+        fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        start_feedback_scheduler()
+        # keep lock_file open so lock is held for process lifetime
+        app._scheduler_lock = lock_file
+    except (IOError, OSError):
+        pass  # another worker already holds the lock — skip
+
 if not app.debug or os.environ.get("WERKZEUG_RUN_MAIN") == "true":
-    start_feedback_scheduler()
+    start_scheduler_once()
 
 # ── GOOGLE CALENDAR ──────────────────────────────────────────────
 
@@ -565,6 +581,45 @@ def admin_announce():
                 (audience,)
             ).fetchall()
         conn.close()
+
+        # ── confirm step: show preview before sending ──
+        confirmed = request.form.get("confirmed") == "yes"
+        if not confirmed:
+            # Show confirmation page with subscriber count
+            preview_name = rows[0]["name"] if rows else None
+            preview_greeting = greeting(preview_name)
+            return f"""<!DOCTYPE html><html><head><title>Confirm Send</title>
+            <style>*{{box-sizing:border-box;margin:0;padding:0;}}
+            body{{background:#050508;color:#e8e6f0;font-family:sans-serif;padding:2rem;display:flex;align-items:center;justify-content:center;min-height:100vh;}}
+            .box{{background:#0f0f1a;border:1px solid rgba(255,44,243,0.2);border-radius:12px;padding:2rem;max-width:560px;width:100%;}}
+            h2{{color:#FF2CF3;margin-bottom:0.75rem;font-size:1.2rem;}}
+            .preview{{background:#070710;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:1.25rem;margin:1.25rem 0;font-size:0.85rem;color:#c8c6de;line-height:1.8;white-space:pre-wrap;}}
+            .meta{{font-size:0.8rem;color:#9997aa;margin-bottom:1rem;}}
+            .meta strong{{color:#fff;}}
+            .btns{{display:flex;gap:10px;margin-top:1.25rem;}}
+            .btn-send{{flex:1;background:#FF2CF3;color:#050508;border:none;border-radius:6px;padding:0.85rem;font-weight:700;font-size:0.85rem;cursor:pointer;}}
+            .btn-back{{flex:1;background:transparent;color:#9997aa;border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:0.85rem;font-size:0.85rem;cursor:pointer;text-decoration:none;text-align:center;display:block;}}
+            </style></head><body><div class="box">
+            <h2>📋 Review before sending</h2>
+            <div class="meta">
+              <strong>Subject:</strong> {subject}<br>
+              <strong>Audience:</strong> {len(rows)} subscriber{'s' if len(rows) != 1 else ''}<br>
+              <strong>Preview greeting:</strong> {preview_greeting}
+            </div>
+            <div class="preview">{body_text[:400]}{'...' if len(body_text) > 400 else ''}</div>
+            <form method="POST">
+              <input type="hidden" name="subject" value="{subject}"/>
+              <input type="hidden" name="body" value="{body_text}"/>
+              <input type="hidden" name="cta_text" value="{cta_text}"/>
+              <input type="hidden" name="cta_url" value="{cta_url}"/>
+              <input type="hidden" name="audience" value="{audience}"/>
+              <input type="hidden" name="confirmed" value="yes"/>
+              <div class="btns">
+                <a class="btn-back" href="/admin/announce">← Edit</a>
+                <button class="btn-send" type="submit">✅ Yes, send to {len(rows)} subscribers</button>
+              </div>
+            </form>
+            </div></body></html>"""
 
         sent = 0
         for row in rows:
