@@ -6,7 +6,6 @@
 <title>Aviation Careers Board — Vardhasheela N</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
 
-<!-- Google Analytics — replace G-48HTQ1L8HE with your real Measurement ID -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-48HTQ1L8HE"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -82,17 +81,41 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:0;position:rela
 .alert-box{margin-top:3.5rem;background:var(--surface);border:1px solid var(--border-b);border-radius:10px;padding:2rem;box-shadow:0 0 30px rgba(123,92,250,0.06);}
 .alert-box h2{font-size:1.15rem;font-weight:700;color:var(--white);margin-bottom:0.4rem;}
 .alert-box p{color:var(--muted);font-size:0.85rem;margin-bottom:1.25rem;max-width:480px;}
-.alert-form{display:flex;gap:10px;flex-wrap:wrap;}
-.alert-form input[type="email"]{flex:1;min-width:220px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:0.8rem 1rem;color:var(--text);font-family:var(--mono);font-size:0.85rem;outline:none;transition:border-color 0.2s;}
+
+/* ── UPDATED: two-row form layout to fit name + email + button ── */
+.alert-form{display:flex;flex-direction:column;gap:10px;max-width:520px;}
+.alert-form-row{display:flex;gap:10px;flex-wrap:wrap;}
+.alert-form input[type="text"],
+.alert-form input[type="email"]{
+  flex:1;min-width:180px;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:0.8rem 1rem;
+  color:var(--text);
+  font-family:var(--mono);
+  font-size:0.85rem;
+  outline:none;
+  transition:border-color 0.2s;
+}
+.alert-form input[type="text"]:focus,
 .alert-form input[type="email"]:focus{border-color:var(--neon);}
 .alert-form input::placeholder{color:var(--dim);}
-.alert-form button{font-family:var(--mono);font-weight:700;font-size:0.78rem;letter-spacing:0.05em;text-transform:uppercase;background:var(--neon);color:var(--white);border:none;border-radius:6px;padding:0.8rem 1.5rem;cursor:pointer;box-shadow:0 0 18px rgba(123,92,250,0.35);transition:all 0.2s;}
+.alert-form button{
+  font-family:var(--mono);font-weight:700;font-size:0.78rem;
+  letter-spacing:0.05em;text-transform:uppercase;
+  background:var(--neon);color:var(--white);
+  border:none;border-radius:6px;
+  padding:0.8rem 1.5rem;cursor:pointer;
+  box-shadow:0 0 18px rgba(123,92,250,0.35);
+  transition:all 0.2s;white-space:nowrap;
+}
 .alert-form button:hover{background:var(--cyan);box-shadow:0 0 24px rgba(0,245,255,0.4);}
 .alert-msg{margin-top:10px;font-size:0.78rem;font-family:var(--mono);display:none;}
 .alert-msg.ok{color:var(--green);display:block;}
 .alert-msg.error{color:#ff6b6b;display:block;}
 
-/* CONSULT BANNER — matches vardhasheelan.com's consult-banner pattern */
+/* CONSULT BANNER */
 .consult-banner{background:linear-gradient(135deg,rgba(255,44,243,0.08),rgba(123,92,250,0.08));border:1px solid rgba(255,44,243,0.2);border-radius:12px;padding:1.75rem 2.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;margin-top:2.5rem;}
 .consult-banner h3{font-size:1.02rem;font-weight:600;color:var(--white);margin-bottom:0.35rem;}
 .consult-banner p{font-size:0.84rem;color:var(--muted);}
@@ -113,6 +136,7 @@ footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
   .status{order:2;}
   .apply-btn{order:4;width:100%;padding:0.7rem;}
   .consult-banner{flex-direction:column;text-align:center;}
+  .alert-form-row{flex-direction:column;}
 }
 </style>
 </head>
@@ -183,12 +207,18 @@ footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
   </div>
   <div class="verified-note">Board last refreshed {{ today }}. All listings manually verified before posting.</div>
 
+  <!-- ALERT BOX — name field added for personalized emails -->
   <div class="alert-box">
     <h2>Get notified the moment a new role opens</h2>
-    <p>No spam — just a short email when an airline you're interested in starts hiring.</p>
+    <p>No spam — just a short email when an airline you're interested in starts hiring. We'll use your name to make it feel personal.</p>
     <form class="alert-form" id="alertForm">
-      <input type="email" name="email" placeholder="your.email@example.com" required/>
-      <button type="submit">Alert Me</button>
+      <div class="alert-form-row">
+        <input type="text" name="name" id="alertName" placeholder="Your first name" autocomplete="given-name"/>
+        <input type="email" name="email" id="alertEmail" placeholder="your.email@example.com" required/>
+      </div>
+      <div class="alert-form-row">
+        <button type="submit">Alert Me →</button>
+      </div>
     </form>
     <div class="alert-msg" id="alertMsg"></div>
   </div>
@@ -214,11 +244,13 @@ footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
 <script>
 document.getElementById('alertForm').addEventListener('submit', async function(e) {
   e.preventDefault();
-  const form = e.target;
-  const msg = document.getElementById('alertMsg');
-  const email = form.email.value;
-  const btn = form.querySelector('button');
-  btn.disabled = true;
+  const form   = e.target;
+  const msg    = document.getElementById('alertMsg');
+  const email  = document.getElementById('alertEmail').value.trim();
+  const name   = document.getElementById('alertName').value.trim();
+  const btn    = form.querySelector('button');
+
+  btn.disabled    = true;
   btn.textContent = 'Saving...';
 
   try {
@@ -226,23 +258,27 @@ document.getElementById('alertForm').addEventListener('submit', async function(e
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: 'email=' + encodeURIComponent(email)
+           + '&name=' + encodeURIComponent(name)
     });
     const data = await res.json();
     if (data.ok) {
-      msg.textContent = "You're on the list — we'll email you when new roles open.";
+      const firstName = name ? name.split(' ')[0] : null;
+      msg.textContent = firstName
+        ? `You're on the list, ${firstName}! We'll email you when new roles open.`
+        : "You're on the list — we'll email you when new roles open.";
       msg.className = 'alert-msg ok';
       form.reset();
       gtag('event', 'jobs_alert_signup', {email_domain: email.split('@')[1] || 'unknown'});
     } else {
       msg.textContent = data.error || 'Something went wrong.';
-      msg.className = 'alert-msg error';
+      msg.className   = 'alert-msg error';
     }
   } catch (err) {
     msg.textContent = 'Network error — try again in a moment.';
-    msg.className = 'alert-msg error';
+    msg.className   = 'alert-msg error';
   } finally {
-    btn.disabled = false;
-    btn.textContent = 'Alert Me';
+    btn.disabled    = false;
+    btn.textContent = 'Alert Me →';
   }
 });
 </script>
