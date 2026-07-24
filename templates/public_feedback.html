@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Share your feedback — Vardhasheela N</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#050508;--surface:#0F0F1A;--border:rgba(255,44,243,0.15);
+  --neon:#7B5CFA;--cyan:#00F5FF;--pink:#FF2CF3;
+  --white:#fff;--text:#E8E6F0;--muted:#AAA8C0;--dim:#5A5870;--green:#00FF88;
+  --font:'Space Grotesk',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(123,92,250,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(123,92,250,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem 2rem;max-width:520px;width:100%;position:relative;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--pink),var(--neon));border-radius:16px 16px 0 0;}
+.logo{font-family:var(--mono);font-size:0.9rem;font-weight:700;color:var(--white);text-decoration:none;display:block;margin-bottom:1.5rem;}
+.logo span{color:var(--pink);}
+h1{font-size:1.5rem;font-weight:700;color:var(--white);margin-bottom:0.4rem;line-height:1.2;}
+.sub{font-size:0.88rem;color:var(--muted);margin-bottom:2rem;line-height:1.6;}
+
+/* STARS */
+.star-label{font-family:var(--mono);font-size:0.72rem;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;display:block;}
+.stars{display:flex;gap:8px;margin-bottom:1.5rem;direction:ltr;}
+.star{font-size:2rem;cursor:pointer;color:var(--dim);transition:color 0.15s,transform 0.1s;user-select:none;}
+.star:hover,.star.active{color:#FFD700;transform:scale(1.1);}
+input[type="hidden"]{}
+
+/* FORM */
+.form-group{margin-bottom:1.25rem;}
+label{font-family:var(--mono);font-size:0.72rem;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;display:block;margin-bottom:6px;}
+input[type="text"],textarea,select{
+  width:100%;background:#070710;border:1px solid rgba(255,44,243,0.15);
+  border-radius:8px;padding:0.8rem 1rem;color:var(--text);
+  font-family:var(--font);font-size:0.9rem;outline:none;
+  transition:border-color 0.2s;
+}
+input[type="text"]:focus,textarea:focus,select:focus{border-color:var(--pink);box-shadow:0 0 0 1px rgba(255,44,243,0.2);}
+input::placeholder,textarea::placeholder{color:var(--dim);}
+textarea{resize:vertical;min-height:110px;line-height:1.6;}
+select option{background:#0F0F1A;}
+
+/* CHIPS — what they liked most */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+.chip{font-family:var(--mono);font-size:0.75rem;padding:0.4rem 0.85rem;border-radius:20px;border:1px solid rgba(255,44,243,0.2);background:var(--bg);color:var(--muted);cursor:pointer;transition:all 0.15s;user-select:none;}
+.chip:hover{border-color:rgba(255,44,243,0.4);color:var(--text);}
+.chip.selected{border-color:var(--pink);background:rgba(255,44,243,0.1);color:var(--pink);}
+
+.btn{width:100%;background:var(--pink);color:var(--bg);border:none;border-radius:8px;padding:0.95rem;font-family:var(--mono);font-size:0.85rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;box-shadow:0 0 20px rgba(255,44,243,0.3);transition:all 0.2s;margin-top:0.5rem;}
+.btn:hover{box-shadow:0 0 30px rgba(255,44,243,0.5);transform:translateY(-1px);}
+.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+
+.err{font-family:var(--mono);font-size:0.8rem;color:#ff6b6b;margin-top:0.5rem;display:none;}
+
+/* SUCCESS */
+.success{display:none;text-align:center;padding:1rem 0;}
+.success-icon{font-size:3rem;margin-bottom:1rem;}
+.success h2{font-size:1.3rem;font-weight:700;color:var(--green);margin-bottom:0.6rem;}
+.success p{font-size:0.88rem;color:var(--muted);line-height:1.7;}
+</style>
+</head>
+<body>
+<div class="card">
+  <a class="logo" href="https://consultation.vardhasheelan.com">Vardhasheela<span>N</span></a>
+
+  <div id="form-view">
+    <h1>How was your session?</h1>
+    <p class="sub">Your feedback means a lot — and helps future students know what to expect. Takes less than 2 minutes.</p>
+
+    <form id="feedbackForm">
+      <div class="form-group">
+        <label>Your name</label>
+        <input type="text" id="f-name" placeholder="e.g. Sumithra" required/>
+      </div>
+
+      <div class="form-group">
+        <span class="star-label">How would you rate your session?</span>
+        <div class="stars" id="stars">
+          <span class="star" data-v="1">★</span>
+          <span class="star" data-v="2">★</span>
+          <span class="star" data-v="3">★</span>
+          <span class="star" data-v="4">★</span>
+          <span class="star" data-v="5">★</span>
+        </div>
+        <input type="hidden" id="f-rating"/>
+      </div>
+
+      <div class="form-group">
+        <label>What did you like most?</label>
+        <div class="chips" id="liked-chips">
+          <div class="chip" data-v="clarity">Clear explanations</div>
+          <div class="chip" data-v="confidence">Boosted my confidence</div>
+          <div class="chip" data-v="interview_prep">Interview preparation</div>
+          <div class="chip" data-v="career_guidance">Career guidance</div>
+          <div class="chip" data-v="english">English communication tips</div>
+          <div class="chip" data-v="personalised">Felt personalised</div>
+          <div class="chip" data-v="actionable">Got actionable next steps</div>
+          <div class="chip" data-v="warm">Warm & supportive</div>
+        </div>
+        <input type="hidden" id="f-liked"/>
+      </div>
+
+      <div class="form-group">
+        <label>Tell us more (optional)</label>
+        <textarea id="f-comment" placeholder="What was most helpful? What would you tell someone considering booking a session?"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Can we show this on our website? <span style="color:var(--dim);font-weight:400">(optional)</span></label>
+        <select id="f-consent">
+          <option value="yes">Yes, show my name and feedback</option>
+          <option value="initials">Yes, but use initials only (e.g. S.K.)</option>
+          <option value="anonymous">Show as anonymous</option>
+          <option value="no">No, keep it private</option>
+        </select>
+      </div>
+
+      <div class="err" id="f-err">Please fill in your name and select a star rating.</div>
+      <button class="btn" type="submit" id="submitBtn">Submit feedback →</button>
+    </form>
+  </div>
+
+  <div class="success" id="success-view">
+    <div class="success-icon">🌟</div>
+    <h2>Thank you so much!</h2>
+    <p>Your feedback has been shared with Vardhasheela. It genuinely helps her improve and helps future students make the right decision.</p>
+  </div>
+</div>
+
+<script>
+// ── Star rating ──
+let rating = 0;
+document.querySelectorAll('.star').forEach(star => {
+  star.addEventListener('mouseenter', () => highlightStars(+star.dataset.v));
+  star.addEventListener('mouseleave', () => highlightStars(rating));
+  star.addEventListener('click', () => {
+    rating = +star.dataset.v;
+    document.getElementById('f-rating').value = rating;
+    highlightStars(rating);
+  });
+});
+function highlightStars(n) {
+  document.querySelectorAll('.star').forEach(s => {
+    s.classList.toggle('active', +s.dataset.v <= n);
+  });
+}
+
+// ── Liked chips (multi-select) ──
+document.querySelectorAll('#liked-chips .chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    chip.classList.toggle('selected');
+    const vals = [...document.querySelectorAll('#liked-chips .chip.selected')].map(c => c.dataset.v);
+    document.getElementById('f-liked').value = vals.join(', ');
+  });
+});
+
+// ── Submit ──
+document.getElementById('feedbackForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const name    = document.getElementById('f-name').value.trim();
+  const rat     = document.getElementById('f-rating').value;
+  const comment = document.getElementById('f-comment').value.trim();
+  const liked   = document.getElementById('f-liked').value;
+  const consent = document.getElementById('f-consent').value;
+  const err     = document.getElementById('f-err');
+  const btn     = document.getElementById('submitBtn');
+
+  if (!name || !rat) {
+    err.style.display = 'block';
+    return;
+  }
+  err.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  try {
+    const res = await fetch('/api/feedback/public', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({name, rating: +rat, liked, comment, consent})
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('form-view').style.display  = 'none';
+      document.getElementById('success-view').style.display = 'block';
+    } else {
+      err.textContent = data.error || 'Something went wrong. Please try again.';
+      err.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Submit feedback →';
+    }
+  } catch(ex) {
+    err.textContent = 'Network error — please try again.';
+    err.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Submit feedback →';
+  }
+});
+</script>
+</body>
+</html>

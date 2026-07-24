@@ -46,7 +46,7 @@ AVAILABILITY = {
     "end_hour":   21,
 }
 
-# ── BOOKINGS (JSON file) ─────────────────────────────────────────
+# ── BOOKINGS ─────────────────────────────────────────────────────
 
 def load_bookings():
     if not os.path.exists(BOOKINGS_FILE):
@@ -63,7 +63,7 @@ def save_booking(booking):
     bookings.append(booking)
     save_bookings(bookings)
 
-# ── JOBS BOARD DATABASE ──────────────────────────────────────────
+# ── DATABASE ─────────────────────────────────────────────────────
 
 JOBS_SCHEMA = """
 CREATE TABLE IF NOT EXISTS jobs (
@@ -84,6 +84,7 @@ CREATE TABLE IF NOT EXISTS jobs (
 
 CREATE TABLE IF NOT EXISTS job_alert_subscribers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
     email TEXT NOT NULL UNIQUE,
     interested_category TEXT,
     interested_role TEXT,
@@ -98,7 +99,6 @@ CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs(status);
 RESOURCES_DIR = "/data/resources"
 os.makedirs(RESOURCES_DIR, exist_ok=True)
 
-# ── FIX: added resource_sends table to track who received what ───
 RESOURCES_SCHEMA = """
 CREATE TABLE IF NOT EXISTS resources (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -127,6 +127,12 @@ def init_jobs_db():
     conn = sqlite3.connect(JOBS_DB_PATH)
     conn.executescript(JOBS_SCHEMA)
     conn.executescript(RESOURCES_SCHEMA)
+    # ── safely add name column to existing installs ──
+    try:
+        conn.execute("ALTER TABLE job_alert_subscribers ADD COLUMN name TEXT")
+        conn.commit()
+    except Exception:
+        pass  # column already exists — safe to ignore
     conn.commit()
     conn.close()
 
@@ -140,7 +146,6 @@ def send_pending_feedback_emails():
     bookings = load_bookings()
     changed  = False
     now      = datetime.now(IST)
-
     for b in bookings:
         if b.get("status") != "confirmed":
             continue
@@ -153,9 +158,8 @@ def send_pending_feedback_emails():
             session_start = IST.localize(datetime(d.year, d.month, d.day, h, m))
             session_end   = session_start + timedelta(minutes=stype["duration"])
         except Exception as ex:
-            print(f"Feedback scheduler — skipping booking {b.get('id')}: {ex}")
+            print(f"Feedback scheduler — skipping {b.get('id')}: {ex}")
             continue
-
         if now >= session_end + timedelta(minutes=FEEDBACK_SEND_BUFFER_MINUTES):
             date_display = d.strftime("%d %B %Y")
             time_display = datetime(2000, 1, 1, h, m).strftime("%I:%M %p")
@@ -167,7 +171,6 @@ def send_pending_feedback_emails():
             if sent:
                 b["feedback_email_sent"] = True
                 changed = True
-
     if changed:
         save_bookings(bookings)
 
@@ -215,22 +218,31 @@ def send_email(to_email, to_name, subject, body_html):
         print(f"Email error: {e}")
         return False
 
+# ── NAME HELPER ──────────────────────────────────────────────────
+
+def greeting(name):
+    """Returns 'Hi Priya,' if name exists, else 'Hi there,'"""
+    n = (name or "").strip()
+    return f"Hi {n.split()[0]}," if n else "Hi there,"
+
 # ── SUBSCRIBER HELPERS ───────────────────────────────────────────
 
 def get_matching_subscribers(category):
+    """Returns list of (email, name) tuples."""
     conn = get_jobs_db()
     if category == "all":
-        rows = conn.execute("SELECT email FROM job_alert_subscribers").fetchall()
+        rows = conn.execute(
+            "SELECT email, name FROM job_alert_subscribers"
+        ).fetchall()
     else:
         rows = conn.execute(
-            "SELECT email FROM job_alert_subscribers WHERE interested_role = ? OR interested_role = 'all'",
+            "SELECT email, name FROM job_alert_subscribers WHERE interested_role = ? OR interested_role = 'all'",
             (category,)
         ).fetchall()
     conn.close()
-    return [r["email"] for r in rows]
+    return [(r["email"], r["name"]) for r in rows]
 
 def get_already_sent_emails(resource_id):
-    """Return set of emails that already received this resource."""
     conn  = get_jobs_db()
     rows  = conn.execute(
         "SELECT email FROM resource_sends WHERE resource_id = ?", (resource_id,)
@@ -239,7 +251,6 @@ def get_already_sent_emails(resource_id):
     return set(r["email"] for r in rows)
 
 def mark_resource_sent(resource_id, email):
-    """Record that this email received this resource (ignores duplicates)."""
     conn = get_jobs_db()
     conn.execute(
         "INSERT OR IGNORE INTO resource_sends (resource_id, email) VALUES (?, ?)",
@@ -371,10 +382,12 @@ def feedback_notification_email(booking, rating, comment):
     </div>
     """
 
-def resource_email(title, description, download_url):
+def resource_email(title, description, download_url, name=None):
+    hi = greeting(name)
     return f"""
     <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a0a0b;color:#e8e6f0;padding:40px;border-radius:12px">
       <h1 style="color:#FF2CF3;margin:0 0 16px">{title}</h1>
+      <p style="color:#e8e6f0;margin-bottom:16px">{hi}</p>
       <p style="color:#e8e6f0;white-space:pre-wrap">{description}</p>
       <div style="text-align:center;margin:28px 0">
         <a href="{download_url}" style="background:#FF2CF3;color:#1a0518;padding:14px 28px;border-radius:6px;text-decoration:none;font-weight:700;font-size:14px;display:inline-block">Download PDF →</a>
@@ -383,17 +396,41 @@ def resource_email(title, description, download_url):
     </div>
     """
 
-def subscriber_welcome_email(email):
+def subscriber_welcome_email(name=None):
+    hi       = greeting(name)
     base_url = os.environ.get("BASE_URL", "https://consultation.vardhasheelan.com")
     return f"""
     <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a0a0b;color:#e8e6f0;padding:40px;border-radius:12px">
-      <h1 style="color:#FF2CF3;margin:0 0 16px">You're on the list!</h1>
+      <h1 style="color:#FF2CF3;margin:0 0 16px">You're on the list! ✈️</h1>
+      <p style="color:#e8e6f0;margin-bottom:12px">{hi}</p>
       <p style="color:#e8e6f0">Thanks for subscribing to the aviation jobs board alert.</p>
-      <p style="color:#9997aa">I'll email you the moment a new cabin crew or ground staff role opens up matching your interest. No spam — just real openings, manually verified.</p>
+      <p style="color:#9997aa;margin-top:12px">I'll email you the moment a new cabin crew or ground staff role opens up matching your interest. No spam — just real openings, manually verified by me.</p>
       <div style="text-align:center;margin:28px 0">
         <a href="{base_url}/jobs" style="background:#FF2CF3;color:#1a0518;padding:14px 28px;border-radius:6px;text-decoration:none;font-weight:700;font-size:14px;display:inline-block">Browse current openings →</a>
       </div>
       <p style="color:#5c5a6b;font-size:12px;margin-top:20px">Vardhasheela N — @vardhasheela.n</p>
+    </div>
+    """
+
+def announcement_email(name, subject, body_text, cta_text, cta_url):
+    """Generic personalized announcement email for bulk sends from admin."""
+    hi = greeting(name)
+    # convert newlines to <br> for HTML
+    body_html = body_text.replace("\n", "<br>")
+    cta_section = f"""
+      <div style="text-align:center;margin:28px 0">
+        <a href="{cta_url}" style="background:#FF2CF3;color:#1a0518;padding:14px 28px;border-radius:6px;text-decoration:none;font-weight:700;font-size:14px;display:inline-block">{cta_text}</a>
+      </div>
+    """ if cta_url and cta_text else ""
+    return f"""
+    <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a0a0b;color:#e8e6f0;padding:40px;border-radius:12px">
+      <p style="color:#e8e6f0;font-size:16px;margin-bottom:20px">{hi}</p>
+      <div style="color:#c8c6de;font-size:15px;line-height:1.8">{body_html}</div>
+      {cta_section}
+      <div style="border-top:1px solid rgba(255,255,255,0.07);margin-top:32px;padding-top:16px">
+        <p style="color:#5c5a6b;font-size:12px;margin:0">Vardhasheela N · @vardhasheela.n on YouTube<br>
+        You're receiving this because you subscribed to the aviation jobs board.</p>
+      </div>
     </div>
     """
 
@@ -436,8 +473,8 @@ def admin_logout():
 @app.route("/admin")
 @admin_required
 def admin_panel():
-    bookings  = sorted(load_bookings(), key=lambda x: x.get("booked_at", ""), reverse=True)
-    rows      = ""
+    bookings = sorted(load_bookings(), key=lambda x: x.get("booked_at", ""), reverse=True)
+    rows     = ""
     for b in bookings:
         bid    = b.get("id", "")
         status = b.get("status", "pending")
@@ -477,7 +514,7 @@ def admin_panel():
     table{{width:100%;border-collapse:collapse;background:#0f0f1a;border:1px solid rgba(123,92,250,0.15);border-radius:8px;overflow:hidden;}}
     th{{padding:12px 8px;text-align:left;font-size:11px;color:#9997aa;letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.08);}}
     tr:hover{{background:rgba(123,92,250,0.04);}}
-    .logout{{font-size:12px;color:#9997aa;text-decoration:none;border:1px solid rgba(255,255,255,0.1);padding:6px 14px;border-radius:4px;}}
+    .btn{{font-size:12px;text-decoration:none;border:1px solid rgba(255,255,255,0.1);padding:6px 14px;border-radius:4px;}}
     </style></head><body>
     <div class="header">
       <div><h1>Consultation bookings</h1><p style="color:#9997aa;font-size:13px;margin-top:4px">consultation.vardhasheelan.com</p></div>
@@ -486,10 +523,11 @@ def admin_panel():
         <div class="stat"><strong style="color:#BA7517">{pending}</strong><span>PENDING</span></div>
         <div class="stat"><strong style="color:#22C55E">{confirmed}</strong><span>CONFIRMED</span></div>
       </div>
-      <a href="/admin/subscribers" class="logout" style="color:#00f5ff;border-color:rgba(0,245,255,0.3)">Jobs board subscribers</a>
-      <a href="/admin/resources" class="logout" style="color:#22C55E;border-color:rgba(34,197,94,0.3)">Send freebies</a>
-      <a href="/admin/send-feedback-emails-now" class="logout" style="color:#FF2CF3;border-color:rgba(255,44,243,0.3)">Send due feedback emails now</a>
-      <a href="/admin/logout" class="logout">Logout</a>
+      <a href="/admin/subscribers" class="btn" style="color:#00f5ff;border-color:rgba(0,245,255,0.3)">Jobs board subscribers</a>
+      <a href="/admin/resources" class="btn" style="color:#22C55E;border-color:rgba(34,197,94,0.3)">Send freebies</a>
+      <a href="/admin/announce" class="btn" style="color:#FF2CF3;border-color:rgba(255,44,243,0.3)">📢 Send announcement</a>
+      <a href="/admin/send-feedback-emails-now" class="btn" style="color:#FF2CF3;border-color:rgba(255,44,243,0.3)">Send due feedback emails now</a>
+      <a href="/admin/logout" class="btn" style="color:#9997aa">Logout</a>
     </div>
     <div style="overflow-x:auto"><table>
       <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Date & Time</th><th>Session</th><th>Goal</th><th>Notes</th><th>Feedback</th><th>Action</th></tr></thead>
@@ -502,6 +540,109 @@ def admin_send_feedback_emails_now():
     send_pending_feedback_emails()
     return redirect("/admin")
 
+# ── ANNOUNCEMENT BROADCASTER ─────────────────────────────────────
+
+@app.route("/admin/announce", methods=["GET", "POST"])
+@admin_required
+def admin_announce():
+    if request.method == "POST":
+        subject    = request.form.get("subject", "").strip()
+        body_text  = request.form.get("body", "").strip()
+        cta_text   = request.form.get("cta_text", "").strip()
+        cta_url    = request.form.get("cta_url", "").strip()
+        audience   = request.form.get("audience", "all")
+
+        if not subject or not body_text:
+            return "Subject and body are required.", 400
+
+        conn = get_jobs_db()
+        if audience == "all":
+            rows = conn.execute("SELECT email, name FROM job_alert_subscribers").fetchall()
+        else:
+            rows = conn.execute(
+                "SELECT email, name FROM job_alert_subscribers WHERE interested_role = ? OR interested_role = 'all'",
+                (audience,)
+            ).fetchall()
+        conn.close()
+
+        sent = 0
+        for row in rows:
+            if send_email(
+                row["email"], row["name"] or "",
+                subject,
+                announcement_email(row["name"], subject, body_text, cta_text, cta_url)
+            ):
+                sent += 1
+
+        return f"""<!DOCTYPE html><html><head><title>Sent!</title>
+        <style>body{{background:#050508;color:#e8e6f0;font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center;}}
+        .box{{background:#0f0f1a;border:1px solid rgba(34,197,94,0.3);border-radius:12px;padding:2.5rem;max-width:400px;}}
+        h2{{color:#22C55E;margin-bottom:1rem;}} a{{color:#FF2CF3;}}</style></head>
+        <body><div class="box">
+        <h2>✅ Sent to {sent} subscribers!</h2>
+        <p style="color:#9997aa;margin-bottom:1.5rem">Each email was personalized with their name automatically.</p>
+        <a href="/admin">← Back to admin</a>
+        </div></body></html>"""
+
+    # GET — show the form
+    conn       = get_jobs_db()
+    sub_count  = conn.execute("SELECT COUNT(*) FROM job_alert_subscribers").fetchone()[0]
+    cc_count   = conn.execute("SELECT COUNT(*) FROM job_alert_subscribers WHERE interested_role = 'cabin_crew'").fetchone()[0]
+    gs_count   = conn.execute("SELECT COUNT(*) FROM job_alert_subscribers WHERE interested_role = 'ground_staff'").fetchone()[0]
+    conn.close()
+
+    return f"""<!DOCTYPE html><html><head><title>Send Announcement</title>
+    <style>*{{box-sizing:border-box;margin:0;padding:0;}}
+    body{{background:#050508;color:#e8e6f0;font-family:sans-serif;padding:2rem;}}
+    h1{{color:#FF2CF3;font-size:1.4rem;margin-bottom:0.5rem;}}
+    .back{{display:inline-block;color:#9997aa;text-decoration:none;font-size:13px;margin-bottom:1.5rem;border:1px solid rgba(255,255,255,0.1);padding:8px 16px;border-radius:6px;}}
+    .box{{background:#0f0f1a;border:1px solid rgba(255,44,243,0.2);border-radius:10px;padding:1.5rem;max-width:600px;}}
+    label{{display:block;font-size:12px;color:#9997aa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;margin-top:16px;}}
+    input,select,textarea{{width:100%;background:#070710;border:1px solid rgba(123,92,250,0.2);border-radius:6px;padding:0.7rem 0.9rem;color:#e8e6f0;font-size:0.9rem;outline:none;}}
+    textarea{{min-height:180px;resize:vertical;line-height:1.6;}}
+    button{{margin-top:20px;width:100%;background:#FF2CF3;color:#1a0518;border:none;border-radius:6px;padding:0.9rem;font-size:0.95rem;font-weight:700;cursor:pointer;}}
+    .counts{{display:flex;gap:12px;margin-bottom:1.5rem;flex-wrap:wrap;}}
+    .count{{background:#0f0f1a;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:10px 16px;font-size:13px;color:#9997aa;}}
+    .count strong{{color:#fff;display:block;font-size:18px;}}
+    .tip{{font-size:12px;color:#5c5a6b;margin-top:6px;}}
+    </style></head><body>
+    <a class="back" href="/admin">← Back to bookings</a>
+    <h1>📢 Send announcement to subscribers</h1>
+    <p style="color:#9997aa;font-size:13px;margin-bottom:1.5rem">Each email is automatically personalized with the subscriber's first name.</p>
+    <div class="counts">
+      <div class="count"><strong>{sub_count}</strong>Total subscribers</div>
+      <div class="count"><strong>{cc_count}</strong>Cabin crew</div>
+      <div class="count"><strong>{gs_count}</strong>Ground staff</div>
+    </div>
+    <div class="box">
+      <form method="POST">
+        <label>Email subject</label>
+        <input type="text" name="subject" placeholder="e.g. I'm doing 1:1 sessions now — and I saved a spot for you ✈️" required/>
+
+        <label>Who to send to</label>
+        <select name="audience">
+          <option value="all">Everyone ({sub_count} subscribers)</option>
+          <option value="cabin_crew">Cabin crew only ({cc_count})</option>
+          <option value="ground_staff">Ground staff only ({gs_count})</option>
+        </select>
+
+        <label>Email body</label>
+        <textarea name="body" placeholder="Write your message here. Each email will start with 'Hi [Name],' automatically. Write naturally — no need to add a greeting." required></textarea>
+        <div class="tip">💡 Just write the body. The greeting 'Hi Priya,' is added automatically for each subscriber.</div>
+
+        <label>Call-to-action button text (optional)</label>
+        <input type="text" name="cta_text" placeholder="e.g. Book your slot →"/>
+
+        <label>Call-to-action URL (optional)</label>
+        <input type="url" name="cta_url" placeholder="e.g. https://consultation.vardhasheelan.com"/>
+
+        <button type="submit">Send to subscribers now →</button>
+      </form>
+    </div>
+    </body></html>"""
+
+# ── SUBSCRIBERS ──────────────────────────────────────────────────
+
 @app.route("/admin/subscribers")
 @admin_required
 def admin_subscribers():
@@ -511,11 +652,12 @@ def admin_subscribers():
     rows = ""
     for s in subs:
         rows += f"""<tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
+          <td style="padding:12px 8px;color:#fff;font-size:13px">{s['name'] or '—'}</td>
           <td style="padding:12px 8px;color:#00f5ff;font-size:13px">{s['email']}</td>
           <td style="padding:12px 8px;color:#9997aa;font-size:12px">{s['interested_category']}</td>
           <td style="padding:12px 8px;color:#9997aa;font-size:12px">{s['interested_role']}</td>
           <td style="padding:12px 8px;color:#9997aa;font-size:12px">{s['created_at']}</td></tr>"""
-    return f"""<!DOCTYPE html><html><head><title>Jobs Board Subscribers</title>
+    return f"""<!DOCTYPE html><html><head><title>Subscribers</title>
     <style>*{{box-sizing:border-box;margin:0;padding:0;}}
     body{{background:#050508;color:#e8e6f0;font-family:sans-serif;padding:2rem;}}
     h1{{color:#FF2CF3;font-size:1.4rem;margin-bottom:1.5rem;}}
@@ -528,8 +670,8 @@ def admin_subscribers():
     <a class="btn" href="/admin/subscribers/export">Download as Excel</a>
     <a class="back" href="/admin">← Back to bookings</a>
     <table>
-      <thead><tr><th>Email</th><th>Category</th><th>Role</th><th>Subscribed</th></tr></thead>
-      <tbody>{rows or '<tr><td colspan="4" style="padding:2rem;text-align:center;color:#9997aa">No subscribers yet</td></tr>'}</tbody>
+      <thead><tr><th>Name</th><th>Email</th><th>Category</th><th>Role</th><th>Subscribed</th></tr></thead>
+      <tbody>{rows or '<tr><td colspan="5" style="padding:2rem;text-align:center;color:#9997aa">No subscribers yet</td></tr>'}</tbody>
     </table></body></html>"""
 
 @app.route("/admin/subscribers/export")
@@ -543,9 +685,9 @@ def admin_subscribers_export():
     wb = Workbook()
     ws = wb.active
     ws.title = "Subscribers"
-    ws.append(["Email", "Interested Category", "Interested Role", "Subscribed At"])
+    ws.append(["Name", "Email", "Interested Category", "Interested Role", "Subscribed At"])
     for s in subs:
-        ws.append([s["email"], s["interested_category"], s["interested_role"], s["created_at"]])
+        ws.append([s["name"] or "", s["email"], s["interested_category"], s["interested_role"], s["created_at"]])
     buffer = BytesIO()
     wb.save(buffer)
     buffer.seek(0)
@@ -563,10 +705,9 @@ def admin_resources():
     conn.close()
     rows = ""
     for r in resources:
-        # count how many NEW subscribers haven't received this yet
         already   = get_already_sent_emails(r["id"])
         all_subs  = get_matching_subscribers(r["category"])
-        new_count = len([e for e in all_subs if e not in already])
+        new_count = len([e for e, n in all_subs if e not in already])
         new_badge = f'<span style="color:#22C55E;font-size:11px">({new_count} new)</span>' if new_count > 0 else '<span style="color:#5c5a6b;font-size:11px">(all sent)</span>'
         rows += f"""<tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
           <td style="padding:12px 8px;color:#fff;font-size:13px">{r['title']}</td>
@@ -575,7 +716,7 @@ def admin_resources():
           <td style="padding:12px 8px;color:#9997aa;font-size:12px">{r['uploaded_at']}</td>
           <td style="padding:12px 8px">
             <a href="/resources/{r['filename']}" target="_blank" style="color:#7b5cfa;font-size:12px;margin-right:10px">View PDF</a>
-            <a href="/admin/resources/{r['id']}/resend" style="color:#FF2CF3;font-size:12px">Resend to new subscribers</a>
+            <a href="/admin/resources/{r['id']}/resend" style="color:#FF2CF3;font-size:12px">Resend to new</a>
             {new_badge}
           </td></tr>"""
     return f"""<!DOCTYPE html><html><head><title>Resources & Freebies</title>
@@ -595,8 +736,7 @@ def admin_resources():
     </style></head><body>
     <a class="back" href="/admin">← Back to bookings</a>
     <h1>Send a freebie / resource</h1>
-    <div class="note"><strong>How resend works:</strong> "Resend to new subscribers" only emails people who joined <em>after</em> this resource was first sent. Existing subscribers who already received it are skipped automatically.</div>
-    <p style="color:#9997aa;font-size:13px;margin-bottom:1.5rem">Upload a PDF, pick who it's for — it emails everyone matching that category automatically.</p>
+    <div class="note"><strong>Personalized:</strong> Each email greets the subscriber by their first name. Resend only goes to new subscribers who haven't received it yet.</div>
     <div class="upload-box">
       <form action="/admin/resources/upload" method="POST" enctype="multipart/form-data">
         <label>Title (used as email subject)</label>
@@ -617,8 +757,7 @@ def admin_resources():
     <table>
       <thead><tr><th>Title</th><th>Category</th><th>Sent</th><th>Uploaded</th><th>Actions</th></tr></thead>
       <tbody>{rows or '<tr><td colspan="5" style="padding:2rem;text-align:center;color:#9997aa">No resources uploaded yet</td></tr>'}</tbody>
-    </table>
-    </body></html>"""
+    </table></body></html>"""
 
 @app.route("/admin/resources/upload", methods=["POST"])
 @admin_required
@@ -627,14 +766,10 @@ def admin_resources_upload():
     description = request.form.get("description", "").strip()
     category    = request.form.get("category", "all")
     file        = request.files.get("file")
-
     if not title or not file or file.filename == "":
         return "Title and PDF file are required.", 400
-
     filename = secure_filename(f"{int(datetime.now().timestamp())}_{file.filename}")
-    filepath = os.path.join(RESOURCES_DIR, filename)
-    file.save(filepath)
-
+    file.save(os.path.join(RESOURCES_DIR, filename))
     conn = get_jobs_db()
     cur  = conn.execute(
         "INSERT INTO resources (title, description, category, filename) VALUES (?, ?, ?, ?)",
@@ -643,22 +778,18 @@ def admin_resources_upload():
     resource_id = cur.lastrowid
     conn.commit()
     conn.close()
-
     base_url     = os.environ.get("BASE_URL", "https://consultation.vardhasheelan.com")
     download_url = f"{base_url}/resources/{filename}"
     recipients   = get_matching_subscribers(category)
-
     sent = 0
-    for email in recipients:
-        if send_email(email, "", title, resource_email(title, description, download_url)):
+    for email, name in recipients:
+        if send_email(email, name or "", title, resource_email(title, description, download_url, name)):
             sent += 1
-            mark_resource_sent(resource_id, email)  # ← track who received it
-
+            mark_resource_sent(resource_id, email)
     conn = get_jobs_db()
     conn.execute("UPDATE resources SET sent_count = ? WHERE id = ?", (sent, resource_id))
     conn.commit()
     conn.close()
-
     return redirect("/admin/resources")
 
 @app.route("/admin/resources/<int:resource_id>/resend")
@@ -667,30 +798,23 @@ def admin_resources_resend(resource_id):
     conn = get_jobs_db()
     r    = conn.execute("SELECT * FROM resources WHERE id = ?", (resource_id,)).fetchone()
     conn.close()
-
     if not r:
         return "Resource not found", 404
-
-    base_url     = os.environ.get("BASE_URL", "https://consultation.vardhasheelan.com")
-    download_url = f"{base_url}/resources/{r['filename']}"
+    base_url       = os.environ.get("BASE_URL", "https://consultation.vardhasheelan.com")
+    download_url   = f"{base_url}/resources/{r['filename']}"
     all_recipients = get_matching_subscribers(r["category"])
-
-    # ── FIX: only send to subscribers who haven't received this yet ──
     already_sent   = get_already_sent_emails(resource_id)
-    new_recipients = [e for e in all_recipients if e not in already_sent]
-
+    new_recipients = [(e, n) for e, n in all_recipients if e not in already_sent]
     sent = 0
-    for email in new_recipients:
-        if send_email(email, "", r["title"], resource_email(r["title"], r["description"], download_url)):
+    for email, name in new_recipients:
+        if send_email(email, name or "", r["title"], resource_email(r["title"], r["description"], download_url, name)):
             sent += 1
-            mark_resource_sent(resource_id, email)  # ← track them too
-
+            mark_resource_sent(resource_id, email)
     if sent > 0:
         conn = get_jobs_db()
         conn.execute("UPDATE resources SET sent_count = sent_count + ? WHERE id = ?", (sent, resource_id))
         conn.commit()
         conn.close()
-
     return redirect("/admin/resources")
 
 @app.route("/resources/<path:filename>")
@@ -744,19 +868,15 @@ def get_slots():
         date = datetime.strptime(date_str, "%Y-%m-%d")
     except ValueError:
         return jsonify({"error":"invalid date"}), 400
-
     if date.weekday() not in AVAILABILITY["days"]:
         return jsonify({"slots": [], "reason": "unavailable_day"})
-
     duration   = SESSION_DURATIONS.get(session_type, SESSION_DURATIONS["1hr"])["duration"]
     start_hour = AVAILABILITY["start_hour"]
     end_hour   = AVAILABILITY["end_hour"]
-
     booked_slots = set()
     for b in load_bookings():
         if b.get("date") == date_str and b.get("status") != "declined":
             booked_slots.add(b.get("time"))
-
     service       = get_calendar_service()
     calendar_busy = set()
     if service:
@@ -778,7 +898,6 @@ def get_slots():
                         t += timedelta(minutes=30)
         except Exception as ex:
             print(f"Calendar error: {ex}")
-
     slots   = []
     current = datetime(date.year,date.month,date.day,start_hour,0)
     end_dt  = datetime(date.year,date.month,date.day,end_hour,0)
@@ -787,7 +906,6 @@ def get_slots():
         booked   = time_str in booked_slots or time_str in calendar_busy
         slots.append({"time":time_str,"booked":booked,"display":current.strftime("%I:%M %p")})
         current += timedelta(minutes=30)
-
     return jsonify({"slots":slots,"date":date_str})
 
 @app.route("/api/book", methods=["POST"])
@@ -796,27 +914,22 @@ def book():
     for field in ["name","email","date","time","session_type"]:
         if not data.get(field):
             return jsonify({"error":f"{field} is required"}), 400
-
     try:
         d = datetime.strptime(data["date"],"%Y-%m-%d")
         if d.weekday() not in AVAILABILITY["days"]:
             return jsonify({"error":"Bookings are only available Mon–Fri."}), 400
     except ValueError:
         return jsonify({"error":"Invalid date"}), 400
-
     for b in load_bookings():
         if b.get("date")==data["date"] and b.get("time")==data["time"] and b.get("status")!="declined":
             return jsonify({"error":"This slot was just booked. Please choose another."}), 409
-
     stype = SESSION_DURATIONS.get(data["session_type"])
     if not stype:
         return jsonify({"error":"Invalid session type"}), 400
-
     import uuid
     booking_id = str(uuid.uuid4())[:8]
-
-    meet_link = ""
-    service   = get_calendar_service()
+    meet_link  = ""
+    service    = get_calendar_service()
     if service:
         try:
             h, m     = map(int, data["time"].split(":"))
@@ -835,11 +948,9 @@ def book():
             meet_link = created.get("hangoutLink","")
         except Exception as ex:
             print(f"Calendar event error: {ex}")
-
     date_display = d.strftime("%A, %d %B %Y")
     h, m         = map(int, data["time"].split(":"))
     time_display = datetime(2000,1,1,h,m).strftime("%I:%M %p")
-
     booking = {
         "id": booking_id,
         "name": data["name"], "email": data["email"], "phone": data.get("phone",""),
@@ -850,18 +961,15 @@ def book():
         "booked_at": datetime.now().isoformat(),
     }
     save_booking(booking)
-
     send_email(data["email"], data["name"],
                "Booking received — Vardhasheela N",
                client_confirmation_email(data["name"], data["session_type"], date_display, time_display))
-
     send_email(GMAIL_USER, "Vardhasheela",
                f"New booking: {data['name']} — {date_display} {time_display}",
                owner_notification_email(
                    data["name"], data["email"], data.get("phone",""),
                    data["session_type"], date_display, time_display,
                    data.get("goal",""), data.get("followup",""), data.get("topic",""), booking_id))
-
     return jsonify({
         "success": True,
         "message": "Booking received! Check your email for payment details. You'll get a confirmation once Vardhasheela accepts.",
@@ -913,19 +1021,14 @@ def feedback_form(booking_id):
     bookings = load_bookings()
     booking  = next((b for b in bookings if b.get("id") == booking_id), None)
     if not booking:
-        return "This feedback link isn't valid. If you think that's a mistake, reply to your confirmation email.", 404
+        return "This feedback link isn't valid.", 404
     stype        = SESSION_DURATIONS.get(booking.get("session_type", "1hr"), {})
     date_obj     = datetime.strptime(booking["date"], "%Y-%m-%d")
     date_display = date_obj.strftime("%d %B %Y")
-    return render_template(
-        "feedback.html",
-        booking_id=booking_id,
-        name=booking.get("name", ""),
-        session_label=stype.get("label", ""),
-        date_display=date_display,
-        already_submitted=bool(booking.get("feedback")),
-        existing=booking.get("feedback"),
-    )
+    return render_template("feedback.html",
+        booking_id=booking_id, name=booking.get("name",""),
+        session_label=stype.get("label",""), date_display=date_display,
+        already_submitted=bool(booking.get("feedback")), existing=booking.get("feedback"))
 
 @app.route("/api/feedback/<booking_id>", methods=["POST"])
 def submit_feedback(booking_id):
@@ -941,11 +1044,7 @@ def submit_feedback(booking_id):
     booking  = next((b for b in bookings if b.get("id") == booking_id), None)
     if not booking:
         return jsonify({"error": "Booking not found."}), 404
-    booking["feedback"] = {
-        "rating": rating,
-        "comment": comment,
-        "submitted_at": datetime.now().isoformat(),
-    }
+    booking["feedback"] = {"rating": rating, "comment": comment, "submitted_at": datetime.now().isoformat()}
     save_bookings(bookings)
     send_email(GMAIL_USER, "Vardhasheela",
                f"New feedback from {booking.get('name','')} — {rating}★",
@@ -975,6 +1074,7 @@ def jobs_board():
 @app.route("/jobs/alert-me", methods=["POST"])
 def jobs_alert_me():
     email    = (request.form.get("email") or "").strip().lower()
+    name     = (request.form.get("name") or "").strip()
     category = request.form.get("interested_category", "both")
     role     = request.form.get("interested_role", "all")
 
@@ -984,33 +1084,33 @@ def jobs_alert_me():
     conn = get_jobs_db()
     try:
         conn.execute(
-            """INSERT INTO job_alert_subscribers (email, interested_category, interested_role)
-               VALUES (?, ?, ?)
+            """INSERT INTO job_alert_subscribers (name, email, interested_category, interested_role)
+               VALUES (?, ?, ?, ?)
                ON CONFLICT(email) DO UPDATE SET
+                 name = excluded.name,
                  interested_category = excluded.interested_category,
                  interested_role = excluded.interested_role""",
-            (email, category, role),
+            (name or None, email, category, role),
         )
         conn.commit()
     finally:
         conn.close()
 
-    # Notify owner of new subscriber
-    send_email(
-        GMAIL_USER, "Vardhasheela",
-        f"New jobs board subscriber: {email}",
-        f"""<div style="font-family:sans-serif;background:#0a0a0b;color:#e8e6f0;padding:32px;border-radius:12px">
-          <h3 style="color:#7b5cfa">✈️ New jobs board alert subscriber</h3>
-          <p><strong>Email:</strong> {email}</p>
-          <p><strong>Interested in:</strong> {category} / {role}</p>
-        </div>"""
-    )
+    # Notify owner
+    send_email(GMAIL_USER, "Vardhasheela",
+               f"New jobs board subscriber: {name or email}",
+               f"""<div style="font-family:sans-serif;background:#0a0a0b;color:#e8e6f0;padding:32px;border-radius:12px">
+                 <h3 style="color:#7b5cfa">✈️ New jobs board alert subscriber</h3>
+                 <p><strong>Name:</strong> {name or 'Not provided'}</p>
+                 <p><strong>Email:</strong> {email}</p>
+                 <p><strong>Interested in:</strong> {category} / {role}</p>
+               </div>""")
 
-    # Send welcome email
-    send_email(email, "", "You're on the list! — Aviation Jobs Board",
-               subscriber_welcome_email(email))
+    # Welcome email — personalized
+    send_email(email, name, "You're on the list! — Aviation Jobs Board",
+               subscriber_welcome_email(name))
 
-    # ── FIX: send existing resources to new subscriber (only ones they haven't seen) ──
+    # Send existing matching resources — only ones not yet received
     base_url = os.environ.get("BASE_URL", "https://consultation.vardhasheelan.com")
     conn     = get_jobs_db()
     existing_resources = conn.execute(
@@ -1022,11 +1122,187 @@ def jobs_alert_me():
         already_sent = get_already_sent_emails(res["id"])
         if email not in already_sent:
             download_url = f"{base_url}/resources/{res['filename']}"
-            if send_email(email, "", res["title"],
-                          resource_email(res["title"], res["description"], download_url)):
+            if send_email(email, name, res["title"],
+                          resource_email(res["title"], res["description"], download_url, name)):
                 mark_resource_sent(res["id"], email)
 
     return jsonify({"ok": True})
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
+
+# ── PUBLIC FEEDBACK & TESTIMONIALS ───────────────────────────────
+# Stored separately from booking-linked feedback so offline sessions
+# (like Sumithra's) can also leave reviews that show on the site.
+
+TESTIMONIALS_FILE = "/data/testimonials.json"
+
+def load_testimonials():
+    if not os.path.exists(TESTIMONIALS_FILE):
+        return []
+    with open(TESTIMONIALS_FILE) as f:
+        return json.load(f)
+
+def save_testimonials(t):
+    with open(TESTIMONIALS_FILE, "w") as f:
+        json.dump(t, f, indent=2)
+
+def display_name(name, consent):
+    """Return the name to show publicly based on consent choice."""
+    name = (name or "").strip()
+    if consent == "no":
+        return None
+    if consent == "anonymous":
+        return "Anonymous"
+    if consent == "initials":
+        parts = name.split()
+        return ".".join(p[0].upper() for p in parts if p) + "."
+    return name.split()[0] if name else "Anonymous"  # first name only for 'yes'
+
+@app.route("/feedback/public")
+def public_feedback_form():
+    return render_template("public_feedback.html")
+
+@app.route("/api/feedback/public", methods=["POST"])
+def submit_public_feedback():
+    data    = request.json or {}
+    name    = (data.get("name") or "").strip()
+    comment = (data.get("comment") or "").strip()
+    liked   = (data.get("liked") or "").strip()
+    consent = data.get("consent", "yes")
+    try:
+        rating = int(data.get("rating", 0))
+    except (TypeError, ValueError):
+        rating = 0
+
+    if not name or rating < 1 or rating > 5:
+        return jsonify({"error": "Please enter your name and select a rating."}), 400
+
+    import uuid
+    t_id = str(uuid.uuid4())[:8]
+    testimonial = {
+        "id":         t_id,
+        "name":       name,
+        "rating":     rating,
+        "liked":      liked,
+        "comment":    comment,
+        "consent":    consent,
+        "show_name":  display_name(name, consent),
+        "visible":    consent != "no",   # private ones stored but not shown
+        "submitted_at": datetime.now().isoformat(),
+        "source":     "public_form",
+    }
+    testimonials = load_testimonials()
+    testimonials.append(testimonial)
+    save_testimonials(testimonials)
+
+    # Notify Vardhasheela
+    stars = "⭐" * rating + "☆" * (5 - rating)
+    liked_display = liked.replace(",", " · ") if liked else "—"
+    send_email(
+        GMAIL_USER, "Vardhasheela",
+        f"New testimonial from {name} — {rating}★",
+        f"""<div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a0a0b;color:#e8e6f0;padding:40px;border-radius:12px">
+          <h2 style="color:#FF2CF3;margin:0 0 20px">🌟 New public feedback</h2>
+          <div style="background:rgba(255,44,243,0.08);border:1px solid rgba(255,44,243,0.2);border-radius:8px;padding:20px">
+            <table style="width:100%;font-size:14px">
+              <tr><td style="color:#9997aa;padding:5px 0;width:110px">From</td><td style="color:#fff;font-weight:600">{name}</td></tr>
+              <tr><td style="color:#9997aa;padding:5px 0">Rating</td><td style="color:#FFD700;font-size:18px">{stars}</td></tr>
+              <tr><td style="color:#9997aa;padding:5px 0">Liked most</td><td style="color:#fff">{liked_display}</td></tr>
+              <tr><td style="color:#9997aa;padding:5px 0">Consent</td><td style="color:#fff">{consent}</td></tr>
+            </table>
+            <p style="color:#9997aa;font-size:12px;margin:14px 0 4px">Comment:</p>
+            <p style="color:#fff;font-size:14px;white-space:pre-wrap">{comment or '(no comment)'}</p>
+          </div>
+          <p style="color:#5c5a6b;font-size:12px;margin-top:20px">
+            {'✅ Will show on site as: ' + display_name(name, consent) if consent != 'no' else '🔒 Marked private — will not show on site'}
+          </p>
+        </div>"""
+    )
+
+    return jsonify({"success": True})
+
+@app.route("/api/testimonials")
+def get_testimonials():
+    """Public API — returns only visible testimonials for the website."""
+    testimonials = load_testimonials()
+    # Also pull 5-star feedback from booking-linked reviews
+    bookings = load_bookings()
+    for b in bookings:
+        fb = b.get("feedback")
+        if fb and fb.get("rating", 0) >= 4:
+            testimonials.append({
+                "id":        b.get("id",""),
+                "name":      b.get("name","").split()[0],  # first name only
+                "rating":    fb["rating"],
+                "liked":     "",
+                "comment":   fb.get("comment",""),
+                "visible":   True,
+                "show_name": b.get("name","").split()[0],
+                "submitted_at": fb.get("submitted_at",""),
+                "source":    "booking",
+            })
+    visible = [t for t in testimonials if t.get("visible") and t.get("comment")]
+    visible.sort(key=lambda x: x.get("submitted_at",""), reverse=True)
+    return jsonify(visible[:10])  # return latest 10
+
+@app.route("/admin/testimonials")
+@admin_required
+def admin_testimonials():
+    testimonials = load_testimonials()
+    testimonials.sort(key=lambda x: x.get("submitted_at",""), reverse=True)
+    rows = ""
+    for t in testimonials:
+        stars_html = "★" * t.get("rating",0) + "☆" * (5 - t.get("rating",0))
+        visibility = "✅ Visible" if t.get("visible") else "🔒 Private"
+        toggle_action = "hide" if t.get("visible") else "show"
+        toggle_label  = "Hide" if t.get("visible") else "Show"
+        rows += f"""<tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
+          <td style="padding:12px 8px;color:#fff;font-size:13px">{t.get('name','')}</td>
+          <td style="padding:12px 8px;color:#FFD700">{stars_html}</td>
+          <td style="padding:12px 8px;color:#9997aa;font-size:12px;max-width:200px">{(t.get('comment','') or '—')[:80]}</td>
+          <td style="padding:12px 8px;color:#9997aa;font-size:12px">{(t.get('liked','') or '—')[:60]}</td>
+          <td style="padding:12px 8px;color:#9997aa;font-size:12px">{t.get('show_name','')}</td>
+          <td style="padding:12px 8px;font-size:12px">{visibility}</td>
+          <td style="padding:12px 8px">
+            <a href="/admin/testimonials/{t['id']}/{toggle_action}"
+               style="color:{'#EF4444' if t.get('visible') else '#22C55E'};font-size:12px;text-decoration:none;border:1px solid {'rgba(239,68,68,0.3)' if t.get('visible') else 'rgba(34,197,94,0.3)'};padding:4px 10px;border-radius:4px">
+              {toggle_label}
+            </a>
+          </td>
+        </tr>"""
+    return f"""<!DOCTYPE html><html><head><title>Testimonials</title>
+    <style>*{{box-sizing:border-box;margin:0;padding:0;}}
+    body{{background:#050508;color:#e8e6f0;font-family:sans-serif;padding:2rem;}}
+    h1{{color:#FF2CF3;font-size:1.4rem;margin-bottom:1.5rem;}}
+    table{{width:100%;border-collapse:collapse;background:#0f0f1a;border:1px solid rgba(255,44,243,0.15);border-radius:8px;overflow:hidden;}}
+    th{{padding:12px 8px;text-align:left;font-size:11px;color:#9997aa;letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.08);}}
+    tr:hover{{background:rgba(123,92,250,0.04);}}
+    .back{{display:inline-block;color:#9997aa;text-decoration:none;font-size:13px;margin-bottom:1.5rem;border:1px solid rgba(255,255,255,0.1);padding:8px 16px;border-radius:6px;}}
+    .link-box{{background:rgba(255,44,243,0.08);border:1px solid rgba(255,44,243,0.2);border-radius:8px;padding:1rem 1.25rem;margin-bottom:1.5rem;font-size:13px;}}
+    .link-box strong{{color:#FF2CF3;}}
+    .link-box code{{color:#00F5FF;font-family:monospace;word-break:break-all;}}
+    </style></head><body>
+    <a class="back" href="/admin">← Back to bookings</a>
+    <h1>Testimonials ({len(testimonials)})</h1>
+    <div class="link-box">
+      <strong>📋 Share this link with students for feedback:</strong><br>
+      <code>https://consultation.vardhasheelan.com/feedback/public</code><br><br>
+      <strong>📡 Testimonials API (used by your website):</strong><br>
+      <code>https://consultation.vardhasheelan.com/api/testimonials</code>
+    </div>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>Name</th><th>Rating</th><th>Comment</th><th>Liked most</th><th>Shows as</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody>{rows or '<tr><td colspan="7" style="padding:2rem;text-align:center;color:#9997aa">No testimonials yet</td></tr>'}</tbody>
+    </table></div></body></html>"""
+
+@app.route("/admin/testimonials/<t_id>/<action>")
+@admin_required
+def admin_testimonial_toggle(t_id, action):
+    testimonials = load_testimonials()
+    for t in testimonials:
+        if t.get("id") == t_id:
+            t["visible"] = (action == "show")
+            break
+    save_testimonials(testimonials)
+    return redirect("/admin/testimonials")
