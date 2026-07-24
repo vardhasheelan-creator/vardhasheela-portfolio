@@ -145,8 +145,8 @@ footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
 .t-section-tag{font-family:var(--mono);font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--pink);margin-bottom:0.75rem;border-left:2px solid var(--pink);padding-left:0.75rem;}
 .t-section-title{font-size:clamp(1.2rem,2vw,1.6rem);font-weight:700;color:var(--white);margin-bottom:0.4rem;letter-spacing:-0.02em;}
 .t-section-sub{font-size:0.85rem;color:var(--muted);margin-bottom:1.75rem;}
-.testimonials-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;}
-.t-card{background:var(--surface);border:1px solid rgba(255,44,243,0.15);border-radius:12px;padding:1.5rem;position:relative;transition:border-color 0.2s;}
+.testimonials-grid{display:grid;grid-template-columns:1fr;gap:1rem;max-width:680px;}
+.t-card{background:var(--surface);border:1px solid rgba(255,44,243,0.15);border-radius:8px;padding:1.75rem 2rem;position:relative;transition:border-color 0.2s;display:flex;flex-direction:column;gap:0.75rem;}
 .t-card:hover{border-color:rgba(255,44,243,0.3);}
 .t-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--pink),var(--neon));border-radius:12px 12px 0 0;opacity:0.6;}
 .t-stars{color:#FFD700;font-size:1rem;margin-bottom:0.75rem;letter-spacing:2px;}
@@ -326,7 +326,16 @@ async function loadTestimonials() {
     }
     grid.innerHTML = data.map(t => {
       const stars    = '★'.repeat(t.rating) + '☆'.repeat(5 - t.rating);
-      const liked    = t.liked ? t.liked.split(',').map(l => `<span class="t-liked-chip">${l.trim()}</span>`).join('') : '';
+      const likedLabels = {
+        clarity:'Clear explanations', confidence:'Boosted my confidence',
+        interview_prep:'Interview preparation', career_guidance:'Career guidance',
+        english:'English communication tips', personalised:'Felt personalised',
+        actionable:'Actionable next steps', warm:'Warm & supportive'
+      };
+      const liked = t.liked ? t.liked.split(',').map(l => {
+        const k = l.trim();
+        return `<span class="t-liked-chip">${likedLabels[k] || k}</span>`;
+      }).join('') : '';
       const likedRow = liked ? `<div class="t-liked">${liked}</div>` : '';
       const verified = t.source === 'booking' ? '<span class="t-verified">✓ verified</span>' : '';
       return `<div class="t-card">
