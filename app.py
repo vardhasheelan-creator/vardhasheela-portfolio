@@ -542,6 +542,8 @@ def admin_panel():
       </div>
       <a href="/admin/subscribers" class="btn" style="color:#00f5ff;border-color:rgba(0,245,255,0.3)">Jobs board subscribers</a>
       <a href="/admin/resources" class="btn" style="color:#22C55E;border-color:rgba(34,197,94,0.3)">Send freebies</a>
+      <a href="/admin/affiliate" class="btn" style="color:#FF9900;border-color:rgba(255,153,0,0.3)">🛒 Affiliate products</a>
+      <a href="/admin/waitlist" class="btn" style="color:#7B5CFA;border-color:rgba(123,92,250,0.3)">📋 Waitlist</a>
       <a href="/admin/announce" class="btn" style="color:#FF2CF3;border-color:rgba(255,44,243,0.3)">📢 Send announcement</a>
       <a href="/admin/send-feedback-emails-now" class="btn" style="color:#FF2CF3;border-color:rgba(255,44,243,0.3)">Send due feedback emails now</a>
       <a href="/admin/logout" class="btn" style="color:#9997aa">Logout</a>
@@ -1524,12 +1526,6 @@ def download_resource(resource_id):
 
     return send_file(os.path.join(RESOURCES_DIR, r["filename"]), as_attachment=True)
 
-# ── AFFILIATE PAGE (no gate — nothing to protect) ────────────────
-
-@app.route("/affiliate")
-def affiliate_page():
-    return render_template("affiliate.html")
-
 # ── ADMIN: manage resource type/price/availability ───────────────
 
 @app.route("/admin/resources/<int:resource_id>/settings", methods=["POST"])
@@ -1574,6 +1570,218 @@ def admin_visitors():
     <table>
       <thead><tr><th>Name</th><th>Email</th><th>First identified on</th><th>Date</th></tr></thead>
       <tbody>{rows or '<tr><td colspan="4" style="padding:2rem;text-align:center;color:#9997aa">No visitors yet</td></tr>'}</tbody>
+    </table></body></html>"""
+
+# ══════════════════════════════════════════════════════════════
+# ROUND 2 ADDITIONS: Affiliate admin CRUD + "Notify me" waitlist
+# Add this block BEFORE: if __name__ == "__main__":
+# ══════════════════════════════════════════════════════════════
+
+AFFILIATE_SCHEMA = """
+CREATE TABLE IF NOT EXISTS affiliate_products (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    category TEXT NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT,
+    url TEXT NOT NULL,
+    icon TEXT DEFAULT '🛒',
+    sort_order INTEGER DEFAULT 0,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS waitlist (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    resource_id INTEGER NOT NULL,
+    email TEXT NOT NULL,
+    name TEXT,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(resource_id, email)
+);
+"""
+
+def init_round2_schema():
+    conn = get_jobs_db()
+    conn.executescript(AFFILIATE_SCHEMA)
+    conn.commit()
+    conn.close()
+
+init_round2_schema()
+
+# ── PUBLIC AFFILIATE PAGE (now dynamic) ──────────────────────────
+
+@app.route("/affiliate")
+def affiliate_page_dynamic():
+    conn = get_jobs_db()
+    products = conn.execute("SELECT * FROM affiliate_products ORDER BY category, sort_order, id").fetchall()
+    conn.close()
+    # group by category, preserving first-seen order
+    grouped = {}
+    order = []
+    for p in products:
+        if p["category"] not in grouped:
+            grouped[p["category"]] = []
+            order.append(p["category"])
+        grouped[p["category"]].append(p)
+    return render_template("affiliate.html", grouped=grouped, category_order=order)
+
+# ── ADMIN: manage affiliate products ──────────────────────────────
+
+@app.route("/admin/affiliate")
+@admin_required
+def admin_affiliate():
+    conn = get_jobs_db()
+    products = conn.execute("SELECT * FROM affiliate_products ORDER BY category, sort_order, id").fetchall()
+    conn.close()
+    rows = ""
+    for p in products:
+        rows += f"""<tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
+          <td style="padding:12px 8px;font-size:18px">{p['icon']}</td>
+          <td style="padding:12px 8px;color:#fff;font-size:13px">{p['title']}</td>
+          <td style="padding:12px 8px;color:#9997aa;font-size:12px">{p['category']}</td>
+          <td style="padding:12px 8px;color:#9997aa;font-size:12px;max-width:220px">{(p['description'] or '')[:60]}</td>
+          <td style="padding:12px 8px;color:#00f5ff;font-size:12px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><a href="{p['url']}" target="_blank" style="color:#00f5ff">{p['url'][:40]}...</a></td>
+          <td style="padding:12px 8px">
+            <a href="/admin/affiliate/{p['id']}/delete" onclick="return confirm('Delete this product?')" style="color:#EF4444;font-size:12px;text-decoration:none;border:1px solid rgba(239,68,68,0.3);padding:4px 10px;border-radius:4px">Delete</a>
+          </td></tr>"""
+    return f"""<!DOCTYPE html><html><head><title>Affiliate Products</title>
+    <style>*{{box-sizing:border-box;margin:0;padding:0;}}
+    body{{background:#050508;color:#e8e6f0;font-family:sans-serif;padding:2rem;}}
+    h1{{color:#FF9900;font-size:1.4rem;margin-bottom:0.5rem;}}
+    .back{{display:inline-block;color:#9997aa;text-decoration:none;font-size:13px;margin-bottom:1.5rem;border:1px solid rgba(255,255,255,0.1);padding:8px 16px;border-radius:6px;}}
+    .add-box{{background:#0f0f1a;border:1px solid rgba(255,153,0,0.25);border-radius:10px;padding:1.5rem;margin-bottom:2rem;max-width:520px;}}
+    label{{display:block;font-size:12px;color:#9997aa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;margin-top:14px;}}
+    input,select,textarea{{width:100%;background:#070710;border:1px solid rgba(255,153,0,0.2);border-radius:6px;padding:0.7rem 0.9rem;color:#e8e6f0;font-size:0.9rem;outline:none;}}
+    textarea{{min-height:70px;resize:vertical;}}
+    button{{margin-top:18px;width:100%;background:#FF9900;color:#1a1000;border:none;border-radius:6px;padding:0.85rem;font-size:0.9rem;font-weight:700;cursor:pointer;}}
+    table{{width:100%;border-collapse:collapse;background:#0f0f1a;border:1px solid rgba(255,153,0,0.15);border-radius:8px;overflow:hidden;}}
+    th{{padding:12px 8px;text-align:left;font-size:11px;color:#9997aa;letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.08);}}
+    .hint{{font-size:11px;color:#5c5a6b;margin-top:4px;}}
+    </style></head><body>
+    <a class="back" href="/admin">← Back to bookings</a>
+    <h1>🛒 Affiliate products</h1>
+    <div class="add-box">
+      <form action="/admin/affiliate/add" method="POST">
+        <label>Category</label>
+        <select name="category" required>
+          <option value="Filming &amp; content creation">Filming & content creation</option>
+          <option value="Work &amp; tech">Work & tech</option>
+          <option value="Cabin crew &amp; grooming essentials">Cabin crew & grooming essentials</option>
+        </select>
+        <label>Product title</label>
+        <input type="text" name="title" placeholder="e.g. Collar Mic" required/>
+        <label>Short description</label>
+        <textarea name="description" placeholder="e.g. The exact lapel mic I use for clean audio on Reels..."></textarea>
+        <label>Amazon affiliate link</label>
+        <input type="url" name="url" placeholder="https://amzn.to/..." required/>
+        <div class="hint">Paste your full Amazon affiliate tracking link here</div>
+        <label>Emoji icon (optional)</label>
+        <input type="text" name="icon" placeholder="🎙️" maxlength="4"/>
+        <button type="submit">Add product</button>
+      </form>
+    </div>
+    <table>
+      <thead><tr><th></th><th>Title</th><th>Category</th><th>Description</th><th>Link</th><th>Action</th></tr></thead>
+      <tbody>{rows or '<tr><td colspan="6" style="padding:2rem;text-align:center;color:#9997aa">No products added yet</td></tr>'}</tbody>
+    </table></body></html>"""
+
+@app.route("/admin/affiliate/add", methods=["POST"])
+@admin_required
+def admin_affiliate_add():
+    category    = request.form.get("category", "").strip()
+    title       = request.form.get("title", "").strip()
+    description = request.form.get("description", "").strip()
+    url         = request.form.get("url", "").strip()
+    icon        = request.form.get("icon", "").strip() or "🛒"
+
+    if not category or not title or not url:
+        return "Category, title, and link are required.", 400
+
+    conn = get_jobs_db()
+    conn.execute(
+        "INSERT INTO affiliate_products (category, title, description, url, icon) VALUES (?, ?, ?, ?, ?)",
+        (category, title, description, url, icon)
+    )
+    conn.commit()
+    conn.close()
+    return redirect("/admin/affiliate")
+
+@app.route("/admin/affiliate/<int:product_id>/delete")
+@admin_required
+def admin_affiliate_delete(product_id):
+    conn = get_jobs_db()
+    conn.execute("DELETE FROM affiliate_products WHERE id = ?", (product_id,))
+    conn.commit()
+    conn.close()
+    return redirect("/admin/affiliate")
+
+# ── "NOTIFY ME" WAITLIST for coming-soon ebooks/courses ──────────
+
+@app.route("/api/notify-me", methods=["POST"])
+def notify_me():
+    data = request.json or {}
+    resource_id = data.get("resource_id")
+    email = (data.get("email") or "").strip().lower()
+    name  = (data.get("name") or "").strip()
+
+    if not resource_id or not email or "@" not in email:
+        return jsonify({"error": "Please enter a valid email."}), 400
+
+    conn = get_jobs_db()
+    try:
+        conn.execute(
+            "INSERT OR IGNORE INTO waitlist (resource_id, email, name) VALUES (?, ?, ?)",
+            (resource_id, email, name or None)
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+    return jsonify({"success": True})
+
+@app.route("/admin/waitlist")
+@admin_required
+def admin_waitlist():
+    conn = get_jobs_db()
+    rows_data = conn.execute("""
+        SELECT r.title as resource_title, w.email, w.name, w.created_at
+        FROM waitlist w JOIN resources r ON w.resource_id = r.id
+        ORDER BY r.title, w.created_at DESC
+    """).fetchall()
+    counts = conn.execute("""
+        SELECT r.title as resource_title, COUNT(*) as cnt
+        FROM waitlist w JOIN resources r ON w.resource_id = r.id
+        GROUP BY r.id ORDER BY cnt DESC
+    """).fetchall()
+    conn.close()
+
+    count_cards = "".join(
+        f'<div class="stat"><strong>{c["cnt"]}</strong><span>{c["resource_title"]}</span></div>'
+        for c in counts
+    )
+    rows = "".join(f"""<tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
+        <td style="padding:12px 8px;color:#fff;font-size:13px">{r['resource_title']}</td>
+        <td style="padding:12px 8px;color:#9997aa;font-size:13px">{r['name'] or '—'}</td>
+        <td style="padding:12px 8px;color:#00f5ff;font-size:13px">{r['email']}</td>
+        <td style="padding:12px 8px;color:#9997aa;font-size:12px">{r['created_at']}</td></tr>""" for r in rows_data)
+
+    return f"""<!DOCTYPE html><html><head><title>Waitlist</title>
+    <style>*{{box-sizing:border-box;margin:0;padding:0;}}
+    body{{background:#050508;color:#e8e6f0;font-family:sans-serif;padding:2rem;}}
+    h1{{color:#7B5CFA;font-size:1.4rem;margin-bottom:1.5rem;}}
+    .back{{display:inline-block;color:#9997aa;text-decoration:none;font-size:13px;margin-bottom:1.5rem;border:1px solid rgba(255,255,255,0.1);padding:8px 16px;border-radius:6px;}}
+    .stats{{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;}}
+    .stat{{background:#0f0f1a;border:1px solid rgba(123,92,250,0.2);border-radius:8px;padding:0.75rem 1.25rem;}}
+    .stat strong{{display:block;font-size:1.4rem;color:#fff;}}
+    .stat span{{font-size:11px;color:#9997aa;}}
+    table{{width:100%;border-collapse:collapse;background:#0f0f1a;border:1px solid rgba(123,92,250,0.15);border-radius:8px;overflow:hidden;}}
+    th{{padding:12px 8px;text-align:left;font-size:11px;color:#9997aa;letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.08);}}
+    </style></head><body>
+    <a class="back" href="/admin">← Back to bookings</a>
+    <h1>📋 Waitlist — who's waiting for what</h1>
+    <div class="stats">{count_cards or '<div class="stat"><strong>0</strong><span>No waitlist signups yet</span></div>'}</div>
+    <table>
+      <thead><tr><th>Resource</th><th>Name</th><th>Email</th><th>Joined</th></tr></thead>
+      <tbody>{rows or '<tr><td colspan="4" style="padding:2rem;text-align:center;color:#9997aa">No signups yet</td></tr>'}</tbody>
     </table></body></html>"""
 
 if __name__ == "__main__":

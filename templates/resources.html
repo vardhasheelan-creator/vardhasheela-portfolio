@@ -36,16 +36,27 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .section-title{font-size:1.4rem;font-weight:700;color:var(--white);margin-bottom:1.5rem;}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;display:flex;flex-direction:column;gap:0.75rem;transition:border-color 0.2s;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;display:flex;flex-direction:column;gap:0.6rem;transition:border-color 0.2s;}
 .card:hover{border-color:rgba(255,44,243,0.3);}
 .card-icon{font-size:1.6rem;}
-.card h3{font-size:1rem;font-weight:600;color:var(--white);}
-.card p{font-size:0.82rem;color:var(--muted);line-height:1.6;flex:1;}
-.card-btn{font-family:var(--mono);font-size:0.75rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;background:var(--pink);color:var(--bg);padding:0.65rem;border-radius:5px;text-align:center;text-decoration:none;transition:all 0.2s;}
+.card h3{font-size:1rem;font-weight:600;color:var(--white);line-height:1.3;}
+.card p{
+  font-size:0.82rem;color:var(--muted);line-height:1.6;flex:1;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+.card-btn{font-family:var(--mono);font-size:0.75rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;background:var(--pink);color:var(--bg);padding:0.65rem;border-radius:5px;text-align:center;text-decoration:none;transition:all 0.2s;border:none;cursor:pointer;}
 .card-btn:hover{box-shadow:0 0 14px rgba(255,44,243,0.4);}
 .card-btn.soon{background:var(--surface2);color:var(--dim);cursor:not-allowed;border:1px solid rgba(255,255,255,0.08);}
 .card-price{font-family:var(--mono);font-size:0.85rem;color:var(--amber);font-weight:700;}
 .empty{color:var(--dim);font-family:var(--mono);font-size:0.85rem;padding:2rem;text-align:center;background:var(--surface);border-radius:10px;border:1px solid var(--border);}
+
+/* Notify-me inline form on coming-soon cards */
+.notify-form{display:none;flex-direction:column;gap:0.5rem;margin-top:0.25rem;}
+.notify-form.visible{display:flex;}
+.notify-form input{background:#070710;border:1px solid rgba(123,92,250,0.2);border-radius:5px;padding:0.55rem 0.7rem;color:var(--text);font-size:0.8rem;font-family:var(--font);outline:none;}
+.notify-form input:focus{border-color:var(--neon);}
+.notify-btn{background:var(--neon);color:var(--white);border:none;border-radius:5px;padding:0.55rem;font-family:var(--mono);font-size:0.72rem;font-weight:700;text-transform:uppercase;cursor:pointer;}
+.notify-msg{font-size:0.72rem;color:var(--green);display:none;font-family:var(--mono);}
 
 /* IDENTIFY MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center;padding:1rem;}
@@ -113,7 +124,13 @@ footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
         <div class="card-price">₹{{ r['price'] }}</div>
         <a class="card-btn" href="/download/{{ r['id'] }}">Buy now →</a>
       {% else %}
-        <a class="card-btn soon">Coming soon</a>
+        <button class="card-btn soon" type="button" onclick="toggleNotify({{ r['id'] }})">🔔 Notify me when it's ready</button>
+        <div class="notify-form" id="notify-{{ r['id'] }}">
+          <input type="text" id="notify-name-{{ r['id'] }}" placeholder="Your first name"/>
+          <input type="email" id="notify-email-{{ r['id'] }}" placeholder="your.email@example.com" required/>
+          <button class="notify-btn" type="button" onclick="submitNotify({{ r['id'] }})">Join waitlist</button>
+          <div class="notify-msg" id="notify-msg-{{ r['id'] }}">✓ You're on the list — I'll email you when it's live!</div>
+        </div>
       {% endif %}
     </div>
     {% else %}
@@ -136,7 +153,13 @@ footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
         <div class="card-price">₹{{ r['price'] }}</div>
         <a class="card-btn" href="/download/{{ r['id'] }}">Enroll now →</a>
       {% else %}
-        <a class="card-btn soon">Coming soon</a>
+        <button class="card-btn soon" type="button" onclick="toggleNotify({{ r['id'] }})">🔔 Notify me when it's ready</button>
+        <div class="notify-form" id="notify-{{ r['id'] }}">
+          <input type="text" id="notify-name-{{ r['id'] }}" placeholder="Your first name"/>
+          <input type="email" id="notify-email-{{ r['id'] }}" placeholder="your.email@example.com" required/>
+          <button class="notify-btn" type="button" onclick="submitNotify({{ r['id'] }})">Join waitlist</button>
+          <div class="notify-msg" id="notify-msg-{{ r['id'] }}">✓ You're on the list — I'll email you when it's live!</div>
+        </div>
       {% endif %}
     </div>
     {% else %}
@@ -169,14 +192,13 @@ const isIdentified = {{ 'true' if is_identified else 'false' }};
 let pendingResourceId = null;
 
 function handleDownload(e, resourceId) {
-  if (isIdentified) return true; // let it download normally
+  if (isIdentified) return true;
   e.preventDefault();
   pendingResourceId = resourceId;
   document.getElementById('identifyModal').classList.add('visible');
   return false;
 }
 
-// Auto-open modal if redirected here with ?unlock=<id>
 const params = new URLSearchParams(window.location.search);
 if (params.get('unlock') && !isIdentified) {
   pendingResourceId = params.get('unlock');
@@ -188,7 +210,6 @@ document.getElementById('identifyForm').addEventListener('submit', async (e) => 
   const name  = document.getElementById('idName').value.trim();
   const email = document.getElementById('idEmail').value.trim();
   const err   = document.getElementById('idErr');
-
   try {
     const res = await fetch('/api/identify-visitor', {
       method: 'POST',
@@ -212,6 +233,42 @@ document.getElementById('identifyForm').addEventListener('submit', async (e) => 
     err.style.display = 'block';
   }
 });
+
+// ── Notify me (waitlist) ──
+function toggleNotify(resourceId) {
+  const form = document.getElementById('notify-' + resourceId);
+  form.classList.toggle('visible');
+}
+
+async function submitNotify(resourceId) {
+  const nameEl  = document.getElementById('notify-name-' + resourceId);
+  const emailEl = document.getElementById('notify-email-' + resourceId);
+  const msgEl   = document.getElementById('notify-msg-' + resourceId);
+  const email   = emailEl.value.trim();
+  const name    = nameEl.value.trim();
+
+  if (!email || !email.includes('@')) {
+    emailEl.style.borderColor = '#ff6b6b';
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/notify-me', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({resource_id: resourceId, email, name})
+    });
+    const data = await res.json();
+    if (data.success) {
+      nameEl.style.display = 'none';
+      emailEl.style.display = 'none';
+      msgEl.parentElement.querySelector('.notify-btn').style.display = 'none';
+      msgEl.style.display = 'block';
+    }
+  } catch(ex) {
+    emailEl.style.borderColor = '#ff6b6b';
+  }
+}
 </script>
 </body>
 </html>

@@ -39,10 +39,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .gear-card:hover{border-color:rgba(255,153,0,0.3);}
 .gear-icon{font-size:1.8rem;}
 .gear-card h3{font-size:0.98rem;font-weight:600;color:var(--white);}
-.gear-card p{font-size:0.82rem;color:var(--muted);line-height:1.6;flex:1;}
+.gear-card p{
+  font-size:0.82rem;color:var(--muted);line-height:1.6;flex:1;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
 .gear-btn{font-family:var(--mono);font-size:0.75rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;background:var(--amber);color:#1a1000;padding:0.65rem;border-radius:5px;text-align:center;text-decoration:none;transition:all 0.2s;}
 .gear-btn:hover{box-shadow:0 0 14px rgba(255,153,0,0.4);}
 
+.empty{color:var(--dim);font-family:var(--mono);font-size:0.85rem;padding:2rem;text-align:center;background:var(--surface);border-radius:10px;border:1px solid var(--border);}
 .disclosure{margin-top:2rem;font-size:0.75rem;color:var(--dim);line-height:1.7;border-top:1px solid var(--border);padding-top:1.5rem;max-width:700px;}
 
 footer{background:var(--bg);border-top:1px solid var(--border);padding:1.5rem 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;position:relative;z-index:1;}
@@ -69,69 +73,23 @@ footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
 </div>
 
 <div class="section">
-
-  <!-- FILMING GEAR -->
+  {% for category in category_order %}
   <div class="category">
-    <div class="category-title">🎥 Filming & content creation</div>
+    <div class="category-title">{{ category }}</div>
     <div class="gear-grid">
+      {% for p in grouped[category] %}
       <div class="gear-card">
-        <div class="gear-icon">🎙️</div>
-        <h3>Collar Mic</h3>
-        <p>The exact lapel mic I use for clean audio on Reels and Shorts — plug and play with any phone.</p>
-        <a class="gear-btn" href="#" target="_blank" rel="nofollow noopener sponsored">View on Amazon →</a>
+        <div class="gear-icon">{{ p['icon'] }}</div>
+        <h3>{{ p['title'] }}</h3>
+        <p>{{ p['description'] }}</p>
+        <a class="gear-btn" href="{{ p['url'] }}" target="_blank" rel="nofollow noopener sponsored">View on Amazon →</a>
       </div>
-      <div class="gear-card">
-        <div class="gear-icon">📱</div>
-        <h3>Phone Tripod & Ring Light</h3>
-        <p>Compact tripod with a ring light attachment — this is my entire home filming setup.</p>
-        <a class="gear-btn" href="#" target="_blank" rel="nofollow noopener sponsored">View on Amazon →</a>
-      </div>
-      <div class="gear-card">
-        <div class="gear-icon">💡</div>
-        <h3>Softbox Lighting Kit</h3>
-        <p>What I use for more polished, well-lit shoots — great value for the quality.</p>
-        <a class="gear-btn" href="#" target="_blank" rel="nofollow noopener sponsored">View on Amazon →</a>
-      </div>
+      {% endfor %}
     </div>
   </div>
-
-  <!-- WORK & TECH -->
-  <div class="category">
-    <div class="category-title">💻 Work & tech</div>
-    <div class="gear-grid">
-      <div class="gear-card">
-        <div class="gear-icon">💻</div>
-        <h3>My Laptop</h3>
-        <p>What I use daily for editing, building this website, and everything else.</p>
-        <a class="gear-btn" href="#" target="_blank" rel="nofollow noopener sponsored">View on Amazon →</a>
-      </div>
-      <div class="gear-card">
-        <div class="gear-icon">🖱️</div>
-        <h3>Wireless Mouse & Keyboard</h3>
-        <p>Comfortable for long editing and admin sessions — exactly what's on my desk.</p>
-        <a class="gear-btn" href="#" target="_blank" rel="nofollow noopener sponsored">View on Amazon →</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- CABIN CREW / GROOMING ESSENTIALS -->
-  <div class="category">
-    <div class="category-title">✈️ Cabin crew & grooming essentials</div>
-    <div class="gear-grid">
-      <div class="gear-card">
-        <div class="gear-icon">💄</div>
-        <h3>Interview-Ready Makeup Kit</h3>
-        <p>The exact products I recommend for a polished, professional interview look.</p>
-        <a class="gear-btn" href="#" target="_blank" rel="nofollow noopener sponsored">View on Amazon →</a>
-      </div>
-      <div class="gear-card">
-        <div class="gear-icon">🧳</div>
-        <h3>Cabin-Approved Luggage</h3>
-        <p>Compact, durable, and within standard cabin crew luggage requirements.</p>
-        <a class="gear-btn" href="#" target="_blank" rel="nofollow noopener sponsored">View on Amazon →</a>
-      </div>
-    </div>
-  </div>
+  {% else %}
+  <div class="empty">No products added yet — check back soon!</div>
+  {% endfor %}
 
   <p class="disclosure">
     Disclosure: Some links on this page are Amazon affiliate links. If you purchase through them, I may earn a small commission at no extra cost to you. I only recommend products I personally use or genuinely believe in.
