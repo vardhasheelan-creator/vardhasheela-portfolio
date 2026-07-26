@@ -7,6 +7,7 @@ from googleapiclient.discovery import build
 from apscheduler.schedulers.background import BackgroundScheduler
 from dotenv import load_dotenv
 import atexit
+import threading
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -764,6 +765,11 @@ def admin_resources():
     conn      = get_jobs_db()
     resources = conn.execute("SELECT * FROM resources ORDER BY uploaded_at DESC").fetchall()
     conn.close()
+    sending_banner = ""
+    if request.args.get("sending") == "1":
+        sending_banner = '''<div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.25);border-radius:8px;padding:14px 18px;margin-bottom:1.5rem;font-size:13px;color:#00FF88">
+          ✅ Saved! Emails are sending in the background right now — refresh this page in a minute to see the updated "sent" count.
+        </div>'''
     rows = ""
     for r in resources:
         already   = get_already_sent_emails(r["id"])
@@ -828,6 +834,7 @@ def admin_resources():
     </style></head><body>
     <a class="back" href="/admin">← Back to bookings</a>
     <h1>Send a freebie / resource</h1>
+    {sending_banner}
     <div class="note"><strong>Personalized:</strong> Each email greets the subscriber by their first name. Resend only goes to new subscribers who haven't received it yet.<br><br>
     <strong>Two audiences, two views:</strong> The title shows on the public /resources page (for Instagram followers etc). The description you write becomes the email body — sent only to registered subscribers, never shown publicly.</div>
     <div class="upload-box">
@@ -860,6 +867,24 @@ def admin_resources():
       <tbody>{rows or '<tr><td colspan="6" style="padding:2rem;text-align:center;color:#9997aa">No resources uploaded yet</td></tr>'}</tbody>
     </table></body></html>"""
 
+def _send_freebie_emails_bg(app_ctx, resource_id, title, description, category, filename):
+    """Runs in a background thread — sends emails without blocking the HTTP response,
+    which is what was causing the 502 timeout and duplicate sends on retry."""
+    with app_ctx:
+        base_url     = os.environ.get("BASE_URL", "https://consultation.vardhasheelan.com")
+        download_url = f"{base_url}/resources/{filename}"
+        recipients   = get_matching_subscribers(category)
+        sent = 0
+        for email, name in recipients:
+            if send_email(email, name or "", title, resource_email(title, description, download_url, name)):
+                sent += 1
+                mark_resource_sent(resource_id, email)
+        conn = get_jobs_db()
+        conn.execute("UPDATE resources SET sent_count = ? WHERE id = ?", (sent, resource_id))
+        conn.commit()
+        conn.close()
+        print(f"[background] Freebie emails sent: {sent}/{len(recipients)} for resource {resource_id}")
+
 @app.route("/admin/resources/upload", methods=["POST"])
 @admin_required
 def admin_resources_upload():
@@ -881,19 +906,42 @@ def admin_resources_upload():
     resource_id = cur.lastrowid
     conn.commit()
     conn.close()
-    base_url     = os.environ.get("BASE_URL", "https://consultation.vardhasheelan.com")
-    download_url = f"{base_url}/resources/{filename}"
-    recipients   = get_matching_subscribers(category)
-    sent = 0
-    for email, name in recipients:
-        if send_email(email, name or "", title, resource_email(title, description, download_url, name)):
-            sent += 1
-            mark_resource_sent(resource_id, email)
-    conn = get_jobs_db()
-    conn.execute("UPDATE resources SET sent_count = ? WHERE id = ?", (sent, resource_id))
-    conn.commit()
-    conn.close()
-    return redirect("/admin/resources")
+
+    # ── send emails in the background so the page responds instantly ──
+    # (this is what fixes the 502 timeout + duplicate-send-on-retry issue)
+    threading.Thread(
+        target=_send_freebie_emails_bg,
+        args=(app.app_context(), resource_id, title, description, category, filename),
+        daemon=True
+    ).start()
+
+    return redirect("/admin/resources?sending=1")
+
+def _resend_freebie_emails_bg(app_ctx, resource_id):
+    """Background thread version — avoids the same 502-on-timeout issue as upload."""
+    with app_ctx:
+        conn = get_jobs_db()
+        r    = conn.execute("SELECT * FROM resources WHERE id = ?", (resource_id,)).fetchone()
+        conn.close()
+        if not r:
+            print(f"[background] Resend failed — resource {resource_id} not found")
+            return
+        base_url       = os.environ.get("BASE_URL", "https://consultation.vardhasheelan.com")
+        download_url   = f"{base_url}/resources/{r['filename']}"
+        all_recipients = get_matching_subscribers(r["category"])
+        already_sent   = get_already_sent_emails(resource_id)
+        new_recipients = [(e, n) for e, n in all_recipients if e not in already_sent]
+        sent = 0
+        for email, name in new_recipients:
+            if send_email(email, name or "", r["title"], resource_email(r["title"], r["description"], download_url, name)):
+                sent += 1
+                mark_resource_sent(resource_id, email)
+        if sent > 0:
+            conn = get_jobs_db()
+            conn.execute("UPDATE resources SET sent_count = sent_count + ? WHERE id = ?", (sent, resource_id))
+            conn.commit()
+            conn.close()
+        print(f"[background] Resend complete: {sent}/{len(new_recipients)} new subscribers for resource {resource_id}")
 
 @app.route("/admin/resources/<int:resource_id>/resend")
 @admin_required
@@ -903,22 +951,15 @@ def admin_resources_resend(resource_id):
     conn.close()
     if not r:
         return "Resource not found", 404
-    base_url       = os.environ.get("BASE_URL", "https://consultation.vardhasheelan.com")
-    download_url   = f"{base_url}/resources/{r['filename']}"
-    all_recipients = get_matching_subscribers(r["category"])
-    already_sent   = get_already_sent_emails(resource_id)
-    new_recipients = [(e, n) for e, n in all_recipients if e not in already_sent]
-    sent = 0
-    for email, name in new_recipients:
-        if send_email(email, name or "", r["title"], resource_email(r["title"], r["description"], download_url, name)):
-            sent += 1
-            mark_resource_sent(resource_id, email)
-    if sent > 0:
-        conn = get_jobs_db()
-        conn.execute("UPDATE resources SET sent_count = sent_count + ? WHERE id = ?", (sent, resource_id))
-        conn.commit()
-        conn.close()
-    return redirect("/admin/resources")
+
+    # ── send in background — same fix as upload route ──
+    threading.Thread(
+        target=_resend_freebie_emails_bg,
+        args=(app.app_context(), resource_id),
+        daemon=True
+    ).start()
+
+    return redirect("/admin/resources?sending=1")
 
 @app.route("/resources/<path:filename>")
 def serve_resource(filename):
