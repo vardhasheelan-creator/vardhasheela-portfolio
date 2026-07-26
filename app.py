@@ -1591,9 +1591,11 @@ CREATE TABLE IF NOT EXISTS affiliate_products (
 
 CREATE TABLE IF NOT EXISTS waitlist (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    resource_id INTEGER NOT NULL,
+    resource_id TEXT NOT NULL,
+    resource_label TEXT,
     email TEXT NOT NULL,
     name TEXT,
+    phone TEXT,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(resource_id, email)
 );
@@ -1719,22 +1721,39 @@ def admin_affiliate_delete(product_id):
 @app.route("/api/notify-me", methods=["POST"])
 def notify_me():
     data = request.json or {}
-    resource_id = data.get("resource_id")
+    resource_id    = str(data.get("resource_id") or "").strip()
+    resource_label = (data.get("resource_label") or "").strip()
     email = (data.get("email") or "").strip().lower()
     name  = (data.get("name") or "").strip()
+    phone = (data.get("phone") or "").strip()
 
     if not resource_id or not email or "@" not in email:
         return jsonify({"error": "Please enter a valid email."}), 400
+    if not name:
+        return jsonify({"error": "Please enter your name."}), 400
 
     conn = get_jobs_db()
     try:
         conn.execute(
-            "INSERT OR IGNORE INTO waitlist (resource_id, email, name) VALUES (?, ?, ?)",
-            (resource_id, email, name or None)
+            "INSERT OR IGNORE INTO waitlist (resource_id, resource_label, email, name, phone) VALUES (?, ?, ?, ?, ?)",
+            (resource_id, resource_label or resource_id, email, name, phone or None)
         )
         conn.commit()
     finally:
         conn.close()
+
+    # Notify Vardhasheela of waitlist interest
+    send_email(
+        GMAIL_USER, "Vardhasheela",
+        f"New waitlist signup: {resource_label or resource_id}",
+        f"""<div style="font-family:sans-serif;background:#0a0a0b;color:#e8e6f0;padding:32px;border-radius:12px">
+          <h3 style="color:#7b5cfa">🔔 New waitlist signup</h3>
+          <p><strong>Interested in:</strong> {resource_label or resource_id}</p>
+          <p><strong>Name:</strong> {name}</p>
+          <p><strong>Email:</strong> {email}</p>
+          <p><strong>Phone:</strong> {phone or 'Not provided'}</p>
+        </div>"""
+    )
 
     return jsonify({"success": True})
 
@@ -1743,25 +1762,24 @@ def notify_me():
 def admin_waitlist():
     conn = get_jobs_db()
     rows_data = conn.execute("""
-        SELECT r.title as resource_title, w.email, w.name, w.created_at
-        FROM waitlist w JOIN resources r ON w.resource_id = r.id
-        ORDER BY r.title, w.created_at DESC
+        SELECT resource_label, email, name, phone, created_at
+        FROM waitlist ORDER BY resource_label, created_at DESC
     """).fetchall()
     counts = conn.execute("""
-        SELECT r.title as resource_title, COUNT(*) as cnt
-        FROM waitlist w JOIN resources r ON w.resource_id = r.id
-        GROUP BY r.id ORDER BY cnt DESC
+        SELECT resource_label, COUNT(*) as cnt
+        FROM waitlist GROUP BY resource_label ORDER BY cnt DESC
     """).fetchall()
     conn.close()
 
     count_cards = "".join(
-        f'<div class="stat"><strong>{c["cnt"]}</strong><span>{c["resource_title"]}</span></div>'
+        f'<div class="stat"><strong>{c["cnt"]}</strong><span>{c["resource_label"]}</span></div>'
         for c in counts
     )
     rows = "".join(f"""<tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
-        <td style="padding:12px 8px;color:#fff;font-size:13px">{r['resource_title']}</td>
+        <td style="padding:12px 8px;color:#fff;font-size:13px">{r['resource_label']}</td>
         <td style="padding:12px 8px;color:#9997aa;font-size:13px">{r['name'] or '—'}</td>
         <td style="padding:12px 8px;color:#00f5ff;font-size:13px">{r['email']}</td>
+        <td style="padding:12px 8px;color:#9997aa;font-size:13px">{r['phone'] or '—'}</td>
         <td style="padding:12px 8px;color:#9997aa;font-size:12px">{r['created_at']}</td></tr>""" for r in rows_data)
 
     return f"""<!DOCTYPE html><html><head><title>Waitlist</title>
@@ -1780,8 +1798,8 @@ def admin_waitlist():
     <h1>📋 Waitlist — who's waiting for what</h1>
     <div class="stats">{count_cards or '<div class="stat"><strong>0</strong><span>No waitlist signups yet</span></div>'}</div>
     <table>
-      <thead><tr><th>Resource</th><th>Name</th><th>Email</th><th>Joined</th></tr></thead>
-      <tbody>{rows or '<tr><td colspan="4" style="padding:2rem;text-align:center;color:#9997aa">No signups yet</td></tr>'}</tbody>
+      <thead><tr><th>Interested in</th><th>Name</th><th>Email</th><th>Phone</th><th>Joined</th></tr></thead>
+      <tbody>{rows or '<tr><td colspan="5" style="padding:2rem;text-align:center;color:#9997aa">No signups yet</td></tr>'}</tbody>
     </table></body></html>"""
 
 if __name__ == "__main__":

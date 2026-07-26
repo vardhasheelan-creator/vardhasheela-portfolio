@@ -48,15 +48,35 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .card-btn:hover{box-shadow:0 0 14px rgba(255,44,243,0.4);}
 .card-btn.soon{background:var(--surface2);color:var(--dim);cursor:not-allowed;border:1px solid rgba(255,255,255,0.08);}
 .card-price{font-family:var(--mono);font-size:0.85rem;color:var(--amber);font-weight:700;}
-.empty{color:var(--dim);font-family:var(--mono);font-size:0.85rem;padding:2rem;text-align:center;background:var(--surface);border-radius:10px;border:1px solid var(--border);}
 
-/* Notify-me inline form on coming-soon cards */
-.notify-form{display:none;flex-direction:column;gap:0.5rem;margin-top:0.25rem;}
-.notify-form.visible{display:flex;}
-.notify-form input{background:#070710;border:1px solid rgba(123,92,250,0.2);border-radius:5px;padding:0.55rem 0.7rem;color:var(--text);font-size:0.8rem;font-family:var(--font);outline:none;}
+/* Coming-soon banner (replaces bare empty text) */
+.coming-soon-card{
+  background:var(--surface);border:1px solid rgba(123,92,250,0.2);border-radius:12px;
+  padding:2rem;max-width:480px;display:flex;flex-direction:column;gap:1rem;
+}
+.coming-soon-card .badge{
+  display:inline-flex;align-items:center;gap:0.5rem;font-family:var(--mono);font-size:0.68rem;
+  letter-spacing:0.08em;text-transform:uppercase;color:var(--amber);
+  border:1px solid rgba(186,117,23,0.4);background:rgba(186,117,23,0.08);
+  border-radius:20px;padding:0.3rem 0.8rem;width:fit-content;
+}
+.coming-soon-card h3{font-size:1.1rem;font-weight:700;color:var(--white);}
+.coming-soon-card p{font-size:0.85rem;color:var(--muted);line-height:1.6;}
+
+.notify-form{display:flex;flex-direction:column;gap:0.6rem;}
+.notify-form input{background:#070710;border:1px solid rgba(123,92,250,0.2);border-radius:6px;padding:0.7rem 0.9rem;color:var(--text);font-size:0.85rem;font-family:var(--font);outline:none;}
 .notify-form input:focus{border-color:var(--neon);}
-.notify-btn{background:var(--neon);color:var(--white);border:none;border-radius:5px;padding:0.55rem;font-family:var(--mono);font-size:0.72rem;font-weight:700;text-transform:uppercase;cursor:pointer;}
-.notify-msg{font-size:0.72rem;color:var(--green);display:none;font-family:var(--mono);}
+.notify-form input::placeholder{color:var(--dim);}
+.notify-btn{background:var(--neon);color:var(--white);border:none;border-radius:6px;padding:0.75rem;font-family:var(--mono);font-size:0.78rem;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+.notify-btn:hover{box-shadow:0 0 16px rgba(123,92,250,0.4);}
+.notify-msg{font-size:0.8rem;color:var(--green);display:none;font-family:var(--mono);text-align:center;padding:0.5rem;}
+.notify-err{font-size:0.75rem;color:#ff6b6b;display:none;}
+
+/* Inline notify-me on individual cards (once resources exist) */
+.notify-inline{display:none;flex-direction:column;gap:0.5rem;margin-top:0.25rem;}
+.notify-inline.visible{display:flex;}
+.notify-inline input{background:#070710;border:1px solid rgba(123,92,250,0.2);border-radius:5px;padding:0.55rem 0.7rem;color:var(--text);font-size:0.8rem;font-family:var(--font);outline:none;}
+.notify-inline-btn{background:var(--neon);color:var(--white);border:none;border-radius:5px;padding:0.55rem;font-family:var(--mono);font-size:0.72rem;font-weight:700;text-transform:uppercase;cursor:pointer;}
 
 /* IDENTIFY MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center;padding:1rem;}
@@ -105,7 +125,19 @@ footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
       <a class="card-btn" href="/download/{{ r['id'] }}" onclick="return handleDownload(event, {{ r['id'] }})">Download free →</a>
     </div>
     {% else %}
-    <div class="empty">No resources uploaded yet — check back soon!</div>
+    <div class="coming-soon-card">
+      <span class="badge">⏳ nothing uploaded yet</span>
+      <h3>Free guides are on the way</h3>
+      <p>Want to know the moment new guides and templates drop? Leave your details below.</p>
+      <div class="notify-form">
+        <input type="text" id="gen-name-freebie" placeholder="Your first name"/>
+        <input type="email" id="gen-email-freebie" placeholder="your.email@example.com"/>
+        <input type="tel" id="gen-phone-freebie" placeholder="Mobile number (optional)"/>
+        <button class="notify-btn" type="button" onclick="submitGeneralNotify('freebie', 'Free guides & templates')">🔔 Notify me →</button>
+        <div class="notify-msg" id="gen-msg-freebie">✓ You're on the list — I'll email you the moment new guides drop!</div>
+        <div class="notify-err" id="gen-err-freebie">Please enter your name and a valid email.</div>
+      </div>
+    </div>
     {% endfor %}
   </div>
 </div>
@@ -124,17 +156,30 @@ footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
         <div class="card-price">₹{{ r['price'] }}</div>
         <a class="card-btn" href="/download/{{ r['id'] }}">Buy now →</a>
       {% else %}
-        <button class="card-btn soon" type="button" onclick="toggleNotify({{ r['id'] }})">🔔 Notify me when it's ready</button>
-        <div class="notify-form" id="notify-{{ r['id'] }}">
-          <input type="text" id="notify-name-{{ r['id'] }}" placeholder="Your first name"/>
-          <input type="email" id="notify-email-{{ r['id'] }}" placeholder="your.email@example.com" required/>
-          <button class="notify-btn" type="button" onclick="submitNotify({{ r['id'] }})">Join waitlist</button>
-          <div class="notify-msg" id="notify-msg-{{ r['id'] }}">✓ You're on the list — I'll email you when it's live!</div>
+        <button class="card-btn soon" type="button" onclick="toggleInlineNotify({{ r['id'] }})">🔔 Notify me when it's ready</button>
+        <div class="notify-inline" id="inline-{{ r['id'] }}">
+          <input type="text" id="inline-name-{{ r['id'] }}" placeholder="Your first name"/>
+          <input type="email" id="inline-email-{{ r['id'] }}" placeholder="your.email@example.com"/>
+          <input type="tel" id="inline-phone-{{ r['id'] }}" placeholder="Mobile (optional)"/>
+          <button class="notify-inline-btn" type="button" onclick="submitInlineNotify({{ r['id'] }}, '{{ r['title'] }}')">Join waitlist</button>
+          <div class="notify-msg" id="inline-msg-{{ r['id'] }}">✓ You're on the list!</div>
         </div>
       {% endif %}
     </div>
     {% else %}
-    <div class="empty">E-books coming soon — payment setup in progress.</div>
+    <div class="coming-soon-card">
+      <span class="badge">📘 payment setup in progress</span>
+      <h3>E-books launching soon</h3>
+      <p>I'm setting up secure checkout so you can buy in-depth e-books directly. Want first access when they launch?</p>
+      <div class="notify-form">
+        <input type="text" id="gen-name-ebook" placeholder="Your first name"/>
+        <input type="email" id="gen-email-ebook" placeholder="your.email@example.com"/>
+        <input type="tel" id="gen-phone-ebook" placeholder="Mobile number (optional)"/>
+        <button class="notify-btn" type="button" onclick="submitGeneralNotify('ebook', 'E-books (general)')">🔔 Notify me →</button>
+        <div class="notify-msg" id="gen-msg-ebook">✓ You're on the list — I'll email you the moment e-books launch!</div>
+        <div class="notify-err" id="gen-err-ebook">Please enter your name and a valid email.</div>
+      </div>
+    </div>
     {% endfor %}
   </div>
 </div>
@@ -153,17 +198,30 @@ footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
         <div class="card-price">₹{{ r['price'] }}</div>
         <a class="card-btn" href="/download/{{ r['id'] }}">Enroll now →</a>
       {% else %}
-        <button class="card-btn soon" type="button" onclick="toggleNotify({{ r['id'] }})">🔔 Notify me when it's ready</button>
-        <div class="notify-form" id="notify-{{ r['id'] }}">
-          <input type="text" id="notify-name-{{ r['id'] }}" placeholder="Your first name"/>
-          <input type="email" id="notify-email-{{ r['id'] }}" placeholder="your.email@example.com" required/>
-          <button class="notify-btn" type="button" onclick="submitNotify({{ r['id'] }})">Join waitlist</button>
-          <div class="notify-msg" id="notify-msg-{{ r['id'] }}">✓ You're on the list — I'll email you when it's live!</div>
+        <button class="card-btn soon" type="button" onclick="toggleInlineNotify({{ r['id'] }})">🔔 Notify me when it's ready</button>
+        <div class="notify-inline" id="inline-{{ r['id'] }}">
+          <input type="text" id="inline-name-{{ r['id'] }}" placeholder="Your first name"/>
+          <input type="email" id="inline-email-{{ r['id'] }}" placeholder="your.email@example.com"/>
+          <input type="tel" id="inline-phone-{{ r['id'] }}" placeholder="Mobile (optional)"/>
+          <button class="notify-inline-btn" type="button" onclick="submitInlineNotify({{ r['id'] }}, '{{ r['title'] }}')">Join waitlist</button>
+          <div class="notify-msg" id="inline-msg-{{ r['id'] }}">✓ You're on the list!</div>
         </div>
       {% endif %}
     </div>
     {% else %}
-    <div class="empty">Courses coming soon — payment setup in progress.</div>
+    <div class="coming-soon-card">
+      <span class="badge">🎓 payment setup in progress</span>
+      <h3>Courses launching soon</h3>
+      <p>Full video courses are coming — cabin crew prep, English fluency, and more. Want first access when they launch?</p>
+      <div class="notify-form">
+        <input type="text" id="gen-name-course" placeholder="Your first name"/>
+        <input type="email" id="gen-email-course" placeholder="your.email@example.com"/>
+        <input type="tel" id="gen-phone-course" placeholder="Mobile number (optional)"/>
+        <button class="notify-btn" type="button" onclick="submitGeneralNotify('course', 'Courses (general)')">🔔 Notify me →</button>
+        <div class="notify-msg" id="gen-msg-course">✓ You're on the list — I'll email you the moment courses launch!</div>
+        <div class="notify-err" id="gen-err-course">Please enter your name and a valid email.</div>
+      </div>
+    </div>
     {% endfor %}
   </div>
 </div>
@@ -234,20 +292,63 @@ document.getElementById('identifyForm').addEventListener('submit', async (e) => 
   }
 });
 
-// ── Notify me (waitlist) ──
-function toggleNotify(resourceId) {
-  const form = document.getElementById('notify-' + resourceId);
-  form.classList.toggle('visible');
+// ── General "notify me" (used on empty-state cards — no specific resource yet) ──
+async function submitGeneralNotify(key, label) {
+  const nameEl  = document.getElementById('gen-name-' + key);
+  const emailEl = document.getElementById('gen-email-' + key);
+  const phoneEl = document.getElementById('gen-phone-' + key);
+  const msgEl   = document.getElementById('gen-msg-' + key);
+  const errEl   = document.getElementById('gen-err-' + key);
+
+  const name  = nameEl.value.trim();
+  const email = emailEl.value.trim();
+  const phone = phoneEl.value.trim();
+
+  if (!name || !email || !email.includes('@')) {
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+
+  try {
+    const res = await fetch('/api/notify-me', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({resource_id: 'general_' + key, resource_label: label, name, email, phone})
+    });
+    const data = await res.json();
+    if (data.success) {
+      nameEl.style.display = 'none';
+      emailEl.style.display = 'none';
+      phoneEl.style.display = 'none';
+      nameEl.parentElement.querySelector('.notify-btn').style.display = 'none';
+      msgEl.style.display = 'block';
+    } else {
+      errEl.textContent = data.error || 'Something went wrong.';
+      errEl.style.display = 'block';
+    }
+  } catch(ex) {
+    errEl.textContent = 'Network error — please try again.';
+    errEl.style.display = 'block';
+  }
 }
 
-async function submitNotify(resourceId) {
-  const nameEl  = document.getElementById('notify-name-' + resourceId);
-  const emailEl = document.getElementById('notify-email-' + resourceId);
-  const msgEl   = document.getElementById('notify-msg-' + resourceId);
-  const email   = emailEl.value.trim();
-  const name    = nameEl.value.trim();
+// ── Inline notify (used on individual resource cards once uploaded) ──
+function toggleInlineNotify(resourceId) {
+  document.getElementById('inline-' + resourceId).classList.toggle('visible');
+}
 
-  if (!email || !email.includes('@')) {
+async function submitInlineNotify(resourceId, title) {
+  const nameEl  = document.getElementById('inline-name-' + resourceId);
+  const emailEl = document.getElementById('inline-email-' + resourceId);
+  const phoneEl = document.getElementById('inline-phone-' + resourceId);
+  const msgEl   = document.getElementById('inline-msg-' + resourceId);
+
+  const name  = nameEl.value.trim();
+  const email = emailEl.value.trim();
+  const phone = phoneEl.value.trim();
+
+  if (!name || !email || !email.includes('@')) {
     emailEl.style.borderColor = '#ff6b6b';
     return;
   }
@@ -256,13 +357,14 @@ async function submitNotify(resourceId) {
     const res = await fetch('/api/notify-me', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({resource_id: resourceId, email, name})
+      body: JSON.stringify({resource_id: resourceId, resource_label: title, name, email, phone})
     });
     const data = await res.json();
     if (data.success) {
       nameEl.style.display = 'none';
       emailEl.style.display = 'none';
-      msgEl.parentElement.querySelector('.notify-btn').style.display = 'none';
+      phoneEl.style.display = 'none';
+      msgEl.parentElement.querySelector('.notify-inline-btn').style.display = 'none';
       msgEl.style.display = 'block';
     }
   } catch(ex) {
