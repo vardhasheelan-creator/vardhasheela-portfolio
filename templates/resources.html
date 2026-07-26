@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Free Resources & Study Material — Vardhasheela N</title>
+<link rel="icon" href="/assets/vardhasheela.jpeg" type="image/jpeg"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#050508;--surface:#0F0F1A;--surface2:#141422;
+  --border:rgba(123,92,250,0.12);--border-b:rgba(123,92,250,0.3);
+  --neon:#7B5CFA;--cyan:#00F5FF;--pink:#FF2CF3;
+  --white:#fff;--text:#E8E6F0;--muted:#AAA8C0;--dim:#5A5870;--green:#00FF88;--amber:#BA7517;
+  --font:'Space Grotesk',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(123,92,250,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(123,92,250,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 5%;background:rgba(5,5,8,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--white);text-decoration:none;}
+.nav-logo span{color:var(--pink);}
+.nav-right{display:flex;gap:0.75rem;align-items:center;}
+.nav-link{font-family:var(--mono);font-size:0.75rem;color:var(--muted);text-decoration:none;border:1px solid rgba(123,92,250,0.2);padding:0.45rem 0.9rem;border-radius:4px;transition:all 0.2s;}
+.nav-link:hover{color:var(--cyan);border-color:rgba(0,245,255,0.3);}
+.nav-cta{font-family:var(--mono);font-size:0.75rem;font-weight:700;color:var(--bg);background:var(--pink);padding:0.5rem 1rem;border-radius:4px;text-decoration:none;}
+
+.hero{padding:8rem 5% 3rem;position:relative;z-index:1;}
+.hero-badge{display:inline-flex;align-items:center;gap:0.6rem;font-family:var(--mono);font-size:0.72rem;letter-spacing:0.08em;color:var(--cyan);border:1px solid rgba(0,245,255,0.25);background:rgba(0,245,255,0.05);border-radius:3px;padding:0.4rem 1rem;margin-bottom:1.5rem;text-transform:uppercase;}
+.hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;color:var(--white);margin-bottom:0.75rem;letter-spacing:-0.02em;}
+.hero p{font-size:0.95rem;color:var(--muted);max-width:560px;line-height:1.7;}
+
+.section{padding:2.5rem 5%;position:relative;z-index:1;}
+.section-tag{font-family:var(--mono);font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--pink);margin-bottom:0.5rem;border-left:2px solid var(--pink);padding-left:0.75rem;}
+.section-title{font-size:1.4rem;font-weight:700;color:var(--white);margin-bottom:1.5rem;}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;display:flex;flex-direction:column;gap:0.75rem;transition:border-color 0.2s;}
+.card:hover{border-color:rgba(255,44,243,0.3);}
+.card-icon{font-size:1.6rem;}
+.card h3{font-size:1rem;font-weight:600;color:var(--white);}
+.card p{font-size:0.82rem;color:var(--muted);line-height:1.6;flex:1;}
+.card-btn{font-family:var(--mono);font-size:0.75rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;background:var(--pink);color:var(--bg);padding:0.65rem;border-radius:5px;text-align:center;text-decoration:none;transition:all 0.2s;}
+.card-btn:hover{box-shadow:0 0 14px rgba(255,44,243,0.4);}
+.card-btn.soon{background:var(--surface2);color:var(--dim);cursor:not-allowed;border:1px solid rgba(255,255,255,0.08);}
+.card-price{font-family:var(--mono);font-size:0.85rem;color:var(--amber);font-weight:700;}
+.empty{color:var(--dim);font-family:var(--mono);font-size:0.85rem;padding:2rem;text-align:center;background:var(--surface);border-radius:10px;border:1px solid var(--border);}
+
+/* IDENTIFY MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.visible{display:flex;}
+.modal-box{background:var(--surface);border:1px solid rgba(255,44,243,0.3);border-radius:14px;padding:2rem;max-width:420px;width:100%;box-shadow:0 0 60px rgba(255,44,243,0.15);}
+.modal-box h2{font-size:1.2rem;font-weight:700;color:var(--white);margin-bottom:0.5rem;}
+.modal-box p{font-size:0.85rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.6;}
+.modal-box input{width:100%;background:#070710;border:1px solid rgba(255,44,243,0.15);border-radius:6px;padding:0.75rem 1rem;color:var(--text);font-family:var(--font);font-size:0.9rem;outline:none;margin-bottom:0.75rem;}
+.modal-box input:focus{border-color:var(--pink);}
+.modal-btn{width:100%;background:var(--pink);color:var(--bg);border:none;border-radius:6px;padding:0.85rem;font-family:var(--mono);font-weight:700;font-size:0.82rem;text-transform:uppercase;cursor:pointer;margin-top:0.5rem;}
+.modal-err{color:#ff6b6b;font-size:0.78rem;margin-top:0.5rem;display:none;}
+
+footer{background:var(--bg);border-top:1px solid var(--border);padding:1.5rem 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;position:relative;z-index:1;}
+.footer-logo{font-family:var(--mono);font-size:0.95rem;font-weight:700;color:var(--white);text-decoration:none;}
+.footer-logo span{color:var(--pink);}
+footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="https://vardhasheelan.com">Vardhasheela<span>N</span></a>
+  <div class="nav-right">
+    <a class="nav-link" href="/jobs">Jobs Board</a>
+    <a class="nav-link" href="/affiliate">Gear I Use</a>
+    <a class="nav-cta" href="/">Book a session →</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">Free · no signup fees · just your email</div>
+  <h1>Every free resource, in one place.</h1>
+  <p>All the guides, templates, and checklists I've shared on Instagram — downloadable anytime. New ones added regularly.</p>
+</div>
+
+<!-- FREEBIES -->
+<div class="section">
+  <div class="section-tag">free downloads</div>
+  <div class="section-title">Guides & Templates</div>
+  <div class="grid">
+    {% for r in freebies %}
+    <div class="card">
+      <div class="card-icon">📄</div>
+      <h3>{{ r['title'] }}</h3>
+      <p>{{ r['description'] }}</p>
+      <a class="card-btn" href="/download/{{ r['id'] }}" onclick="return handleDownload(event, {{ r['id'] }})">Download free →</a>
+    </div>
+    {% else %}
+    <div class="empty">No resources uploaded yet — check back soon!</div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- EBOOKS -->
+<div class="section">
+  <div class="section-tag">go deeper</div>
+  <div class="section-title">E-books</div>
+  <div class="grid">
+    {% for r in ebooks %}
+    <div class="card">
+      <div class="card-icon">📘</div>
+      <h3>{{ r['title'] }}</h3>
+      <p>{{ r['description'] }}</p>
+      {% if r['is_available'] %}
+        <div class="card-price">₹{{ r['price'] }}</div>
+        <a class="card-btn" href="/download/{{ r['id'] }}">Buy now →</a>
+      {% else %}
+        <a class="card-btn soon">Coming soon</a>
+      {% endif %}
+    </div>
+    {% else %}
+    <div class="empty">E-books coming soon — payment setup in progress.</div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- COURSES -->
+<div class="section">
+  <div class="section-tag">learn with me</div>
+  <div class="section-title">Courses</div>
+  <div class="grid">
+    {% for r in courses %}
+    <div class="card">
+      <div class="card-icon">🎓</div>
+      <h3>{{ r['title'] }}</h3>
+      <p>{{ r['description'] }}</p>
+      {% if r['is_available'] %}
+        <div class="card-price">₹{{ r['price'] }}</div>
+        <a class="card-btn" href="/download/{{ r['id'] }}">Enroll now →</a>
+      {% else %}
+        <a class="card-btn soon">Coming soon</a>
+      {% endif %}
+    </div>
+    {% else %}
+    <div class="empty">Courses coming soon — payment setup in progress.</div>
+    {% endfor %}
+  </div>
+</div>
+
+<footer>
+  <a class="footer-logo" href="https://vardhasheelan.com">Vardhasheela<span>N</span></a>
+  <p>© 2026 Vardhasheela N · Bengaluru, India</p>
+</footer>
+
+<!-- IDENTIFY MODAL -->
+<div class="modal-overlay" id="identifyModal">
+  <div class="modal-box">
+    <h2>Quick thing before you download 👋</h2>
+    <p>Just your name and email — you'll only need to do this once, ever. After this you can download anything on the site freely.</p>
+    <form id="identifyForm">
+      <input type="text" id="idName" placeholder="Your first name" required/>
+      <input type="email" id="idEmail" placeholder="your.email@example.com" required/>
+      <button class="modal-btn" type="submit">Unlock downloads →</button>
+      <div class="modal-err" id="idErr">Please enter a valid name and email.</div>
+    </form>
+  </div>
+</div>
+
+<script>
+const isIdentified = {{ 'true' if is_identified else 'false' }};
+let pendingResourceId = null;
+
+function handleDownload(e, resourceId) {
+  if (isIdentified) return true; // let it download normally
+  e.preventDefault();
+  pendingResourceId = resourceId;
+  document.getElementById('identifyModal').classList.add('visible');
+  return false;
+}
+
+// Auto-open modal if redirected here with ?unlock=<id>
+const params = new URLSearchParams(window.location.search);
+if (params.get('unlock') && !isIdentified) {
+  pendingResourceId = params.get('unlock');
+  document.getElementById('identifyModal').classList.add('visible');
+}
+
+document.getElementById('identifyForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const name  = document.getElementById('idName').value.trim();
+  const email = document.getElementById('idEmail').value.trim();
+  const err   = document.getElementById('idErr');
+
+  try {
+    const res = await fetch('/api/identify-visitor', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({name, email, source_page: 'resources'})
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('identifyModal').classList.remove('visible');
+      if (pendingResourceId) {
+        window.location.href = '/download/' + pendingResourceId;
+      } else {
+        window.location.reload();
+      }
+    } else {
+      err.textContent = data.error || 'Something went wrong.';
+      err.style.display = 'block';
+    }
+  } catch (ex) {
+    err.textContent = 'Network error — please try again.';
+    err.style.display = 'block';
+  }
+});
+</script>
+</body>
+</html>

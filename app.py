@@ -765,16 +765,47 @@ def admin_resources():
         all_subs  = get_matching_subscribers(r["category"])
         new_count = len([e for e, n in all_subs if e not in already])
         new_badge = f'<span style="color:#22C55E;font-size:11px">({new_count} new)</span>' if new_count > 0 else '<span style="color:#5c5a6b;font-size:11px">(all sent)</span>'
+        rtype = r["resource_type"] if "resource_type" in r.keys() else "freebie"
+        price = r["price"] if "price" in r.keys() else 0
+        avail = r["is_available"] if "is_available" in r.keys() else 1
+        type_colors = {"freebie": "#22C55E", "ebook": "#7B5CFA", "course": "#FF2CF3"}
+        type_color  = type_colors.get(rtype, "#9997aa")
+        avail_label = "" if avail else ' <span style="color:#BA7517">(hidden — coming soon)</span>'
         rows += f"""<tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
-          <td style="padding:12px 8px;color:#fff;font-size:13px">{r['title']}</td>
+          <td style="padding:12px 8px;color:#fff;font-size:13px">{r['title']}{avail_label}</td>
           <td style="padding:12px 8px;color:#9997aa;font-size:12px">{r['category']}</td>
+          <td style="padding:12px 8px;color:{type_color};font-size:12px;text-transform:uppercase;font-weight:600">{rtype}{' — ₹' + str(price) if rtype != 'freebie' and price else ''}</td>
           <td style="padding:12px 8px;color:#00f5ff;font-size:12px">{r['sent_count']} sent</td>
           <td style="padding:12px 8px;color:#9997aa;font-size:12px">{r['uploaded_at']}</td>
           <td style="padding:12px 8px">
             <a href="/resources/{r['filename']}" target="_blank" style="color:#7b5cfa;font-size:12px;margin-right:10px">View PDF</a>
-            <a href="/admin/resources/{r['id']}/resend" style="color:#FF2CF3;font-size:12px">Resend to new</a>
+            <a href="/admin/resources/{r['id']}/resend" style="color:#FF2CF3;font-size:12px;margin-right:10px">Resend to new</a>
+            <a href="#" onclick="document.getElementById('settings-{r['id']}').style.display='block';return false;" style="color:#00f5ff;font-size:12px">Settings</a>
             {new_badge}
-          </td></tr>"""
+          </td></tr>
+          <tr id="settings-{r['id']}" style="display:none;background:rgba(123,92,250,0.04)">
+            <td colspan="6" style="padding:16px">
+              <form action="/admin/resources/{r['id']}/settings" method="POST" style="display:flex;gap:12px;align-items:end;flex-wrap:wrap">
+                <div>
+                  <label style="display:block;font-size:10px;color:#9997aa;text-transform:uppercase;margin-bottom:4px">Type</label>
+                  <select name="resource_type" style="background:#070710;border:1px solid rgba(123,92,250,0.2);border-radius:4px;padding:6px 10px;color:#e8e6f0;font-size:12px">
+                    <option value="freebie" {"selected" if rtype=="freebie" else ""}>Freebie (goes to /resources)</option>
+                    <option value="ebook" {"selected" if rtype=="ebook" else ""}>E-book (paid)</option>
+                    <option value="course" {"selected" if rtype=="course" else ""}>Course (paid)</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="display:block;font-size:10px;color:#9997aa;text-transform:uppercase;margin-bottom:4px">Price (₹)</label>
+                  <input type="number" name="price" value="{price}" style="width:90px;background:#070710;border:1px solid rgba(123,92,250,0.2);border-radius:4px;padding:6px 10px;color:#e8e6f0;font-size:12px"/>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;padding-bottom:6px">
+                  <input type="checkbox" name="is_available" id="avail-{r['id']}" {"checked" if avail else ""}/>
+                  <label for="avail-{r['id']}" style="font-size:12px;color:#9997aa;margin:0">Available now (uncheck = "coming soon")</label>
+                </div>
+                <button type="submit" style="background:#22C55E;color:#000;border:none;border-radius:4px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer">Save</button>
+              </form>
+            </td>
+          </tr>"""
     return f"""<!DOCTYPE html><html><head><title>Resources & Freebies</title>
     <style>*{{box-sizing:border-box;margin:0;padding:0;}}
     body{{background:#050508;color:#e8e6f0;font-family:sans-serif;padding:2rem;}}
@@ -799,37 +830,47 @@ def admin_resources():
         <input type="text" name="title" placeholder="e.g. 30-Day Cabin Crew Prep Plan" required/>
         <label>Short description (goes in the email body)</label>
         <textarea name="description" placeholder="A quick note about what's inside and why it's useful..." required></textarea>
-        <label>Who is this for?</label>
+        <label>Who is this for? (email subscribers to notify)</label>
         <select name="category" required>
           <option value="cabin_crew">Cabin crew subscribers</option>
           <option value="ground_staff">Ground staff subscribers</option>
           <option value="all">Everyone (all subscribers)</option>
         </select>
+        <label>Resource type</label>
+        <select name="resource_type">
+          <option value="freebie">Freebie — free download on /resources</option>
+          <option value="ebook">E-book — paid (shows as "Coming soon" until Razorpay is live)</option>
+          <option value="course">Course — paid (shows as "Coming soon" until Razorpay is live)</option>
+        </select>
+        <label>Price in ₹ (only used for e-books/courses, leave 0 for freebies)</label>
+        <input type="number" name="price" value="0" min="0"/>
         <label>PDF file</label>
         <input type="file" name="file" accept="application/pdf" required/>
         <button type="submit">Upload and send now</button>
       </form>
     </div>
     <table>
-      <thead><tr><th>Title</th><th>Category</th><th>Sent</th><th>Uploaded</th><th>Actions</th></tr></thead>
-      <tbody>{rows or '<tr><td colspan="5" style="padding:2rem;text-align:center;color:#9997aa">No resources uploaded yet</td></tr>'}</tbody>
+      <thead><tr><th>Title</th><th>Category</th><th>Type</th><th>Sent</th><th>Uploaded</th><th>Actions</th></tr></thead>
+      <tbody>{rows or '<tr><td colspan="6" style="padding:2rem;text-align:center;color:#9997aa">No resources uploaded yet</td></tr>'}</tbody>
     </table></body></html>"""
 
 @app.route("/admin/resources/upload", methods=["POST"])
 @admin_required
 def admin_resources_upload():
-    title       = request.form.get("title", "").strip()
-    description = request.form.get("description", "").strip()
-    category    = request.form.get("category", "all")
-    file        = request.files.get("file")
+    title         = request.form.get("title", "").strip()
+    description   = request.form.get("description", "").strip()
+    category      = request.form.get("category", "all")
+    resource_type = request.form.get("resource_type", "freebie")
+    price         = int(request.form.get("price", 0) or 0)
+    file          = request.files.get("file")
     if not title or not file or file.filename == "":
         return "Title and PDF file are required.", 400
     filename = secure_filename(f"{int(datetime.now().timestamp())}_{file.filename}")
     file.save(os.path.join(RESOURCES_DIR, filename))
     conn = get_jobs_db()
     cur  = conn.execute(
-        "INSERT INTO resources (title, description, category, filename) VALUES (?, ?, ?, ?)",
-        (title, description, category, filename)
+        "INSERT INTO resources (title, description, category, filename, resource_type, price, is_available) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        (title, description, category, filename, resource_type, price, 1)
     )
     resource_id = cur.lastrowid
     conn.commit()
@@ -1359,6 +1400,181 @@ def admin_testimonial_toggle(t_id, action):
             break
     save_testimonials(testimonials)
     return redirect("/admin/testimonials")
+
+# ══════════════════════════════════════════════════════════════
+# NEW FEATURES: Resources library, Affiliate page, Visitor ID
+# Add this block BEFORE the line: if __name__ == "__main__":
+# ══════════════════════════════════════════════════════════════
+
+VISITOR_COOKIE_NAME = "vn_id"
+VISITOR_COOKIE_MAX_AGE = 60 * 60 * 24 * 365 * 10  # 10 years — effectively forever
+
+SITE_VISITORS_SCHEMA = """
+CREATE TABLE IF NOT EXISTS site_visitors (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    email TEXT NOT NULL UNIQUE,
+    cookie_id TEXT NOT NULL UNIQUE,
+    source_page TEXT,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+"""
+
+# Extend the existing resources table with type/price columns (safe re-run)
+def init_extended_schema():
+    conn = get_jobs_db()
+    conn.executescript(SITE_VISITORS_SCHEMA)
+    for stmt in [
+        "ALTER TABLE resources ADD COLUMN resource_type TEXT DEFAULT 'freebie'",  # freebie | ebook | course
+        "ALTER TABLE resources ADD COLUMN price INTEGER DEFAULT 0",
+        "ALTER TABLE resources ADD COLUMN is_available INTEGER DEFAULT 1",  # 0 = coming soon
+    ]:
+        try:
+            conn.execute(stmt)
+            conn.commit()
+        except Exception:
+            pass  # column already exists
+    conn.close()
+
+init_extended_schema()
+
+def is_visitor_identified():
+    return bool(request.cookies.get(VISITOR_COOKIE_NAME))
+
+def get_visitor_email():
+    cookie_id = request.cookies.get(VISITOR_COOKIE_NAME)
+    if not cookie_id:
+        return None
+    conn = get_jobs_db()
+    row = conn.execute("SELECT email, name FROM site_visitors WHERE cookie_id = ?", (cookie_id,)).fetchone()
+    conn.close()
+    return dict(row) if row else None
+
+@app.route("/api/identify-visitor", methods=["POST"])
+def identify_visitor():
+    data = request.json or {}
+    name  = (data.get("name") or "").strip()
+    email = (data.get("email") or "").strip().lower()
+    source_page = (data.get("source_page") or "").strip()
+
+    if not email or "@" not in email:
+        return jsonify({"error": "Please enter a valid email."}), 400
+
+    import uuid
+    cookie_id = str(uuid.uuid4())
+
+    conn = get_jobs_db()
+    try:
+        # If email already exists, reuse their existing cookie_id instead of creating a duplicate
+        existing = conn.execute("SELECT cookie_id FROM site_visitors WHERE email = ?", (email,)).fetchone()
+        if existing:
+            cookie_id = existing["cookie_id"]
+        else:
+            conn.execute(
+                "INSERT INTO site_visitors (name, email, cookie_id, source_page) VALUES (?, ?, ?, ?)",
+                (name or None, email, cookie_id, source_page)
+            )
+            conn.commit()
+    finally:
+        conn.close()
+
+    resp = jsonify({"success": True})
+    resp.set_cookie(VISITOR_COOKIE_NAME, cookie_id, max_age=VISITOR_COOKIE_MAX_AGE, httponly=True, samesite="Lax")
+    return resp
+
+# ── RESOURCES LIBRARY (public page) ──────────────────────────────
+
+@app.route("/resources")
+def resources_library():
+    conn = get_jobs_db()
+    freebies = conn.execute(
+        "SELECT * FROM resources WHERE resource_type = 'freebie' ORDER BY uploaded_at DESC"
+    ).fetchall()
+    ebooks = conn.execute(
+        "SELECT * FROM resources WHERE resource_type = 'ebook' ORDER BY uploaded_at DESC"
+    ).fetchall()
+    courses = conn.execute(
+        "SELECT * FROM resources WHERE resource_type = 'course' ORDER BY uploaded_at DESC"
+    ).fetchall()
+    conn.close()
+
+    return render_template(
+        "resources.html",
+        freebies=freebies,
+        ebooks=ebooks,
+        courses=courses,
+        is_identified=is_visitor_identified(),
+    )
+
+@app.route("/download/<int:resource_id>")
+def download_resource(resource_id):
+    """Gated download — requires visitor to be identified first."""
+    if not is_visitor_identified():
+        # Redirect back to resources page with a flag to show the capture modal
+        return redirect(f"/resources?unlock={resource_id}")
+
+    conn = get_jobs_db()
+    r = conn.execute("SELECT * FROM resources WHERE id = ?", (resource_id,)).fetchone()
+    conn.close()
+
+    if not r or not r["filename"]:
+        return "Resource not found.", 404
+    if r["resource_type"] != "freebie":
+        return "This item requires payment — checkout coming soon.", 402
+
+    return send_file(os.path.join(RESOURCES_DIR, r["filename"]), as_attachment=True)
+
+# ── AFFILIATE PAGE (no gate — nothing to protect) ────────────────
+
+@app.route("/affiliate")
+def affiliate_page():
+    return render_template("affiliate.html")
+
+# ── ADMIN: manage resource type/price/availability ───────────────
+
+@app.route("/admin/resources/<int:resource_id>/settings", methods=["POST"])
+@admin_required
+def admin_resource_settings(resource_id):
+    resource_type = request.form.get("resource_type", "freebie")
+    price         = int(request.form.get("price", 0) or 0)
+    is_available  = 1 if request.form.get("is_available") == "on" else 0
+
+    conn = get_jobs_db()
+    conn.execute(
+        "UPDATE resources SET resource_type = ?, price = ?, is_available = ? WHERE id = ?",
+        (resource_type, price, is_available, resource_id)
+    )
+    conn.commit()
+    conn.close()
+    return redirect("/admin/resources")
+
+@app.route("/admin/visitors")
+@admin_required
+def admin_visitors():
+    conn = get_jobs_db()
+    visitors = conn.execute("SELECT * FROM site_visitors ORDER BY created_at DESC").fetchall()
+    conn.close()
+    rows = ""
+    for v in visitors:
+        rows += f"""<tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
+          <td style="padding:12px 8px;color:#fff;font-size:13px">{v['name'] or '—'}</td>
+          <td style="padding:12px 8px;color:#00f5ff;font-size:13px">{v['email']}</td>
+          <td style="padding:12px 8px;color:#9997aa;font-size:12px">{v['source_page'] or '—'}</td>
+          <td style="padding:12px 8px;color:#9997aa;font-size:12px">{v['created_at']}</td></tr>"""
+    return f"""<!DOCTYPE html><html><head><title>Site Visitors</title>
+    <style>*{{box-sizing:border-box;margin:0;padding:0;}}
+    body{{background:#050508;color:#e8e6f0;font-family:sans-serif;padding:2rem;}}
+    h1{{color:#7B5CFA;font-size:1.4rem;margin-bottom:1.5rem;}}
+    table{{width:100%;border-collapse:collapse;background:#0f0f1a;border:1px solid rgba(123,92,250,0.15);border-radius:8px;overflow:hidden;}}
+    th{{padding:12px 8px;text-align:left;font-size:11px;color:#9997aa;letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.08);}}
+    .back{{display:inline-block;color:#9997aa;text-decoration:none;font-size:13px;margin-bottom:1.5rem;border:1px solid rgba(255,255,255,0.1);padding:8px 16px;border-radius:6px;}}
+    </style></head><body>
+    <a class="back" href="/admin">← Back to bookings</a>
+    <h1>All site visitors ({len(visitors)})</h1>
+    <table>
+      <thead><tr><th>Name</th><th>Email</th><th>First identified on</th><th>Date</th></tr></thead>
+      <tbody>{rows or '<tr><td colspan="4" style="padding:2rem;text-align:center;color:#9997aa">No visitors yet</td></tr>'}</tbody>
+    </table></body></html>"""
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
