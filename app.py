@@ -1605,6 +1605,17 @@ def init_round2_schema():
     conn = get_jobs_db()
     conn.executescript(AFFILIATE_SCHEMA)
     conn.commit()
+    # ── safe migration: add new columns if the waitlist table already
+    #    existed from an earlier deploy without them ──
+    for stmt in [
+        "ALTER TABLE waitlist ADD COLUMN resource_label TEXT",
+        "ALTER TABLE waitlist ADD COLUMN phone TEXT",
+    ]:
+        try:
+            conn.execute(stmt)
+            conn.commit()
+        except Exception:
+            pass  # column already exists — safe to ignore
     conn.close()
 
 init_round2_schema()
@@ -1739,21 +1750,27 @@ def notify_me():
             (resource_id, resource_label or resource_id, email, name, phone or None)
         )
         conn.commit()
-    finally:
+    except Exception as ex:
         conn.close()
+        print(f"Waitlist insert error: {ex}")
+        return jsonify({"error": "Something went wrong saving your details. Please try again."}), 500
+    conn.close()
 
-    # Notify Vardhasheela of waitlist interest
-    send_email(
-        GMAIL_USER, "Vardhasheela",
-        f"New waitlist signup: {resource_label or resource_id}",
-        f"""<div style="font-family:sans-serif;background:#0a0a0b;color:#e8e6f0;padding:32px;border-radius:12px">
-          <h3 style="color:#7b5cfa">🔔 New waitlist signup</h3>
-          <p><strong>Interested in:</strong> {resource_label or resource_id}</p>
-          <p><strong>Name:</strong> {name}</p>
-          <p><strong>Email:</strong> {email}</p>
-          <p><strong>Phone:</strong> {phone or 'Not provided'}</p>
-        </div>"""
-    )
+    # Notify Vardhasheela of waitlist interest — never let email failure break the response
+    try:
+        send_email(
+            GMAIL_USER, "Vardhasheela",
+            f"New waitlist signup: {resource_label or resource_id}",
+            f"""<div style="font-family:sans-serif;background:#0a0a0b;color:#e8e6f0;padding:32px;border-radius:12px">
+              <h3 style="color:#7b5cfa">🔔 New waitlist signup</h3>
+              <p><strong>Interested in:</strong> {resource_label or resource_id}</p>
+              <p><strong>Name:</strong> {name}</p>
+              <p><strong>Email:</strong> {email}</p>
+              <p><strong>Phone:</strong> {phone or 'Not provided'}</p>
+            </div>"""
+        )
+    except Exception as ex:
+        print(f"Waitlist notification email error: {ex}")
 
     return jsonify({"success": True})
 
