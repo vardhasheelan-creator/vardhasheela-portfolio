@@ -121,7 +121,6 @@ footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
     <div class="card">
       <div class="card-icon">📄</div>
       <h3>{{ r['title'] }}</h3>
-      <p>{{ r['description'] }}</p>
       <a class="card-btn" href="/download/{{ r['id'] }}" onclick="return handleDownload(event, {{ r['id'] }})">Download free →</a>
     </div>
     {% else %}

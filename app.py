@@ -540,13 +540,16 @@ def admin_panel():
         <div class="stat"><strong style="color:#BA7517">{pending}</strong><span>PENDING</span></div>
         <div class="stat"><strong style="color:#22C55E">{confirmed}</strong><span>CONFIRMED</span></div>
       </div>
-      <a href="/admin/subscribers" class="btn" style="color:#00f5ff;border-color:rgba(0,245,255,0.3)">Jobs board subscribers</a>
-      <a href="/admin/resources" class="btn" style="color:#22C55E;border-color:rgba(34,197,94,0.3)">Send freebies</a>
-      <a href="/admin/affiliate" class="btn" style="color:#FF9900;border-color:rgba(255,153,0,0.3)">🛒 Affiliate products</a>
-      <a href="/admin/waitlist" class="btn" style="color:#7B5CFA;border-color:rgba(123,92,250,0.3)">📋 Waitlist</a>
-      <a href="/admin/announce" class="btn" style="color:#FF2CF3;border-color:rgba(255,44,243,0.3)">📢 Send announcement</a>
-      <a href="/admin/send-feedback-emails-now" class="btn" style="color:#FF2CF3;border-color:rgba(255,44,243,0.3)">Send due feedback emails now</a>
-      <a href="/admin/logout" class="btn" style="color:#9997aa">Logout</a>
+      <select onchange="if(this.value) window.location.href=this.value" style="background:#0f0f1a;border:1px solid rgba(123,92,250,0.3);border-radius:6px;padding:0.6rem 1rem;color:#e8e6f0;font-size:13px;font-weight:600;cursor:pointer;min-width:220px">
+        <option value="">⚙️ More admin tools...</option>
+        <option value="/admin/subscribers">👥 Jobs board subscribers</option>
+        <option value="/admin/resources">📄 Send freebies / resources</option>
+        <option value="/admin/affiliate">🛒 Affiliate products</option>
+        <option value="/admin/waitlist">📋 Waitlist</option>
+        <option value="/admin/announce">📢 Send announcement</option>
+        <option value="/admin/send-feedback-emails-now">💬 Send due feedback emails now</option>
+        <option value="/admin/logout">🚪 Logout</option>
+      </select>
     </div>
     <div style="overflow-x:auto"><table>
       <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Date & Time</th><th>Session</th><th>Goal</th><th>Notes</th><th>Feedback</th><th>Action</th></tr></thead>
@@ -825,12 +828,13 @@ def admin_resources():
     </style></head><body>
     <a class="back" href="/admin">← Back to bookings</a>
     <h1>Send a freebie / resource</h1>
-    <div class="note"><strong>Personalized:</strong> Each email greets the subscriber by their first name. Resend only goes to new subscribers who haven't received it yet.</div>
+    <div class="note"><strong>Personalized:</strong> Each email greets the subscriber by their first name. Resend only goes to new subscribers who haven't received it yet.<br><br>
+    <strong>Two audiences, two views:</strong> The title shows on the public /resources page (for Instagram followers etc). The description you write becomes the email body — sent only to registered subscribers, never shown publicly.</div>
     <div class="upload-box">
       <form action="/admin/resources/upload" method="POST" enctype="multipart/form-data">
         <label>Title (used as email subject)</label>
         <input type="text" name="title" placeholder="e.g. 30-Day Cabin Crew Prep Plan" required/>
-        <label>Short description (goes in the email body)</label>
+        <label>Email body — sent only to subscribers, NOT shown on the public resources page</label>
         <textarea name="description" placeholder="A quick note about what's inside and why it's useful..." required></textarea>
         <label>Who is this for? (email subscribers to notify)</label>
         <select name="category" required>
