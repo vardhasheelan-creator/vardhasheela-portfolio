@@ -871,8 +871,8 @@ def admin_resources():
         <label>Resource type</label>
         <select name="resource_type">
           <option value="freebie">Freebie — free download on /resources</option>
-          <option value="ebook">E-book — paid (shows as "Coming soon" until Razorpay is live)</option>
-          <option value="course">Course — paid (shows as "Coming soon" until Razorpay is live)</option>
+          <option value="ebook">E-book — paid</option>
+          <option value="course">Course — paid</option>
         </select>
         <label>Price in ₹ (only used for e-books/courses, leave 0 for freebies)</label>
         <input type="number" name="price" value="0" min="0"/>
