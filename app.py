@@ -482,6 +482,11 @@ def admin_login():
     <form method="POST">{'<p class="err">'+error+'</p>' if error else ''}
     <input type="password" name="password" placeholder="Password" autofocus/>
     <button type="submit">Login →</button></form></div></body></html>"""
+from flask import send_from_directory
+
+@app.route('/wenixai.html')
+def wenixai_page():
+    return send_from_directory('public', 'wenixai.html')
 
 @app.route("/admin/logout")
 def admin_logout():
