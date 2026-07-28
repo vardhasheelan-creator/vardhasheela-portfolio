@@ -597,15 +597,18 @@ def admin_announce():
         if not subject or not body_text:
             return "Subject and body are required.", 400
 
-        conn = get_jobs_db()
-        if audience == "all":
-            rows = conn.execute("SELECT email, name FROM job_alert_subscribers").fetchall()
+        if audience == "me":
+            rows = [{"email": GMAIL_USER, "name": "Vardhasheela"}]
         else:
-            rows = conn.execute(
-                "SELECT email, name FROM job_alert_subscribers WHERE interested_role = ? OR interested_role = 'all'",
-                (audience,)
-            ).fetchall()
-        conn.close()
+            conn = get_jobs_db()
+            if audience == "all":
+                rows = conn.execute("SELECT email, name FROM job_alert_subscribers").fetchall()
+            else:
+                rows = conn.execute(
+                    "SELECT email, name FROM job_alert_subscribers WHERE interested_role = ? OR interested_role = 'all'",
+                    (audience,)
+                ).fetchall()
+            conn.close()
 
         # ── confirm step: show preview before sending ──
         confirmed = request.form.get("confirmed") == "yes"
@@ -702,6 +705,7 @@ def admin_announce():
 
         <label>Who to send to</label>
         <select name="audience">
+          <option value="me">Just me (test send)</option>
           <option value="all">Everyone ({sub_count} subscribers)</option>
           <option value="cabin_crew">Cabin crew only ({cc_count})</option>
           <option value="ground_staff">Ground staff only ({gs_count})</option>
