@@ -7,6 +7,7 @@ from googleapiclient.discovery import build
 from apscheduler.schedulers.background import BackgroundScheduler
 from dotenv import load_dotenv
 import atexit
+import html
 import threading
 import smtplib
 from email.mime.text import MIMEText
@@ -636,11 +637,11 @@ def admin_announce():
             </div>
             <div class="preview">{body_text[:400]}{'...' if len(body_text) > 400 else ''}</div>
             <form method="POST">
-              <input type="hidden" name="subject" value="{subject}"/>
-              <input type="hidden" name="body" value="{body_text}"/>
-              <input type="hidden" name="cta_text" value="{cta_text}"/>
-              <input type="hidden" name="cta_url" value="{cta_url}"/>
-              <input type="hidden" name="audience" value="{audience}"/>
+              <input type="hidden" name="subject" value="{html.escape(subject)}"/>
+              <input type="hidden" name="body" value="{html.escape(body_text)}"/>
+              <input type="hidden" name="cta_text" value="{html.escape(cta_text)}"/>
+              <input type="hidden" name="cta_url" value="{html.escape(cta_url)}"/>
+              <input type="hidden" name="audience" value="{html.escape(audience)}"/>
               <input type="hidden" name="confirmed" value="yes"/>
               <div class="btns">
                 <a class="btn-back" href="/admin/announce">← Edit</a>
