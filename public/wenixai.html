@@ -648,28 +648,42 @@
   }
 
   // ===== Book a Call form =====
-  const YOUR_EMAIL = "vardhasheelan@gmail.com"; // change this to your preferred inbox
-
   document.getElementById('bookForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    const name = document.getElementById('bookName').value.trim();
-    const email = document.getElementById('bookEmail').value.trim();
-    const phone = document.getElementById('bookPhone').value.trim();
-    const goal = document.getElementById('bookGoal').value.trim();
-    const time = document.getElementById('bookTime').value.trim();
+    const payload = {
+      name: document.getElementById('bookName').value.trim(),
+      email: document.getElementById('bookEmail').value.trim(),
+      phone: document.getElementById('bookPhone').value.trim(),
+      goal: document.getElementById('bookGoal').value.trim(),
+      time: document.getElementById('bookTime').value.trim(),
+    };
 
-    const subject = encodeURIComponent(`Wenix AI Call Request — ${name}`);
-    const body = encodeURIComponent(
-      `New call request from the Wenix AI page:\n\n` +
-      `Name: ${name}\n` +
-      `Email: ${email}\n` +
-      `Phone: ${phone}\n` +
-      `Business / Goal: ${goal}\n` +
-      `Convenient time: ${time}\n`
-    );
+    const submitBtn = document.querySelector('#bookForm button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
 
-    window.location.href = `mailto:${YOUR_EMAIL}?subject=${subject}&body=${body}`;
-    document.getElementById('bookSuccess').classList.add('show');
+    fetch('/api/wenixai-inquiry', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+    .then(res => res.json())
+    .then(data => {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Request a Call';
+      if (data.success) {
+        document.getElementById('bookSuccess').textContent = "✓ Thanks! We've received your request and will send you a meeting link by email shortly.";
+        document.getElementById('bookSuccess').classList.add('show');
+        document.getElementById('bookForm').reset();
+      } else {
+        alert('Something went wrong submitting this — please try again or email us directly.');
+      }
+    })
+    .catch(() => {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Request a Call';
+      alert('Something went wrong submitting this — please try again or email us directly.');
+    });
   });
 </script>
 </body>
