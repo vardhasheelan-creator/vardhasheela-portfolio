@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, redirect, session, send_file
+from flask import Flask, request, jsonify, render_template, redirect, session, send_file, send_from_directory
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
 from google.oauth2.credentials import Credentials
@@ -452,6 +452,25 @@ def announcement_email(name, subject, body_text, cta_text, cta_url):
     </div>
     """
 
+def wenixai_inquiry_email(name, email, phone, goal, time_pref):
+    """New Wenix AI 'Book a Call' inquiry — sent to Vardhasheela when a
+    prospective client submits the form on the Wenix AI page."""
+    return f"""
+    <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a0a0b;color:#e8e6f0;padding:40px;border-radius:12px">
+      <h2 style="color:#7b5cfa;margin:0 0 20px">🔔 New Wenix AI call request</h2>
+      <div style="background:rgba(123,92,250,0.08);border:1px solid rgba(123,92,250,0.25);border-radius:8px;padding:20px;margin-bottom:20px">
+        <table style="width:100%;font-size:14px">
+          <tr><td style="color:#9997aa;padding:5px 0;width:130px">Name</td><td style="color:#fff;font-weight:600">{name}</td></tr>
+          <tr><td style="color:#9997aa;padding:5px 0">Email</td><td style="color:#00f5ff">{email}</td></tr>
+          <tr><td style="color:#9997aa;padding:5px 0">Phone</td><td style="color:#fff">{phone or 'Not provided'}</td></tr>
+          <tr><td style="color:#9997aa;padding:5px 0">Business / Goal</td><td style="color:#fff">{goal or 'Not specified'}</td></tr>
+          <tr><td style="color:#9997aa;padding:5px 0">Convenient time</td><td style="color:#fff">{time_pref or 'Not specified'}</td></tr>
+        </table>
+      </div>
+      <p style="color:#9997aa;font-size:13px">Reply directly to this inquiry's email address to confirm a time and send the meeting link.</p>
+    </div>
+    """
+
 # ── ADMIN AUTH ───────────────────────────────────────────────────
 
 def admin_required(f):
@@ -482,11 +501,6 @@ def admin_login():
     <form method="POST">{'<p class="err">'+error+'</p>' if error else ''}
     <input type="password" name="password" placeholder="Password" autofocus/>
     <button type="submit">Login →</button></form></div></body></html>"""
-from flask import send_from_directory
-
-@app.route('/wenixai.html')
-def wenixai_page():
-    return send_from_directory('public', 'wenixai.html')
 
 @app.route("/admin/logout")
 def admin_logout():
@@ -979,8 +993,40 @@ def index():
 @app.route('/assets/<path:filename>')
 def assets(filename):
     assets_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'public', 'assets')
-    from flask import send_from_directory
     return send_from_directory(assets_dir, filename)
+
+# ── WENIX AI PAGE ─────────────────────────────────────────────────
+
+@app.route('/wenixai.html')
+def wenixai_page():
+    return send_from_directory('public', 'wenixai.html')
+
+@app.route('/wenixai')
+def wenixai_clean_url():
+    return send_from_directory('public', 'wenixai.html')
+
+@app.route("/api/wenixai-inquiry", methods=["POST"])
+def wenixai_inquiry():
+    data  = request.get_json(silent=True) or {}
+    name  = (data.get("name") or "").strip()
+    email = (data.get("email") or "").strip()
+    phone = (data.get("phone") or "").strip()
+    goal  = (data.get("goal") or "").strip()
+    time_pref = (data.get("time") or "").strip()
+
+    if not name or not email:
+        return jsonify({"success": False, "error": "Name and email are required."}), 400
+
+    sent = send_email(
+        GMAIL_USER, "Vardhasheela",
+        f"Wenix AI Call Request — {name}",
+        wenixai_inquiry_email(name, email, phone, goal, time_pref)
+    )
+
+    if not sent:
+        return jsonify({"success": False, "error": "Could not send email — please try again."}), 500
+
+    return jsonify({"success": True})
 
 @app.route("/authorize")
 def authorize():
