@@ -585,37 +585,81 @@ def admin_send_feedback_emails_now():
 
 # ── ANNOUNCEMENT BROADCASTER ─────────────────────────────────────
 
+def _resolve_announce_audience(audience):
+    """
+    Returns a list of dicts [{"email":..., "name":...}, ...] for the
+    selected audience. Handles job-board subscribers, waitlist entries
+    (for ebook/course launches), and a combined dedup'd option.
+    """
+    if audience == "me":
+        return [{"email": GMAIL_USER, "name": "Vardhasheela"}]
+
+    conn = get_jobs_db()
+    try:
+        if audience == "ebook_waitlist":
+            rows = conn.execute(
+                "SELECT email, MAX(name) as name FROM waitlist WHERE resource_label LIKE '%book%' GROUP BY email"
+            ).fetchall()
+            return [{"email": r["email"], "name": r["name"]} for r in rows]
+
+        if audience == "cabin_crew_plus_waitlist":
+            cc_rows = conn.execute(
+                "SELECT email, name FROM job_alert_subscribers WHERE interested_role = 'cabin_crew' OR interested_role = 'all'"
+            ).fetchall()
+            wl_rows = conn.execute(
+                "SELECT email, MAX(name) as name FROM waitlist WHERE resource_label LIKE '%book%' GROUP BY email"
+            ).fetchall()
+            combined = {}
+            for r in list(cc_rows) + list(wl_rows):
+                combined[r["email"]] = r["name"]
+            return [{"email": e, "name": n} for e, n in combined.items()]
+
+        if audience == "all":
+            rows = conn.execute("SELECT email, name FROM job_alert_subscribers").fetchall()
+        else:
+            rows = conn.execute(
+                "SELECT email, name FROM job_alert_subscribers WHERE interested_role = ? OR interested_role = 'all'",
+                (audience,)
+            ).fetchall()
+        return [{"email": r["email"], "name": r["name"]} for r in rows]
+    finally:
+        conn.close()
+
+
+def _send_announcement_bg(app_ctx, rows, subject, body_text, cta_text, cta_url):
+    """Runs in a background thread so the confirm click responds instantly
+    instead of risking a 502 while looping through every recipient."""
+    with app_ctx:
+        sent = 0
+        for row in rows:
+            if send_email(
+                row["email"], row["name"] or "",
+                subject,
+                announcement_email(row["name"], subject, body_text, cta_text, cta_url)
+            ):
+                sent += 1
+        print(f"[background] Announcement sent: {sent}/{len(rows)} recipients — subject: {subject}")
+
+
 @app.route("/admin/announce", methods=["GET", "POST"])
 @admin_required
 def admin_announce():
     if request.method == "POST":
-        subject    = request.form.get("subject", "").strip()
-        body_text  = request.form.get("body", "").strip()
-        cta_text   = request.form.get("cta_text", "").strip()
-        cta_url    = request.form.get("cta_url", "").strip()
-        audience   = request.form.get("audience", "all")
+        subject   = request.form.get("subject", "").strip()
+        body_text = request.form.get("body", "").strip()
+        cta_text  = request.form.get("cta_text", "").strip()
+        cta_url   = request.form.get("cta_url", "").strip()
+        audience  = request.form.get("audience", "all")
 
         if not subject or not body_text:
             return "Subject and body are required.", 400
 
-        if audience == "me":
-            rows = [{"email": GMAIL_USER, "name": "Vardhasheela"}]
-        else:
-            conn = get_jobs_db()
-            if audience == "all":
-                rows = conn.execute("SELECT email, name FROM job_alert_subscribers").fetchall()
-            else:
-                rows = conn.execute(
-                    "SELECT email, name FROM job_alert_subscribers WHERE interested_role = ? OR interested_role = 'all'",
-                    (audience,)
-                ).fetchall()
-            conn.close()
+        rows = _resolve_announce_audience(audience)
 
         # ── confirm step: show preview before sending ──
         confirmed = request.form.get("confirmed") == "yes"
         if not confirmed:
-            # Show confirmation page with subscriber count
-            preview_name = rows[0]["name"] if rows else None
+            preview_name     = rows[0]["name"] if rows else None
             preview_greeting = greeting(preview_name)
             return f"""<!DOCTYPE html><html><head><title>Confirm Send</title>
             <style>*{{box-sizing:border-box;margin:0;padding:0;}}
@@ -631,11 +675,11 @@ def admin_announce():
             </style></head><body><div class="box">
             <h2>📋 Review before sending</h2>
             <div class="meta">
-              <strong>Subject:</strong> {subject}<br>
-              <strong>Audience:</strong> {len(rows)} subscriber{'s' if len(rows) != 1 else ''}<br>
+              <strong>Subject:</strong> {html.escape(subject)}<br>
+              <strong>Audience:</strong> {len(rows)} recipient{'s' if len(rows) != 1 else ''}<br>
               <strong>Preview greeting:</strong> {preview_greeting}
             </div>
-            <div class="preview">{body_text[:400]}{'...' if len(body_text) > 400 else ''}</div>
+            <div class="preview">{html.escape(body_text[:400])}{'...' if len(body_text) > 400 else ''}</div>
             <form method="POST">
               <input type="hidden" name="subject" value="{html.escape(subject)}"/>
               <input type="hidden" name="body" value="{html.escape(body_text)}"/>
@@ -645,36 +689,36 @@ def admin_announce():
               <input type="hidden" name="confirmed" value="yes"/>
               <div class="btns">
                 <a class="btn-back" href="/admin/announce">← Edit</a>
-                <button class="btn-send" type="submit">✅ Yes, send to {len(rows)} subscribers</button>
+                <button class="btn-send" type="submit">✅ Yes, send to {len(rows)} recipients</button>
               </div>
             </form>
             </div></body></html>"""
 
-        sent = 0
-        for row in rows:
-            if send_email(
-                row["email"], row["name"] or "",
-                subject,
-                announcement_email(row["name"], subject, body_text, cta_text, cta_url)
-            ):
-                sent += 1
+        # ── send in the background so this never risks a 502 ──
+        threading.Thread(
+            target=_send_announcement_bg,
+            args=(app.app_context(), rows, subject, body_text, cta_text, cta_url),
+            daemon=True
+        ).start()
 
-        return f"""<!DOCTYPE html><html><head><title>Sent!</title>
+        return f"""<!DOCTYPE html><html><head><title>Sending!</title>
         <style>body{{background:#050508;color:#e8e6f0;font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center;}}
         .box{{background:#0f0f1a;border:1px solid rgba(34,197,94,0.3);border-radius:12px;padding:2.5rem;max-width:400px;}}
         h2{{color:#22C55E;margin-bottom:1rem;}} a{{color:#FF2CF3;}}</style></head>
         <body><div class="box">
-        <h2>✅ Sent to {sent} subscribers!</h2>
-        <p style="color:#9997aa;margin-bottom:1.5rem">Each email was personalized with their name automatically.</p>
+        <h2>✅ Sending to {len(rows)} recipients!</h2>
+        <p style="color:#9997aa;margin-bottom:1.5rem">Emails are going out in the background right now — each one personalized with the recipient's name automatically.</p>
         <a href="/admin">← Back to admin</a>
         </div></body></html>"""
 
     # GET — show the form
-    conn       = get_jobs_db()
-    sub_count  = conn.execute("SELECT COUNT(*) FROM job_alert_subscribers").fetchone()[0]
-    cc_count   = conn.execute("SELECT COUNT(*) FROM job_alert_subscribers WHERE interested_role = 'cabin_crew'").fetchone()[0]
-    gs_count   = conn.execute("SELECT COUNT(*) FROM job_alert_subscribers WHERE interested_role = 'ground_staff'").fetchone()[0]
+    conn = get_jobs_db()
+    sub_count = conn.execute("SELECT COUNT(*) FROM job_alert_subscribers").fetchone()[0]
+    cc_count  = conn.execute("SELECT COUNT(*) FROM job_alert_subscribers WHERE interested_role = 'cabin_crew'").fetchone()[0]
+    gs_count  = conn.execute("SELECT COUNT(*) FROM job_alert_subscribers WHERE interested_role = 'ground_staff'").fetchone()[0]
+    wl_count  = conn.execute("SELECT COUNT(DISTINCT email) FROM waitlist WHERE resource_label LIKE '%book%'").fetchone()[0]
     conn.close()
+    combined_count = len(_resolve_announce_audience("cabin_crew_plus_waitlist"))
 
     return f"""<!DOCTYPE html><html><head><title>Send Announcement</title>
     <style>*{{box-sizing:border-box;margin:0;padding:0;}}
@@ -693,11 +737,13 @@ def admin_announce():
     </style></head><body>
     <a class="back" href="/admin">← Back to bookings</a>
     <h1>📢 Send announcement to subscribers</h1>
-    <p style="color:#9997aa;font-size:13px;margin-bottom:1.5rem">Each email is automatically personalized with the subscriber's first name.</p>
+    <p style="color:#9997aa;font-size:13px;margin-bottom:1.5rem">Each email is automatically personalized with the recipient's first name.</p>
     <div class="counts">
       <div class="count"><strong>{sub_count}</strong>Total subscribers</div>
       <div class="count"><strong>{cc_count}</strong>Cabin crew</div>
       <div class="count"><strong>{gs_count}</strong>Ground staff</div>
+      <div class="count"><strong>{wl_count}</strong>Ebook waitlist</div>
+      <div class="count"><strong>{combined_count}</strong>Cabin crew + waitlist (deduped)</div>
     </div>
     <div class="box">
       <form method="POST">
@@ -710,6 +756,8 @@ def admin_announce():
           <option value="all">Everyone ({sub_count} subscribers)</option>
           <option value="cabin_crew">Cabin crew only ({cc_count})</option>
           <option value="ground_staff">Ground staff only ({gs_count})</option>
+          <option value="ebook_waitlist">Ebook waitlist only ({wl_count})</option>
+          <option value="cabin_crew_plus_waitlist">Cabin crew + Ebook waitlist ({combined_count}, recommended for launch)</option>
         </select>
 
         <label>Email body</label>
