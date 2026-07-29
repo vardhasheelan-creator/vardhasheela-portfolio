@@ -336,11 +336,12 @@ async function loadTestimonials() {
         const k = l.trim();
         return `<span class="t-liked-chip">${likedLabels[k] || k}</span>`;
       }).join('') : '';
-      const likedRow = liked ? `<div class="t-liked">${liked}</div>` : '';
-      const verified = t.source === 'booking' ? '<span class="t-verified">✓ verified</span>' : '';
+      const likedRow   = liked ? `<div class="t-liked">${liked}</div>` : '';
+      const verified   = t.source === 'booking' ? '<span class="t-verified">✓ verified</span>' : '';
+      const commentRow = t.comment ? `<div class="t-comment">${t.comment}</div>` : '';
       return `<div class="t-card">
         <div class="t-stars">${stars}</div>
-        <div class="t-comment">${t.comment}</div>
+        ${commentRow}
         ${likedRow}
         <div class="t-name">${t.show_name || 'Anonymous'} ${verified}</div>
       </div>`;

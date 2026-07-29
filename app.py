@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, redirect, session, send_file, send_from_directory
+from flask import Flask, request, jsonify, render_template, redirect, session, send_file
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
 from google.oauth2.credentials import Credentials
@@ -7,7 +7,6 @@ from googleapiclient.discovery import build
 from apscheduler.schedulers.background import BackgroundScheduler
 from dotenv import load_dotenv
 import atexit
-import html
 import threading
 import smtplib
 from email.mime.text import MIMEText
@@ -453,25 +452,6 @@ def announcement_email(name, subject, body_text, cta_text, cta_url):
     </div>
     """
 
-def wenixai_inquiry_email(name, email, phone, goal, time_pref):
-    """New Wenix AI 'Book a Call' inquiry — sent to Vardhasheela when a
-    prospective client submits the form on the Wenix AI page."""
-    return f"""
-    <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0a0a0b;color:#e8e6f0;padding:40px;border-radius:12px">
-      <h2 style="color:#7b5cfa;margin:0 0 20px">🔔 New Wenix AI call request</h2>
-      <div style="background:rgba(123,92,250,0.08);border:1px solid rgba(123,92,250,0.25);border-radius:8px;padding:20px;margin-bottom:20px">
-        <table style="width:100%;font-size:14px">
-          <tr><td style="color:#9997aa;padding:5px 0;width:130px">Name</td><td style="color:#fff;font-weight:600">{name}</td></tr>
-          <tr><td style="color:#9997aa;padding:5px 0">Email</td><td style="color:#00f5ff">{email}</td></tr>
-          <tr><td style="color:#9997aa;padding:5px 0">Phone</td><td style="color:#fff">{phone or 'Not provided'}</td></tr>
-          <tr><td style="color:#9997aa;padding:5px 0">Business / Goal</td><td style="color:#fff">{goal or 'Not specified'}</td></tr>
-          <tr><td style="color:#9997aa;padding:5px 0">Convenient time</td><td style="color:#fff">{time_pref or 'Not specified'}</td></tr>
-        </table>
-      </div>
-      <p style="color:#9997aa;font-size:13px">Reply directly to this inquiry's email address to confirm a time and send the meeting link.</p>
-    </div>
-    """
-
 # ── ADMIN AUTH ───────────────────────────────────────────────────
 
 def admin_required(f):
@@ -585,35 +565,20 @@ def admin_send_feedback_emails_now():
 
 # ── ANNOUNCEMENT BROADCASTER ─────────────────────────────────────
 
-def _resolve_announce_audience(audience):
-    """
-    Returns a list of dicts [{"email":..., "name":...}, ...] for the
-    selected audience. Handles job-board subscribers, waitlist entries
-    (for ebook/course launches), and a combined dedup'd option.
-    """
-    if audience == "me":
-        return [{"email": GMAIL_USER, "name": "Vardhasheela"}]
+@app.route("/admin/announce", methods=["GET", "POST"])
+@admin_required
+def admin_announce():
+    if request.method == "POST":
+        subject    = request.form.get("subject", "").strip()
+        body_text  = request.form.get("body", "").strip()
+        cta_text   = request.form.get("cta_text", "").strip()
+        cta_url    = request.form.get("cta_url", "").strip()
+        audience   = request.form.get("audience", "all")
 
-    conn = get_jobs_db()
-    try:
-        if audience == "ebook_waitlist":
-            rows = conn.execute(
-                "SELECT email, MAX(name) as name FROM waitlist WHERE resource_label LIKE '%book%' GROUP BY email"
-            ).fetchall()
-            return [{"email": r["email"], "name": r["name"]} for r in rows]
+        if not subject or not body_text:
+            return "Subject and body are required.", 400
 
-        if audience == "cabin_crew_plus_waitlist":
-            cc_rows = conn.execute(
-                "SELECT email, name FROM job_alert_subscribers WHERE interested_role = 'cabin_crew' OR interested_role = 'all'"
-            ).fetchall()
-            wl_rows = conn.execute(
-                "SELECT email, MAX(name) as name FROM waitlist WHERE resource_label LIKE '%book%' GROUP BY email"
-            ).fetchall()
-            combined = {}
-            for r in list(cc_rows) + list(wl_rows):
-                combined[r["email"]] = r["name"]
-            return [{"email": e, "name": n} for e, n in combined.items()]
-
+        conn = get_jobs_db()
         if audience == "all":
             rows = conn.execute("SELECT email, name FROM job_alert_subscribers").fetchall()
         else:
@@ -621,45 +586,13 @@ def _resolve_announce_audience(audience):
                 "SELECT email, name FROM job_alert_subscribers WHERE interested_role = ? OR interested_role = 'all'",
                 (audience,)
             ).fetchall()
-        return [{"email": r["email"], "name": r["name"]} for r in rows]
-    finally:
         conn.close()
-
-
-def _send_announcement_bg(app_ctx, rows, subject, body_text, cta_text, cta_url):
-    """Runs in a background thread so the confirm click responds instantly
-    instead of risking a 502 while looping through every recipient."""
-    with app_ctx:
-        sent = 0
-        for row in rows:
-            if send_email(
-                row["email"], row["name"] or "",
-                subject,
-                announcement_email(row["name"], subject, body_text, cta_text, cta_url)
-            ):
-                sent += 1
-        print(f"[background] Announcement sent: {sent}/{len(rows)} recipients — subject: {subject}")
-
-
-@app.route("/admin/announce", methods=["GET", "POST"])
-@admin_required
-def admin_announce():
-    if request.method == "POST":
-        subject   = request.form.get("subject", "").strip()
-        body_text = request.form.get("body", "").strip()
-        cta_text  = request.form.get("cta_text", "").strip()
-        cta_url   = request.form.get("cta_url", "").strip()
-        audience  = request.form.get("audience", "all")
-
-        if not subject or not body_text:
-            return "Subject and body are required.", 400
-
-        rows = _resolve_announce_audience(audience)
 
         # ── confirm step: show preview before sending ──
         confirmed = request.form.get("confirmed") == "yes"
         if not confirmed:
-            preview_name     = rows[0]["name"] if rows else None
+            # Show confirmation page with subscriber count
+            preview_name = rows[0]["name"] if rows else None
             preview_greeting = greeting(preview_name)
             return f"""<!DOCTYPE html><html><head><title>Confirm Send</title>
             <style>*{{box-sizing:border-box;margin:0;padding:0;}}
@@ -675,50 +608,50 @@ def admin_announce():
             </style></head><body><div class="box">
             <h2>📋 Review before sending</h2>
             <div class="meta">
-              <strong>Subject:</strong> {html.escape(subject)}<br>
-              <strong>Audience:</strong> {len(rows)} recipient{'s' if len(rows) != 1 else ''}<br>
+              <strong>Subject:</strong> {subject}<br>
+              <strong>Audience:</strong> {len(rows)} subscriber{'s' if len(rows) != 1 else ''}<br>
               <strong>Preview greeting:</strong> {preview_greeting}
             </div>
-            <div class="preview">{html.escape(body_text[:400])}{'...' if len(body_text) > 400 else ''}</div>
+            <div class="preview">{body_text[:400]}{'...' if len(body_text) > 400 else ''}</div>
             <form method="POST">
-              <input type="hidden" name="subject" value="{html.escape(subject)}"/>
-              <input type="hidden" name="body" value="{html.escape(body_text)}"/>
-              <input type="hidden" name="cta_text" value="{html.escape(cta_text)}"/>
-              <input type="hidden" name="cta_url" value="{html.escape(cta_url)}"/>
-              <input type="hidden" name="audience" value="{html.escape(audience)}"/>
+              <input type="hidden" name="subject" value="{subject}"/>
+              <input type="hidden" name="body" value="{body_text}"/>
+              <input type="hidden" name="cta_text" value="{cta_text}"/>
+              <input type="hidden" name="cta_url" value="{cta_url}"/>
+              <input type="hidden" name="audience" value="{audience}"/>
               <input type="hidden" name="confirmed" value="yes"/>
               <div class="btns">
                 <a class="btn-back" href="/admin/announce">← Edit</a>
-                <button class="btn-send" type="submit">✅ Yes, send to {len(rows)} recipients</button>
+                <button class="btn-send" type="submit">✅ Yes, send to {len(rows)} subscribers</button>
               </div>
             </form>
             </div></body></html>"""
 
-        # ── send in the background so this never risks a 502 ──
-        threading.Thread(
-            target=_send_announcement_bg,
-            args=(app.app_context(), rows, subject, body_text, cta_text, cta_url),
-            daemon=True
-        ).start()
+        sent = 0
+        for row in rows:
+            if send_email(
+                row["email"], row["name"] or "",
+                subject,
+                announcement_email(row["name"], subject, body_text, cta_text, cta_url)
+            ):
+                sent += 1
 
-        return f"""<!DOCTYPE html><html><head><title>Sending!</title>
+        return f"""<!DOCTYPE html><html><head><title>Sent!</title>
         <style>body{{background:#050508;color:#e8e6f0;font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center;}}
         .box{{background:#0f0f1a;border:1px solid rgba(34,197,94,0.3);border-radius:12px;padding:2.5rem;max-width:400px;}}
         h2{{color:#22C55E;margin-bottom:1rem;}} a{{color:#FF2CF3;}}</style></head>
         <body><div class="box">
-        <h2>✅ Sending to {len(rows)} recipients!</h2>
-        <p style="color:#9997aa;margin-bottom:1.5rem">Emails are going out in the background right now — each one personalized with the recipient's name automatically.</p>
+        <h2>✅ Sent to {sent} subscribers!</h2>
+        <p style="color:#9997aa;margin-bottom:1.5rem">Each email was personalized with their name automatically.</p>
         <a href="/admin">← Back to admin</a>
         </div></body></html>"""
 
     # GET — show the form
-    conn = get_jobs_db()
-    sub_count = conn.execute("SELECT COUNT(*) FROM job_alert_subscribers").fetchone()[0]
-    cc_count  = conn.execute("SELECT COUNT(*) FROM job_alert_subscribers WHERE interested_role = 'cabin_crew'").fetchone()[0]
-    gs_count  = conn.execute("SELECT COUNT(*) FROM job_alert_subscribers WHERE interested_role = 'ground_staff'").fetchone()[0]
-    wl_count  = conn.execute("SELECT COUNT(DISTINCT email) FROM waitlist WHERE resource_label LIKE '%book%'").fetchone()[0]
+    conn       = get_jobs_db()
+    sub_count  = conn.execute("SELECT COUNT(*) FROM job_alert_subscribers").fetchone()[0]
+    cc_count   = conn.execute("SELECT COUNT(*) FROM job_alert_subscribers WHERE interested_role = 'cabin_crew'").fetchone()[0]
+    gs_count   = conn.execute("SELECT COUNT(*) FROM job_alert_subscribers WHERE interested_role = 'ground_staff'").fetchone()[0]
     conn.close()
-    combined_count = len(_resolve_announce_audience("cabin_crew_plus_waitlist"))
 
     return f"""<!DOCTYPE html><html><head><title>Send Announcement</title>
     <style>*{{box-sizing:border-box;margin:0;padding:0;}}
@@ -737,13 +670,11 @@ def admin_announce():
     </style></head><body>
     <a class="back" href="/admin">← Back to bookings</a>
     <h1>📢 Send announcement to subscribers</h1>
-    <p style="color:#9997aa;font-size:13px;margin-bottom:1.5rem">Each email is automatically personalized with the recipient's first name.</p>
+    <p style="color:#9997aa;font-size:13px;margin-bottom:1.5rem">Each email is automatically personalized with the subscriber's first name.</p>
     <div class="counts">
       <div class="count"><strong>{sub_count}</strong>Total subscribers</div>
       <div class="count"><strong>{cc_count}</strong>Cabin crew</div>
       <div class="count"><strong>{gs_count}</strong>Ground staff</div>
-      <div class="count"><strong>{wl_count}</strong>Ebook waitlist</div>
-      <div class="count"><strong>{combined_count}</strong>Cabin crew + waitlist (deduped)</div>
     </div>
     <div class="box">
       <form method="POST">
@@ -752,12 +683,9 @@ def admin_announce():
 
         <label>Who to send to</label>
         <select name="audience">
-          <option value="me">Just me (test send)</option>
           <option value="all">Everyone ({sub_count} subscribers)</option>
           <option value="cabin_crew">Cabin crew only ({cc_count})</option>
           <option value="ground_staff">Ground staff only ({gs_count})</option>
-          <option value="ebook_waitlist">Ebook waitlist only ({wl_count})</option>
-          <option value="cabin_crew_plus_waitlist">Cabin crew + Ebook waitlist ({combined_count}, recommended for launch)</option>
         </select>
 
         <label>Email body</label>
@@ -924,8 +852,8 @@ def admin_resources():
         <label>Resource type</label>
         <select name="resource_type">
           <option value="freebie">Freebie — free download on /resources</option>
-          <option value="ebook">E-book — paid</option>
-          <option value="course">Course — paid</option>
+          <option value="ebook">E-book — paid (shows as "Coming soon" until Razorpay is live)</option>
+          <option value="course">Course — paid (shows as "Coming soon" until Razorpay is live)</option>
         </select>
         <label>Price in ₹ (only used for e-books/courses, leave 0 for freebies)</label>
         <input type="number" name="price" value="0" min="0"/>
@@ -1046,40 +974,8 @@ def index():
 @app.route('/assets/<path:filename>')
 def assets(filename):
     assets_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'public', 'assets')
+    from flask import send_from_directory
     return send_from_directory(assets_dir, filename)
-
-# ── WENIX AI PAGE ─────────────────────────────────────────────────
-
-@app.route('/wenixai.html')
-def wenixai_page():
-    return send_from_directory('public', 'wenixai.html')
-
-@app.route('/wenixai')
-def wenixai_clean_url():
-    return send_from_directory('public', 'wenixai.html')
-
-@app.route("/api/wenixai-inquiry", methods=["POST"])
-def wenixai_inquiry():
-    data  = request.get_json(silent=True) or {}
-    name  = (data.get("name") or "").strip()
-    email = (data.get("email") or "").strip()
-    phone = (data.get("phone") or "").strip()
-    goal  = (data.get("goal") or "").strip()
-    time_pref = (data.get("time") or "").strip()
-
-    if not name or not email:
-        return jsonify({"success": False, "error": "Name and email are required."}), 400
-
-    sent = send_email(
-        GMAIL_USER, "Vardhasheela",
-        f"Wenix AI Call Request — {name}",
-        wenixai_inquiry_email(name, email, phone, goal, time_pref)
-    )
-
-    if not sent:
-        return jsonify({"success": False, "error": "Could not send email — please try again."}), 500
-
-    return jsonify({"success": True})
 
 @app.route("/authorize")
 def authorize():
@@ -1487,7 +1383,10 @@ def get_testimonials():
                 "submitted_at": fb.get("submitted_at",""),
                 "source":    "booking",
             })
-    visible = [t for t in testimonials if t.get("visible") and t.get("comment")]
+    # Show any testimonial that's visible AND has either a comment or at least one
+    # "liked most" tag — previously this required a comment, which silently dropped
+    # reviews like Sumithra's that only had a star rating + liked tags, no free text.
+    visible = [t for t in testimonials if t.get("visible") and (t.get("comment") or t.get("liked"))]
     visible.sort(key=lambda x: x.get("submitted_at",""), reverse=True)
     return jsonify(visible[:10])  # return latest 10
 
