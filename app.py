@@ -487,6 +487,10 @@ def admin_login():
 def admin_logout():
     session.pop("admin_logged_in", None)
     return redirect("/admin/login")
+    
+@app.route("/robots.txt")
+def robots_txt():
+    return send_from_directory("public", "robots.txt")
 
 @app.route("/admin")
 @admin_required
