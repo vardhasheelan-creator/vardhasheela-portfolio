@@ -493,6 +493,39 @@ def robots_txt():
     from flask import send_from_directory
     return send_from_directory("public", "robots.txt")
 
+@app.route("/sitemap.xml")
+def sitemap_xml():
+    from flask import Response
+    xml = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://vardhasheelan.com/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://vardhasheelan.com/wenixai</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://vardhasheelan.com/jobs</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vardhasheelan.com/resources</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vardhasheelan.com/affiliate</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+</urlset>"""
+    return Response(xml, mimetype="application/xml")
+
 @app.route("/admin")
 @admin_required
 def admin_panel():
