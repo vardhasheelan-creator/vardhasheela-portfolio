@@ -4,6 +4,15 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Book a 1-on-1 Session — Vardhasheela N</title>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-48HTQ1L8HE"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-48HTQ1L8HE');
+</script>
+
 <link rel="icon" href="/assets/vardhasheela.jpeg" type="image/jpeg"/>
 <link rel="apple-touch-icon" href="/assets/vardhasheela.jpeg"/>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -1136,6 +1145,15 @@ loadTestimonials();
 <script>
 (function(){try{ if(document.querySelector('.fx-wall')) return; var w=document.createElement('div'); w.className='fx-wall'; w.setAttribute('aria-hidden','true');
   w.innerHTML='<i></i><i></i><i></i><i></i><i></i>'; document.body.insertBefore(w, document.body.firstChild);}catch(e){}})();
+</script>
+<script>
+(function(){ try{
+  function ev(n,p){ try{ if(window.gtag) gtag('event',n,p||{}); }catch(e){} }
+  document.addEventListener('click',function(e){ var a=e.target.closest('a'); if(!a) return; var h=a.getAttribute('href')||'';
+     if(h.indexOf('career-guidance')>-1) ev('career_assessment_click',{source:'home_nav'});
+     if(a.classList.contains('btn-book')) ev('book_slot_click'); },true);
+  var _sb=window.submitBooking; if(_sb) window.submitBooking=function(){ ev('booking_submitted'); return _sb.apply(this,arguments); };
+}catch(e){} })();
 </script>
 </body>
 </html>

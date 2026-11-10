@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Free Career Guidance Assessment — Vardhasheela N</title>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-48HTQ1L8HE"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-48HTQ1L8HE');
+</script>
+
 <meta name="description" content="Answer a few questions and get a personalised career roadmap: your next role, skills to learn, portfolio projects and a salary upgrade plan.">
 <link rel="icon" href="/assets/vardhasheela.jpeg" type="image/jpeg"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1211,6 +1220,17 @@ function fallbackCopy(t){
 <script>
 (function(){try{ if(document.querySelector('.fx-wall')) return; var w=document.createElement('div'); w.className='fx-wall'; w.setAttribute('aria-hidden','true');
   w.innerHTML='<i></i><i></i><i></i><i></i><i></i>'; document.body.insertBefore(w, document.body.firstChild);}catch(e){}})();
+</script>
+<script>
+(function(){ try{
+  function ev(n,p){ try{ if(window.gtag) gtag('event',n,p||{}); }catch(e){} }
+  var _start=window.startQuiz; if(_start) window.startQuiz=function(){ ev('assessment_start'); return _start.apply(this,arguments); };
+  var _comp=window.compute; if(_comp) window.compute=function(){ var r=_comp.apply(this,arguments);
+     try{ ev('assessment_complete',{top_path:results[0].p.name, goal:A.goal, status:A.status}); }catch(e){} return r; };
+  var _copy=window.copyPlan; if(_copy) window.copyPlan=function(){ ev('copy_plan'); return _copy.apply(this,arguments); };
+  document.addEventListener('click',function(e){ var a=e.target.closest('a'); if(!a) return; var h=a.getAttribute('href')||'';
+     if(h.indexOf('#book')>-1) ev('book_session_click',{source:'career_guidance'}); },true);
+}catch(e){} })();
 </script>
 </body>
 </html>
