@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Free Resources & Study Material — Vardhasheela N</title>
+<link rel="icon" href="/assets/vardhasheela.jpeg" type="image/jpeg"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FBF6F2;--bg2:#F5ECE6;--bg3:#FFFFFF;
+  --surface:#FFFFFF;--surface2:#F7EFEA;
+  --border:rgba(74,21,37,0.12);--border-b:rgba(74,21,37,0.28);
+  --neon:#8C5A4A;--cyan:#A8735C;--pink:#4A1525;
+  --white:#2B0C15;--text:#3A2A2E;--muted:#6E5A5E;--dim:#9C888C;
+  --green:#4F7A5B;--amber:#A8735C;
+  --font:'Inter',system-ui,sans-serif;--mono:'Inter',system-ui,sans-serif;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --burg:#4A1525;--wine:#2B0C15;--rose:#D9AE94;--rose-dk:#A8735C;--ivory:#FBF6F2;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(140,90,74,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(140,90,74,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 5%;background:rgba(43,12,21,0.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--white);text-decoration:none;}
+.nav-logo span{color:var(--pink);}
+.nav-right{display:flex;gap:0.75rem;align-items:center;}
+.nav-link{font-family:var(--mono);font-size:0.75rem;color:var(--muted);text-decoration:none;border:1px solid rgba(140,90,74,0.2);padding:0.45rem 0.9rem;border-radius:4px;transition:all 0.2s;}
+.nav-link:hover{color:var(--cyan);border-color:rgba(168,115,92,0.3);}
+.nav-cta{font-family:var(--mono);font-size:0.75rem;font-weight:700;color:var(--bg);background:var(--pink);padding:0.5rem 1rem;border-radius:4px;text-decoration:none;}
+
+.hero{padding:8rem 5% 3rem;position:relative;z-index:1;}
+.hero-badge{display:inline-flex;align-items:center;gap:0.6rem;font-family:var(--mono);font-size:0.72rem;letter-spacing:0.08em;color:var(--cyan);border:1px solid rgba(168,115,92,0.25);background:rgba(168,115,92,0.05);border-radius:3px;padding:0.4rem 1rem;margin-bottom:1.5rem;text-transform:uppercase;}
+.hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;color:var(--white);margin-bottom:0.75rem;letter-spacing:-0.02em;}
+.hero p{font-size:0.95rem;color:var(--muted);max-width:560px;line-height:1.7;}
+
+.section{padding:2.5rem 5%;position:relative;z-index:1;}
+.section-tag{font-family:var(--mono);font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--pink);margin-bottom:0.5rem;border-left:2px solid var(--pink);padding-left:0.75rem;}
+.section-title{font-size:1.4rem;font-weight:700;color:var(--white);margin-bottom:1.5rem;}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;display:flex;flex-direction:column;gap:0.6rem;transition:border-color 0.2s;}
+.card:hover{border-color:rgba(74,21,37,0.3);}
+.card-icon{font-size:1.6rem;}
+.card h3{font-size:1rem;font-weight:600;color:var(--white);line-height:1.3;}
+.card p{
+  font-size:0.82rem;color:var(--muted);line-height:1.6;flex:1;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+.card-btn{font-family:var(--mono);font-size:0.75rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;background:var(--pink);color:var(--bg);padding:0.65rem;border-radius:5px;text-align:center;text-decoration:none;transition:all 0.2s;border:none;cursor:pointer;}
+.card-btn:hover{box-shadow:0 10px 28px rgba(43,12,21,0.10);}
+.card-btn.soon{background:var(--surface2);color:var(--dim);cursor:not-allowed;border:1px solid rgba(74,21,37,0.08);}
+.card-price{font-family:var(--mono);font-size:0.85rem;color:var(--amber);font-weight:700;}
+
+/* Coming-soon banner (replaces bare empty text) */
+.coming-soon-card{
+  background:var(--surface);border:1px solid rgba(140,90,74,0.2);border-radius:12px;
+  padding:2rem;max-width:480px;display:flex;flex-direction:column;gap:1rem;
+}
+.coming-soon-card .badge{
+  display:inline-flex;align-items:center;gap:0.5rem;font-family:var(--mono);font-size:0.68rem;
+  letter-spacing:0.08em;text-transform:uppercase;color:var(--amber);
+  border:1px solid rgba(186,117,23,0.4);background:rgba(186,117,23,0.08);
+  border-radius:20px;padding:0.3rem 0.8rem;width:fit-content;
+}
+.coming-soon-card h3{font-size:1.1rem;font-weight:700;color:var(--white);}
+.coming-soon-card p{font-size:0.85rem;color:var(--muted);line-height:1.6;}
+
+.notify-form{display:flex;flex-direction:column;gap:0.6rem;}
+.notify-form input{background:#FFFFFF;border:1px solid rgba(140,90,74,0.2);border-radius:6px;padding:0.7rem 0.9rem;color:var(--text);font-size:0.85rem;font-family:var(--font);outline:none;}
+.notify-form input:focus{border-color:var(--neon);}
+.notify-form input::placeholder{color:var(--dim);}
+.notify-btn{background:var(--neon);color:var(--white);border:none;border-radius:6px;padding:0.75rem;font-family:var(--mono);font-size:0.78rem;font-weight:700;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+.notify-btn:hover{box-shadow:0 10px 28px rgba(43,12,21,0.10);}
+.notify-msg{font-size:0.8rem;color:var(--green);display:none;font-family:var(--mono);text-align:center;padding:0.5rem;}
+.notify-err{font-size:0.75rem;color:#ff6b6b;display:none;}
+
+/* Inline notify-me on individual cards (once resources exist) */
+.notify-inline{display:none;flex-direction:column;gap:0.5rem;margin-top:0.25rem;}
+.notify-inline.visible{display:flex;}
+.notify-inline input{background:#FFFFFF;border:1px solid rgba(140,90,74,0.2);border-radius:5px;padding:0.55rem 0.7rem;color:var(--text);font-size:0.8rem;font-family:var(--font);outline:none;}
+.notify-inline-btn{background:var(--neon);color:var(--white);border:none;border-radius:5px;padding:0.55rem;font-family:var(--mono);font-size:0.72rem;font-weight:700;text-transform:uppercase;cursor:pointer;}
+
+/* IDENTIFY MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.visible{display:flex;}
+.modal-box{background:var(--surface);border:1px solid rgba(74,21,37,0.3);border-radius:14px;padding:2rem;max-width:420px;width:100%;box-shadow:0 10px 28px rgba(43,12,21,0.10);}
+.modal-box h2{font-size:1.2rem;font-weight:700;color:var(--white);margin-bottom:0.5rem;}
+.modal-box p{font-size:0.85rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.6;}
+.modal-box input{width:100%;background:#FFFFFF;border:1px solid rgba(74,21,37,0.15);border-radius:6px;padding:0.75rem 1rem;color:var(--text);font-family:var(--font);font-size:0.9rem;outline:none;margin-bottom:0.75rem;}
+.modal-box input:focus{border-color:var(--pink);}
+.modal-btn{width:100%;background:var(--pink);color:var(--bg);border:none;border-radius:6px;padding:0.85rem;font-family:var(--mono);font-weight:700;font-size:0.82rem;text-transform:uppercase;cursor:pointer;margin-top:0.5rem;}
+.modal-err{color:#ff6b6b;font-size:0.78rem;margin-top:0.5rem;display:none;}
+
+footer{background:var(--bg);border-top:1px solid var(--border);padding:1.5rem 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;position:relative;z-index:1;}
+.footer-logo{font-family:var(--mono);font-size:0.95rem;font-weight:700;color:var(--white);text-decoration:none;}
+.footer-logo span{color:var(--pink);}
+footer p{font-size:0.75rem;color:var(--dim);font-family:var(--mono);}
+
+/* ===== Luxury theme layer: burgundy & rose gold ===== */
+body{background:var(--ivory)!important;color:var(--text);font-family:var(--font)!important;letter-spacing:0.005em;}
+body::before,.hero-glow{display:none!important;}
+h1,h2,h3,.section-title,.step-heading,.t-section-title,.category-title,.card h3,.gear-card h3{font-family:var(--serif)!important;font-weight:600!important;letter-spacing:0!important;}
+h1{line-height:1.08!important;}
+::selection{background:var(--rose);color:var(--wine);}
+
+/* Navigation: deep wine bar with rose gold details */
+nav{background:rgba(43,12,21,0.97)!important;backdrop-filter:none!important;border-bottom:1px solid rgba(217,174,148,0.22)!important;
+  --white:#FBF6F2;--text:#F1E4DC;--muted:#E3CFC4;--dim:#B89A8E;--pink:#D9AE94;--neon:#D9AE94;--cyan:#D9AE94;--border:rgba(217,174,148,0.25);--border-b:rgba(217,174,148,0.45);}
+.nav-logo,.logo,.footer-logo{font-family:var(--serif)!important;font-size:1.4rem!important;font-weight:600!important;letter-spacing:0.02em;}
+nav a{border-color:rgba(217,174,148,0.3)!important;}
+nav a:hover{color:var(--rose)!important;}
+
+/* Hero: burgundy panel, ivory type, rose gold accents */
+.hero{background:var(--burg);color:#F1E4DC;border-bottom:1px solid rgba(217,174,148,0.25);
+  --white:#FBF6F2;--text:#F1E4DC;--muted:#DCC5B9;--dim:#B89A8E;--pink:#D9AE94;--neon:#E8C9B5;--cyan:#D9AE94;--green:#D9AE94;
+  --surface:rgba(251,246,242,0.05);--surface2:rgba(251,246,242,0.08);--border:rgba(217,174,148,0.22);--border-b:rgba(217,174,148,0.42);}
+.hero h1 em{background:none!important;-webkit-text-fill-color:var(--rose)!important;color:var(--rose)!important;font-style:italic!important;}
+.hero .hero-tag,.hero [class*="badge"]{background:rgba(217,174,148,0.08)!important;color:var(--rose)!important;border:1px solid rgba(217,174,148,0.32)!important;}
+.hero .live-dot{background:var(--rose)!important;box-shadow:none!important;}
+.hero p,.hero-sub{color:#DCC5B9;}
+.hero a:not([class*="btn"]){color:var(--rose);}
+.price-pill{border-radius:2px!important;padding:1.1rem 1.8rem!important;}
+
+/* Typography details */
+.section-tag,.t-section-tag,[class*="badge"]{letter-spacing:0.2em!important;font-size:0.68rem!important;font-weight:600;}
+.section-tag,.t-section-tag{color:var(--rose-dk)!important;border-left-color:var(--rose)!important;}
+.amt,.sc-price,.upi-amount,.card-price,.price{font-family:var(--serif)!important;font-weight:600!important;letter-spacing:0!important;}
+label{letter-spacing:0.12em!important;font-weight:600;font-size:0.68rem!important;}
+
+/* Buttons: solid, square-cornered, quietly elegant */
+.btn-book,.btn-next,button[type="submit"],[class*="btn-primary"],[class*="cta"]{border-radius:2px!important;letter-spacing:0.16em!important;font-weight:600!important;transition:background .3s ease,color .3s ease,transform .3s ease!important;}
+.btn-book{background:var(--rose)!important;color:var(--wine)!important;}
+.btn-book:hover{background:#E8C9B5!important;transform:translateY(-1px);}
+.btn-next:hover{background:var(--wine)!important;}
+.btn-back{border-radius:2px!important;letter-spacing:0.12em;}
+
+/* Cards and form surfaces */
+.topic-card,.t-card,.session-card,.card,.gear-card,.board,.alert-box,.consult-banner,.modal-box,.success-detail,.payment-box,.followup-block{border-radius:4px!important;}
+.topic-card:hover,.t-card:hover,.card:hover,.gear-card:hover{border-color:var(--rose)!important;}
+.t-card::before,.card::before{background:linear-gradient(90deg,var(--rose),var(--rose-dk))!important;opacity:1!important;}
+.chip,.t-liked-chip{border-radius:2px!important;}
+.chip.selected,.chip-group.multi .chip.selected{background:var(--burg)!important;color:var(--ivory)!important;border-color:var(--burg)!important;}
+.slot-btn{border-radius:2px!important;}
+.slot-btn.selected{background:var(--burg)!important;color:var(--ivory)!important;}
+input,select,textarea{border-radius:2px!important;background:#FFFFFF!important;color:var(--text)!important;}
+input:focus,select:focus,textarea:focus{border-color:var(--rose-dk)!important;box-shadow:0 0 0 3px rgba(217,174,148,0.25)!important;}
+.prog-step.done .prog-circle{background:var(--burg)!important;color:var(--ivory)!important;}
+hr.divider{border-top:1px solid rgba(217,174,148,0.45)!important;}
+.t-stars{color:var(--rose-dk)!important;}
+
+/* Button colour pairs (fixed contrast) */
+.filter-group a.active,.alert-form button,.notify-btn,.notify-inline-btn,.gear-btn,.card-btn,.modal-btn,.btn,.btn-pink,.apply-btn{background:var(--burg)!important;color:var(--ivory)!important;border-radius:2px!important;letter-spacing:0.12em;}
+.filter-group a.active:hover,.alert-form button:hover,.notify-btn:hover,.notify-inline-btn:hover,.gear-btn:hover,.card-btn:hover,.modal-btn:hover,.btn:hover,.btn-pink:hover,.apply-btn:hover{background:var(--wine)!important;color:var(--rose)!important;}
+.nav-cta{background:var(--rose)!important;color:var(--wine)!important;border-radius:2px!important;letter-spacing:0.12em;}
+.nav-cta:hover{background:#E8C9B5!important;}
+
+/* Footer */
+footer{background:var(--wine)!important;border-top:1px solid rgba(217,174,148,0.25)!important;
+  --white:#FBF6F2;--text:#F1E4DC;--muted:#DCC5B9;--dim:#B89A8E;--pink:#D9AE94;--neon:#D9AE94;--cyan:#D9AE94;}
+footer a{color:var(--rose);}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="https://vardhasheelan.com">Vardhasheela<span>N</span></a>
+  <div class="nav-right">
+    <a class="nav-link" href="/jobs">Jobs Board</a>
+    <a class="nav-link" href="/affiliate">Gear I Use</a>
+    <a class="nav-cta" href="/">Book a session →</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">Free · no signup fees · just your email</div>
+  <h1>Every free resource, in one place.</h1>
+  <p>All the guides, templates, and checklists I've shared on Instagram — downloadable anytime. New ones added regularly.</p>
+</div>
+
+<!-- FREEBIES -->
+<div class="section">
+  <div class="section-tag">free downloads</div>
+  <div class="section-title">Guides & Templates</div>
+  <div class="grid">
+    {% for r in freebies %}
+    <div class="card">
+      <div class="card-icon">📄</div>
+      <h3>{{ r['title'] }}</h3>
+      <a class="card-btn" href="/download/{{ r['id'] }}" onclick="return handleDownload(event, {{ r['id'] }})">Download free →</a>
+    </div>
+    {% else %}
+    <div class="coming-soon-card">
+      <span class="badge">⏳ coming soon</span>
+      <h3>Free guides are on the way</h3>
+      <p>Want to know the moment new guides and templates drop? Leave your details below.</p>
+      <div class="notify-form">
+        <input type="text" id="gen-name-freebie" placeholder="Your first name"/>
+        <input type="email" id="gen-email-freebie" placeholder="your.email@example.com"/>
+        <input type="tel" id="gen-phone-freebie" placeholder="Mobile number (optional)"/>
+        <button class="notify-btn" type="button" onclick="submitGeneralNotify('freebie', 'Free guides & templates')">🔔 Notify me →</button>
+        <div class="notify-msg" id="gen-msg-freebie">✓ You're on the list — I'll email you the moment new guides drop!</div>
+        <div class="notify-err" id="gen-err-freebie">Please enter your name and a valid email.</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- EBOOKS -->
+<div class="section">
+  <div class="section-tag">go deeper</div>
+  <div class="section-title">E-books</div>
+  <div class="grid">
+    {% for r in ebooks %}
+    <div class="card">
+      <div class="card-icon">📘</div>
+      <h3>{{ r['title'] }}</h3>
+      <p>{{ r['description'] }}</p>
+      {% if r['is_available'] %}
+        <div class="card-price">₹{{ r['price'] }}</div>
+        <a class="card-btn" href="/download/{{ r['id'] }}">Buy now →</a>
+      {% else %}
+        <button class="card-btn soon" type="button" onclick="toggleInlineNotify({{ r['id'] }})">🔔 Notify me when it's ready</button>
+        <div class="notify-inline" id="inline-{{ r['id'] }}">
+          <input type="text" id="inline-name-{{ r['id'] }}" placeholder="Your first name"/>
+          <input type="email" id="inline-email-{{ r['id'] }}" placeholder="your.email@example.com"/>
+          <input type="tel" id="inline-phone-{{ r['id'] }}" placeholder="Mobile (optional)"/>
+          <button class="notify-inline-btn" type="button" onclick="submitInlineNotify({{ r['id'] }}, '{{ r['title'] }}')">Join waitlist</button>
+          <div class="notify-msg" id="inline-msg-{{ r['id'] }}">✓ You're on the list!</div>
+        </div>
+      {% endif %}
+    </div>
+    {% else %}
+    <div class="coming-soon-card">
+      <span class="badge">📘 coming soon</span>
+      <h3>E-books launching soon</h3>
+      <p>I'm setting up secure checkout so you can buy in-depth e-books directly. Want first access when they launch?</p>
+      <div class="notify-form">
+        <input type="text" id="gen-name-ebook" placeholder="Your first name"/>
+        <input type="email" id="gen-email-ebook" placeholder="your.email@example.com"/>
+        <input type="tel" id="gen-phone-ebook" placeholder="Mobile number (optional)"/>
+        <button class="notify-btn" type="button" onclick="submitGeneralNotify('ebook', 'E-books (general)')">🔔 Notify me →</button>
+        <div class="notify-msg" id="gen-msg-ebook">✓ You're on the list — I'll email you the moment e-books launch!</div>
+        <div class="notify-err" id="gen-err-ebook">Please enter your name and a valid email.</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- COURSES -->
+<div class="section">
+  <div class="section-tag">learn with me</div>
+  <div class="section-title">Courses</div>
+  <div class="grid">
+    {% for r in courses %}
+    <div class="card">
+      <div class="card-icon">🎓</div>
+      <h3>{{ r['title'] }}</h3>
+      <p>{{ r['description'] }}</p>
+      {% if r['is_available'] %}
+        <div class="card-price">₹{{ r['price'] }}</div>
+        <a class="card-btn" href="/download/{{ r['id'] }}">Enroll now →</a>
+      {% else %}
+        <button class="card-btn soon" type="button" onclick="toggleInlineNotify({{ r['id'] }})">🔔 Notify me when it's ready</button>
+        <div class="notify-inline" id="inline-{{ r['id'] }}">
+          <input type="text" id="inline-name-{{ r['id'] }}" placeholder="Your first name"/>
+          <input type="email" id="inline-email-{{ r['id'] }}" placeholder="your.email@example.com"/>
+          <input type="tel" id="inline-phone-{{ r['id'] }}" placeholder="Mobile (optional)"/>
+          <button class="notify-inline-btn" type="button" onclick="submitInlineNotify({{ r['id'] }}, '{{ r['title'] }}')">Join waitlist</button>
+          <div class="notify-msg" id="inline-msg-{{ r['id'] }}">✓ You're on the list!</div>
+        </div>
+      {% endif %}
+    </div>
+    {% else %}
+    <div class="coming-soon-card">
+      <span class="badge">🎓 coming soon</span>
+      <h3>Courses launching soon</h3>
+      <p>Full video courses are coming — cabin crew prep, English fluency, and more. Want first access when they launch?</p>
+      <div class="notify-form">
+        <input type="text" id="gen-name-course" placeholder="Your first name"/>
+        <input type="email" id="gen-email-course" placeholder="your.email@example.com"/>
+        <input type="tel" id="gen-phone-course" placeholder="Mobile number (optional)"/>
+        <button class="notify-btn" type="button" onclick="submitGeneralNotify('course', 'Courses (general)')">🔔 Notify me →</button>
+        <div class="notify-msg" id="gen-msg-course">✓ You're on the list — I'll email you the moment courses launch!</div>
+        <div class="notify-err" id="gen-err-course">Please enter your name and a valid email.</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<footer>
+  <a class="footer-logo" href="https://vardhasheelan.com">Vardhasheela<span>N</span></a>
+  <p>© 2026 Vardhasheela N · Bengaluru, India</p>
+</footer>
+
+<!-- IDENTIFY MODAL -->
+<div class="modal-overlay" id="identifyModal">
+  <div class="modal-box">
+    <h2>Quick thing before you download 👋</h2>
+    <p>Just your name and email — you'll only need to do this once, ever. After this you can download anything on the site freely.</p>
+    <form id="identifyForm">
+      <input type="text" id="idName" placeholder="Your first name" required/>
+      <input type="email" id="idEmail" placeholder="your.email@example.com" required/>
+      <button class="modal-btn" type="submit">Unlock downloads →</button>
+      <div class="modal-err" id="idErr">Please enter a valid name and email.</div>
+    </form>
+  </div>
+</div>
+
+<script>
+const isIdentified = {{ 'true' if is_identified else 'false' }};
+let pendingResourceId = null;
+
+function handleDownload(e, resourceId) {
+  if (isIdentified) return true;
+  e.preventDefault();
+  pendingResourceId = resourceId;
+  document.getElementById('identifyModal').classList.add('visible');
+  return false;
+}
+
+const params = new URLSearchParams(window.location.search);
+if (params.get('unlock') && !isIdentified) {
+  pendingResourceId = params.get('unlock');
+  document.getElementById('identifyModal').classList.add('visible');
+}
+
+document.getElementById('identifyForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const name  = document.getElementById('idName').value.trim();
+  const email = document.getElementById('idEmail').value.trim();
+  const err   = document.getElementById('idErr');
+  try {
+    const res = await fetch('/api/identify-visitor', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({name, email, source_page: 'resources'})
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('identifyModal').classList.remove('visible');
+      if (pendingResourceId) {
+        window.location.href = '/download/' + pendingResourceId;
+      } else {
+        window.location.reload();
+      }
+    } else {
+      err.textContent = data.error || 'Something went wrong.';
+      err.style.display = 'block';
+    }
+  } catch (ex) {
+    err.textContent = 'Network error — please try again.';
+    err.style.display = 'block';
+  }
+});
+
+// ── General "notify me" (used on empty-state cards — no specific resource yet) ──
+async function submitGeneralNotify(key, label) {
+  const nameEl  = document.getElementById('gen-name-' + key);
+  const emailEl = document.getElementById('gen-email-' + key);
+  const phoneEl = document.getElementById('gen-phone-' + key);
+  const msgEl   = document.getElementById('gen-msg-' + key);
+  const errEl   = document.getElementById('gen-err-' + key);
+
+  const name  = nameEl.value.trim();
+  const email = emailEl.value.trim();
+  const phone = phoneEl.value.trim();
+
+  if (!name || !email || !email.includes('@')) {
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+
+  try {
+    const res = await fetch('/api/notify-me', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({resource_id: 'general_' + key, resource_label: label, name, email, phone})
+    });
+    const data = await res.json();
+    if (data.success) {
+      nameEl.style.display = 'none';
+      emailEl.style.display = 'none';
+      phoneEl.style.display = 'none';
+      nameEl.parentElement.querySelector('.notify-btn').style.display = 'none';
+      msgEl.style.display = 'block';
+    } else {
+      errEl.textContent = data.error || 'Something went wrong.';
+      errEl.style.display = 'block';
+    }
+  } catch(ex) {
+    errEl.textContent = 'Network error — please try again.';
+    errEl.style.display = 'block';
+  }
+}
+
+// ── Inline notify (used on individual resource cards once uploaded) ──
+function toggleInlineNotify(resourceId) {
+  document.getElementById('inline-' + resourceId).classList.toggle('visible');
+}
+
+async function submitInlineNotify(resourceId, title) {
+  const nameEl  = document.getElementById('inline-name-' + resourceId);
+  const emailEl = document.getElementById('inline-email-' + resourceId);
+  const phoneEl = document.getElementById('inline-phone-' + resourceId);
+  const msgEl   = document.getElementById('inline-msg-' + resourceId);
+
+  const name  = nameEl.value.trim();
+  const email = emailEl.value.trim();
+  const phone = phoneEl.value.trim();
+
+  if (!name || !email || !email.includes('@')) {
+    emailEl.style.borderColor = '#ff6b6b';
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/notify-me', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({resource_id: resourceId, resource_label: title, name, email, phone})
+    });
+    const data = await res.json();
+    if (data.success) {
+      nameEl.style.display = 'none';
+      emailEl.style.display = 'none';
+      phoneEl.style.display = 'none';
+      msgEl.parentElement.querySelector('.notify-inline-btn').style.display = 'none';
+      msgEl.style.display = 'block';
+    }
+  } catch(ex) {
+    emailEl.style.borderColor = '#ff6b6b';
+  }
+}
+</script>
+</body>
+</html>

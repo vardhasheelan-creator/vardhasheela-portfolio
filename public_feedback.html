@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Share your feedback — Vardhasheela N</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FBF6F2;--bg2:#F5ECE6;--bg3:#FFFFFF;
+  --surface:#FFFFFF;--surface2:#F7EFEA;
+  --border:rgba(74,21,37,0.12);--border-b:rgba(74,21,37,0.28);
+  --neon:#8C5A4A;--cyan:#A8735C;--pink:#4A1525;
+  --white:#2B0C15;--text:#3A2A2E;--muted:#6E5A5E;--dim:#9C888C;
+  --green:#4F7A5B;--amber:#A8735C;
+  --font:'Inter',system-ui,sans-serif;--mono:'Inter',system-ui,sans-serif;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --burg:#4A1525;--wine:#2B0C15;--rose:#D9AE94;--rose-dk:#A8735C;--ivory:#FBF6F2;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(140,90,74,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(140,90,74,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem 2rem;max-width:520px;width:100%;position:relative;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--pink),var(--neon));border-radius:16px 16px 0 0;}
+.logo{font-family:var(--mono);font-size:0.9rem;font-weight:700;color:var(--white);text-decoration:none;display:block;margin-bottom:1.5rem;}
+.logo span{color:var(--pink);}
+h1{font-size:1.5rem;font-weight:700;color:var(--white);margin-bottom:0.4rem;line-height:1.2;}
+.sub{font-size:0.88rem;color:var(--muted);margin-bottom:2rem;line-height:1.6;}
+
+/* STARS */
+.star-label{font-family:var(--mono);font-size:0.72rem;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;display:block;}
+.stars{display:flex;gap:8px;margin-bottom:1.5rem;direction:ltr;}
+.star{font-size:2rem;cursor:pointer;color:var(--dim);transition:color 0.15s,transform 0.1s;user-select:none;}
+.star:hover,.star.active{color:#B9825F;transform:scale(1.1);}
+input[type="hidden"]{}
+
+/* FORM */
+.form-group{margin-bottom:1.25rem;}
+label{font-family:var(--mono);font-size:0.72rem;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;display:block;margin-bottom:6px;}
+input[type="text"],textarea,select{
+  width:100%;background:#FFFFFF;border:1px solid rgba(74,21,37,0.15);
+  border-radius:8px;padding:0.8rem 1rem;color:var(--text);
+  font-family:var(--font);font-size:0.9rem;outline:none;
+  transition:border-color 0.2s;
+}
+input[type="text"]:focus,textarea:focus,select:focus{border-color:var(--pink);box-shadow:0 0 0 1px rgba(74,21,37,0.2);}
+input::placeholder,textarea::placeholder{color:var(--dim);}
+textarea{resize:vertical;min-height:110px;line-height:1.6;}
+select option{background:#FFFFFF;}
+
+/* CHIPS — what they liked most */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+.chip{font-family:var(--mono);font-size:0.75rem;padding:0.4rem 0.85rem;border-radius:20px;border:1px solid rgba(74,21,37,0.2);background:var(--bg);color:var(--muted);cursor:pointer;transition:all 0.15s;user-select:none;}
+.chip:hover{border-color:rgba(74,21,37,0.4);color:var(--text);}
+.chip.selected{border-color:var(--pink);background:rgba(74,21,37,0.1);color:var(--pink);}
+
+.btn{width:100%;background:var(--pink);color:var(--bg);border:none;border-radius:8px;padding:0.95rem;font-family:var(--mono);font-size:0.85rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;box-shadow:0 10px 28px rgba(43,12,21,0.10);transition:all 0.2s;margin-top:0.5rem;}
+.btn:hover{box-shadow:0 10px 28px rgba(43,12,21,0.10);transform:translateY(-1px);}
+.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+
+.err{font-family:var(--mono);font-size:0.8rem;color:#ff6b6b;margin-top:0.5rem;display:none;}
+
+/* SUCCESS */
+.success{display:none;text-align:center;padding:1rem 0;}
+.success-icon{font-size:3rem;margin-bottom:1rem;}
+.success h2{font-size:1.3rem;font-weight:700;color:var(--green);margin-bottom:0.6rem;}
+.success p{font-size:0.88rem;color:var(--muted);line-height:1.7;}
+
+/* ===== Luxury theme layer: burgundy & rose gold ===== */
+body{background:var(--ivory)!important;color:var(--text);font-family:var(--font)!important;letter-spacing:0.005em;}
+body::before,.hero-glow{display:none!important;}
+h1,h2,h3,.section-title,.step-heading,.t-section-title,.category-title,.card h3,.gear-card h3{font-family:var(--serif)!important;font-weight:600!important;letter-spacing:0!important;}
+h1{line-height:1.08!important;}
+::selection{background:var(--rose);color:var(--wine);}
+
+/* Navigation: deep wine bar with rose gold details */
+nav{background:rgba(43,12,21,0.97)!important;backdrop-filter:none!important;border-bottom:1px solid rgba(217,174,148,0.22)!important;
+  --white:#FBF6F2;--text:#F1E4DC;--muted:#E3CFC4;--dim:#B89A8E;--pink:#D9AE94;--neon:#D9AE94;--cyan:#D9AE94;--border:rgba(217,174,148,0.25);--border-b:rgba(217,174,148,0.45);}
+.nav-logo,.logo,.footer-logo{font-family:var(--serif)!important;font-size:1.4rem!important;font-weight:600!important;letter-spacing:0.02em;}
+nav a{border-color:rgba(217,174,148,0.3)!important;}
+nav a:hover{color:var(--rose)!important;}
+
+/* Hero: burgundy panel, ivory type, rose gold accents */
+.hero{background:var(--burg);color:#F1E4DC;border-bottom:1px solid rgba(217,174,148,0.25);
+  --white:#FBF6F2;--text:#F1E4DC;--muted:#DCC5B9;--dim:#B89A8E;--pink:#D9AE94;--neon:#E8C9B5;--cyan:#D9AE94;--green:#D9AE94;
+  --surface:rgba(251,246,242,0.05);--surface2:rgba(251,246,242,0.08);--border:rgba(217,174,148,0.22);--border-b:rgba(217,174,148,0.42);}
+.hero h1 em{background:none!important;-webkit-text-fill-color:var(--rose)!important;color:var(--rose)!important;font-style:italic!important;}
+.hero .hero-tag,.hero [class*="badge"]{background:rgba(217,174,148,0.08)!important;color:var(--rose)!important;border:1px solid rgba(217,174,148,0.32)!important;}
+.hero .live-dot{background:var(--rose)!important;box-shadow:none!important;}
+.hero p,.hero-sub{color:#DCC5B9;}
+.hero a:not([class*="btn"]){color:var(--rose);}
+.price-pill{border-radius:2px!important;padding:1.1rem 1.8rem!important;}
+
+/* Typography details */
+.section-tag,.t-section-tag,[class*="badge"]{letter-spacing:0.2em!important;font-size:0.68rem!important;font-weight:600;}
+.section-tag,.t-section-tag{color:var(--rose-dk)!important;border-left-color:var(--rose)!important;}
+.amt,.sc-price,.upi-amount,.card-price,.price{font-family:var(--serif)!important;font-weight:600!important;letter-spacing:0!important;}
+label{letter-spacing:0.12em!important;font-weight:600;font-size:0.68rem!important;}
+
+/* Buttons: solid, square-cornered, quietly elegant */
+.btn-book,.btn-next,button[type="submit"],[class*="btn-primary"],[class*="cta"]{border-radius:2px!important;letter-spacing:0.16em!important;font-weight:600!important;transition:background .3s ease,color .3s ease,transform .3s ease!important;}
+.btn-book{background:var(--rose)!important;color:var(--wine)!important;}
+.btn-book:hover{background:#E8C9B5!important;transform:translateY(-1px);}
+.btn-next:hover{background:var(--wine)!important;}
+.btn-back{border-radius:2px!important;letter-spacing:0.12em;}
+
+/* Cards and form surfaces */
+.topic-card,.t-card,.session-card,.card,.gear-card,.board,.alert-box,.consult-banner,.modal-box,.success-detail,.payment-box,.followup-block{border-radius:4px!important;}
+.topic-card:hover,.t-card:hover,.card:hover,.gear-card:hover{border-color:var(--rose)!important;}
+.t-card::before,.card::before{background:linear-gradient(90deg,var(--rose),var(--rose-dk))!important;opacity:1!important;}
+.chip,.t-liked-chip{border-radius:2px!important;}
+.chip.selected,.chip-group.multi .chip.selected{background:var(--burg)!important;color:var(--ivory)!important;border-color:var(--burg)!important;}
+.slot-btn{border-radius:2px!important;}
+.slot-btn.selected{background:var(--burg)!important;color:var(--ivory)!important;}
+input,select,textarea{border-radius:2px!important;background:#FFFFFF!important;color:var(--text)!important;}
+input:focus,select:focus,textarea:focus{border-color:var(--rose-dk)!important;box-shadow:0 0 0 3px rgba(217,174,148,0.25)!important;}
+.prog-step.done .prog-circle{background:var(--burg)!important;color:var(--ivory)!important;}
+hr.divider{border-top:1px solid rgba(217,174,148,0.45)!important;}
+.t-stars{color:var(--rose-dk)!important;}
+
+/* Button colour pairs (fixed contrast) */
+.filter-group a.active,.alert-form button,.notify-btn,.notify-inline-btn,.gear-btn,.card-btn,.modal-btn,.btn,.btn-pink,.apply-btn{background:var(--burg)!important;color:var(--ivory)!important;border-radius:2px!important;letter-spacing:0.12em;}
+.filter-group a.active:hover,.alert-form button:hover,.notify-btn:hover,.notify-inline-btn:hover,.gear-btn:hover,.card-btn:hover,.modal-btn:hover,.btn:hover,.btn-pink:hover,.apply-btn:hover{background:var(--wine)!important;color:var(--rose)!important;}
+.nav-cta{background:var(--rose)!important;color:var(--wine)!important;border-radius:2px!important;letter-spacing:0.12em;}
+.nav-cta:hover{background:#E8C9B5!important;}
+
+/* Footer */
+footer{background:var(--wine)!important;border-top:1px solid rgba(217,174,148,0.25)!important;
+  --white:#FBF6F2;--text:#F1E4DC;--muted:#DCC5B9;--dim:#B89A8E;--pink:#D9AE94;--neon:#D9AE94;--cyan:#D9AE94;}
+footer a{color:var(--rose);}
+</style>
+</head>
+<body>
+<div class="card">
+  <a class="logo" href="https://consultation.vardhasheelan.com">Vardhasheela<span>N</span></a>
+
+  <div id="form-view">
+    <h1>How was your session?</h1>
+    <p class="sub">Your feedback means a lot — and helps future students know what to expect. Takes less than 2 minutes.</p>
+
+    <form id="feedbackForm">
+      <div class="form-group">
+        <label>Your name</label>
+        <input type="text" id="f-name" placeholder="e.g. Sumithra" required/>
+      </div>
+
+      <div class="form-group">
+        <span class="star-label">How would you rate your session?</span>
+        <div class="stars" id="stars">
+          <span class="star" data-v="1">★</span>
+          <span class="star" data-v="2">★</span>
+          <span class="star" data-v="3">★</span>
+          <span class="star" data-v="4">★</span>
+          <span class="star" data-v="5">★</span>
+        </div>
+        <input type="hidden" id="f-rating"/>
+      </div>
+
+      <div class="form-group">
+        <label>What did you like most?</label>
+        <div class="chips" id="liked-chips">
+          <div class="chip" data-v="clarity">Clear explanations</div>
+          <div class="chip" data-v="confidence">Boosted my confidence</div>
+          <div class="chip" data-v="interview_prep">Interview preparation</div>
+          <div class="chip" data-v="career_guidance">Career guidance</div>
+          <div class="chip" data-v="english">English communication tips</div>
+          <div class="chip" data-v="personalised">Felt personalised</div>
+          <div class="chip" data-v="actionable">Got actionable next steps</div>
+          <div class="chip" data-v="warm">Warm & supportive</div>
+        </div>
+        <input type="hidden" id="f-liked"/>
+      </div>
+
+      <div class="form-group">
+        <label>Tell us more (optional)</label>
+        <textarea id="f-comment" placeholder="What was most helpful? What would you tell someone considering booking a session?"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Can we show this on our website? <span style="color:var(--dim);font-weight:400">(optional)</span></label>
+        <select id="f-consent">
+          <option value="yes">Yes, show my name and feedback</option>
+          <option value="initials">Yes, but use initials only (e.g. S.K.)</option>
+          <option value="anonymous">Show as anonymous</option>
+          <option value="no">No, keep it private</option>
+        </select>
+      </div>
+
+      <div class="err" id="f-err">Please fill in your name and select a star rating.</div>
+      <button class="btn" type="submit" id="submitBtn">Submit feedback →</button>
+    </form>
+  </div>
+
+  <div class="success" id="success-view">
+    <div class="success-icon">🌟</div>
+    <h2>Thank you so much!</h2>
+    <p>Your feedback has been shared with Vardhasheela. It genuinely helps her improve and helps future students make the right decision.</p>
+  </div>
+</div>
+
+<script>
+// ── Star rating ──
+let rating = 0;
+document.querySelectorAll('.star').forEach(star => {
+  star.addEventListener('mouseenter', () => highlightStars(+star.dataset.v));
+  star.addEventListener('mouseleave', () => highlightStars(rating));
+  star.addEventListener('click', () => {
+    rating = +star.dataset.v;
+    document.getElementById('f-rating').value = rating;
+    highlightStars(rating);
+  });
+});
+function highlightStars(n) {
+  document.querySelectorAll('.star').forEach(s => {
+    s.classList.toggle('active', +s.dataset.v <= n);
+  });
+}
+
+// ── Liked chips (multi-select) ──
+document.querySelectorAll('#liked-chips .chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    chip.classList.toggle('selected');
+    const vals = [...document.querySelectorAll('#liked-chips .chip.selected')].map(c => c.dataset.v);
+    document.getElementById('f-liked').value = vals.join(', ');
+  });
+});
+
+// ── Submit ──
+document.getElementById('feedbackForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const name    = document.getElementById('f-name').value.trim();
+  const rat     = document.getElementById('f-rating').value;
+  const comment = document.getElementById('f-comment').value.trim();
+  const liked   = document.getElementById('f-liked').value;
+  const consent = document.getElementById('f-consent').value;
+  const err     = document.getElementById('f-err');
+  const btn     = document.getElementById('submitBtn');
+
+  if (!name || !rat) {
+    err.style.display = 'block';
+    return;
+  }
+  err.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  try {
+    const res = await fetch('/api/feedback/public', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({name, rating: +rat, liked, comment, consent})
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('form-view').style.display  = 'none';
+      document.getElementById('success-view').style.display = 'block';
+    } else {
+      err.textContent = data.error || 'Something went wrong. Please try again.';
+      err.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Submit feedback →';
+    }
+  } catch(ex) {
+    err.textContent = 'Network error — please try again.';
+    err.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Submit feedback →';
+  }
+});
+</script>
+</body>
+</html>
