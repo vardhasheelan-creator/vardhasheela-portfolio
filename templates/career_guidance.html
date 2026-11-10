@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Career Guidance Assessment — Vardhasheela N</title>
+<meta name="description" content="Answer a few questions and get a personalised career roadmap: your next role, skills to learn, portfolio projects and a salary upgrade plan.">
+<link rel="icon" href="/assets/vardhasheela.jpeg" type="image/jpeg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#2B0C15; --ink-2:#4A1525; --muted:#6E5A5E; --line:rgba(74,21,37,.12);
+  --bg:#FBF6F2; --card:#ffffff; --accent:#A8735C; --accent-2:#F6EAE2;
+  --teal:#4A1525; --teal-2:#F3E6E4; --rose:#9B3B3B; --rose-2:#F8E7E4;
+  --gold:#D9AE94; --wine:#2B0C15; --burg:#4A1525;
+  --radius:4px; --shadow:0 1px 2px rgba(43,12,21,.05),0 10px 28px rgba(43,12,21,.07);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;line-height:1.15;margin:0 0 .5em}
+a{color:var(--teal)}
+button{font:inherit;cursor:pointer}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+header.top{padding:16px 0;border-bottom:1px solid rgba(217,174,148,.22);background:rgba(43,12,21,.97);position:sticky;top:0;z-index:5}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:1.45rem;text-decoration:none;color:#FBF6F2;letter-spacing:.02em}.brand span{color:var(--gold)}
+.top-links{display:flex;gap:10px;align-items:center}.top-links a.lnk{color:#E3CFC4;text-decoration:none;font-size:13px;border:1px solid rgba(217,174,148,.3);padding:7px 14px;border-radius:2px}.top-links a.lnk:hover{color:var(--gold)}
+.brand-mark{width:34px;height:34px;border-radius:10px;background:var(--ink);display:grid;place-items:center}
+.brand small{display:block;font-weight:500;color:var(--muted);font-size:12px}
+.btn{border:0;border-radius:2px;padding:13px 24px;font-weight:600;font-size:13px;letter-spacing:.14em;text-transform:uppercase;transition:transform .12s,box-shadow .12s,background .12s;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn-primary{background:var(--ink);color:#fff}
+.btn-primary:hover{background:var(--ink-2);transform:translateY(-1px)}
+.btn-accent{background:var(--gold);color:var(--wine)}
+.btn-accent:hover{background:#E8C9B5;transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--ink);border:1px solid rgba(74,21,37,.3)}
+.btn-ghost:hover{border-color:var(--ink)}
+.btn-sm{padding:9px 16px;font-size:11px}
+
+/* hero */
+.hero{padding:80px 0 64px;background:var(--burg);color:#F1E4DC;border-bottom:1px solid rgba(217,174,148,.25)}
+.hero h1{color:#FBF6F2}
+.hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:48px;align-items:center}
+.eyebrow{display:inline-block;border:1px solid rgba(217,174,148,.35);color:var(--gold);font-weight:600;font-size:11px;letter-spacing:.2em;text-transform:uppercase;padding:7px 14px;border-radius:2px;margin-bottom:22px}
+.hero h1{font-size:clamp(34px,5vw,54px);letter-spacing:-.5px}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero p.lead{font-size:18px;color:#DCC5B9;max-width:560px;margin:0 0 28px}
+.hero-card{background:rgba(251,246,242,.05);border:1px solid rgba(217,174,148,.25)!important;color:#F1E4DC;border-radius:4px;padding:26px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.hero-card .row{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-bottom:1px dashed var(--line)}
+.hero-card .row:last-child{border:0}
+.hero-card .num{flex:0 0 30px;height:30px;border-radius:50%;border:1px solid var(--gold);color:var(--gold);font-weight:700;display:grid;place-items:center;font-size:14px}
+.hero-card b{display:block}
+.hero-card span{color:#CDB3A6;font-size:14px}
+.hero-card .row{border-bottom-color:rgba(217,174,148,.2)!important}
+.meta{display:flex;gap:22px;margin-top:24px;color:#CDB3A6;font-size:14px;flex-wrap:wrap}
+.meta div::before{content:"✓ ";color:var(--gold);font-weight:700}
+.features{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:56px 20px 80px}
+.feature{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.feature .ic{font-size:22px;margin-bottom:8px}
+.feature h3{font-size:18px;margin-bottom:4px}
+.feature p{margin:0;color:var(--muted);font-size:14px}
+
+/* quiz */
+#quiz{padding:40px 0 80px;display:none}
+.progress{display:flex;gap:6px;margin-bottom:10px}
+.progress div{flex:1;height:6px;border-radius:6px;background:var(--line);transition:background .3s}
+.progress div.on{background:var(--accent)}
+.step-label{letter-spacing:.06em;color:var(--muted);font-size:14px;margin-bottom:22px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:3px;padding:34px;box-shadow:var(--shadow)}
+.panel h2{font-size:30px}
+.panel .sub{color:var(--muted);margin:-4px 0 26px}
+.q{margin-bottom:28px}
+.q > label,.q > .ql{display:block;font-weight:600;margin-bottom:10px}
+.q .hint{font-weight:400;color:var(--muted);font-size:13px;margin-left:6px}
+input[type=text],select,textarea{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:3px;font:inherit;background:#fff;color:var(--ink)}
+input[type=text]:focus,select:focus,textarea:focus{outline:none;border-color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:3px;padding:8px 15px;font-size:14px;font-weight:500;color:var(--ink);transition:all .12s}
+.chip:hover{border-color:var(--ink-2)}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.opt{border:1.5px solid var(--line);background:#fff;border-radius:3px;padding:14px;text-align:left;transition:all .12s;color:var(--ink)}
+.opt:hover{border-color:var(--ink-2)}
+.opt.on{border-color:var(--accent);background:var(--accent-2);box-shadow:inset 0 0 0 1px var(--accent)}
+.opt b{display:block;font-size:15px}
+.opt span{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.scale{display:flex;gap:8px}
+.scale .opt{flex:1;text-align:center;padding:12px 6px}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:12px}
+.err{color:var(--rose);font-size:14px;min-height:20px}
+
+/* results */
+#results{padding:40px 0 80px;display:none}
+.res-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:24px}
+.res-head h2{font-size:clamp(28px,4vw,40px);margin:0}
+.res-head p{color:var(--muted);margin:6px 0 0}
+.res-actions{display:flex;gap:8px;flex-wrap:wrap}
+.summary{background:var(--burg);color:#fff;border-radius:3px;padding:28px;display:grid;grid-template-columns:1.3fr 1fr;gap:28px;margin-bottom:28px}
+.summary h3{font-size:22px;color:#fff}
+.summary p{color:#DCC5B9;margin:0 0 10px}
+.summary .kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14px}
+.summary .kv span:nth-child(odd){color:var(--gold)}
+.matches{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px}
+.match{background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);padding:20px;text-align:left;transition:all .15s;color:var(--ink)}
+.match:hover{border-color:var(--ink-2)}
+.match.on{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-2)}
+.match .rank{font-size:11px;color:var(--accent)!important;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.match h3{font-size:20px;margin:6px 0}
+.fit{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600}
+.fitbar{flex:1;height:8px;background:var(--line);border-radius:8px;overflow:hidden}
+.fitbar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--accent));border-radius:8px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:22px;overflow-x:auto}
+.tab{background:none;border:0;padding:12px 16px;font-weight:600;color:var(--muted);border-bottom:2.5px solid transparent;white-space:nowrap}
+.tab.on{color:var(--ink);border-color:var(--accent)}
+.detail{background:var(--card);border:1px solid var(--line);border-radius:3px;padding:30px;box-shadow:var(--shadow)}
+.detail h3{font-size:24px}
+.detail h4{font-size:16px;margin:22px 0 10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.box{border:1px solid var(--line);border-radius:3px;padding:18px;background:#fff}
+.box.tint{background:var(--teal-2);border-color:#E8D3D0}
+.box.warm{background:var(--accent-2);border-color:#EBD3C4}
+.box.warn{background:var(--rose-2);border-color:#f2cfca}
+.ladder{display:flex;gap:0;margin:6px 0 4px;flex-wrap:wrap}
+.rung{flex:1;min-width:160px;padding:16px;border:1px solid var(--line);background:#fff;position:relative}
+.rung:first-child{border-radius:3px 0 0 14px}
+.rung:last-child{border-radius:0 14px 14px 0}
+.rung.now{background:var(--teal-2);border-color:#E8D3D0}
+.rung.next{background:var(--accent-2);border-color:#EBD3C4}
+.rung .tag{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.rung b{display:block;margin:4px 0}
+.rung .sal{font-size:13px;color:var(--ink-2)}
+ul.clean{list-style:none;padding:0;margin:0}
+ul.clean li{padding:8px 0 8px 28px;position:relative;border-bottom:1px dashed var(--line)}
+ul.clean li:last-child{border:0}
+ul.clean li::before{content:"→";position:absolute;left:4px;color:var(--accent);font-weight:700}
+.skill{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:3px;font-size:13px;font-weight:600;margin:0 6px 8px 0}
+.skill.have{background:var(--teal-2);color:var(--teal)}
+.skill.gap{background:var(--accent-2);color:#7A4A36}
+.phase{display:grid;grid-template-columns:130px 1fr;gap:18px;padding:18px 0;border-bottom:1px solid var(--line)}
+.phase:last-child{border:0}
+.phase .when{font-weight:700;color:var(--accent)}
+.phase .when small{display:block;color:var(--muted);font-weight:500}
+.phase b{display:block;margin-bottom:6px}
+.phase ul{margin:0;padding-left:18px}
+.phase li{margin-bottom:4px}
+.proj{border:1px solid var(--line);border-radius:3px;padding:18px;margin-bottom:12px;background:#fff}
+.proj .lvl{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:3px;margin-bottom:8px}
+.lvl.l1{background:var(--teal-2);color:var(--teal)}
+.lvl.l2{background:var(--accent-2);color:#7A4A36}
+.lvl.l3{background:var(--wine);color:var(--gold)}
+.proj b{display:block;font-size:16px;margin-bottom:4px}
+.proj p{margin:0 0 8px;color:var(--muted);font-size:14px}
+.proj .show{font-size:13px;color:var(--ink-2)}
+.plan90{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.plan90 .box h4{margin-top:0}
+.note{font-size:13px;color:var(--muted);margin-top:14px}
+.cta{margin-top:32px;background:var(--wine);border:1px solid rgba(217,174,148,.25);color:#fff;border-radius:3px;padding:30px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.cta h3{color:#fff;margin:0 0 6px;font-size:24px}
+.cta p{margin:0;color:#DCC5B9}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:3px;font-size:14px;transition:transform .25s,opacity .25s;z-index:20;opacity:0;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+footer{background:var(--wine);border-top:1px solid rgba(217,174,148,.25);padding:26px 0;color:#B89A8E;font-size:13px}
+footer a{color:var(--gold)}
+footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@media (max-width:820px){
+  .hero-grid,.summary,.grid2,.plan90{grid-template-columns:1fr}
+  .features{grid-template-columns:1fr 1fr}
+  .matches{grid-template-columns:1fr}
+  .panel,.detail{padding:22px}
+  .phase{grid-template-columns:1fr;gap:6px}
+  .rung,.rung:first-child,.rung:last-child{border-radius:3px;margin-bottom:6px;min-width:100%}
+  .scale{flex-wrap:wrap}
+}
+@media (max-width:480px){.features{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/">Vardhasheela<span>N</span></a>
+    <div class="top-links">
+      <a class="lnk" href="/jobs">Jobs board</a>
+      <a class="btn btn-accent btn-sm" href="/#book">Book a session →</a>
+    </div>
+  </div>
+</header>
+
+<!-- LANDING -->
+<main id="home">
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">Free career assessment · 8 minutes</span>
+        <h1>Know your <em>next career move</em> — and exactly how to get there.</h1>
+        <p class="lead">Answer a few questions about your interests, experience and the work you do every day. Get a personalised roadmap: the role to aim for, skills to learn, projects to build, and how to negotiate a better salary package.</p>
+        <button class="btn btn-accent" onclick="startQuiz()">Start my assessment →</button>
+        <div class="meta"><div>No sign-up</div><div>Freshers to senior professionals</div><div>Career switchers welcome</div></div>
+      </div>
+      <div class="hero-card">
+        <div class="row"><div class="num">1</div><div><b>Tell us about you</b><span>Experience, current role and daily work</span></div></div>
+        <div class="row"><div class="num">2</div><div><b>Share interests &amp; goals</b><span>What excites you and what you want next</span></div></div>
+        <div class="row"><div class="num">3</div><div><b>Get your roadmap</b><span>Top 3 career paths ranked by fit, with a 90-day plan</span></div></div>
+      </div>
+    </div>
+  </section>
+  <section class="wrap features">
+    <div class="feature"><div class="ic">🧭</div><h3>Next career step</h3><p>The role that fits your background, and the ones after it.</p></div>
+    <div class="feature"><div class="ic">📚</div><h3>Upskilling plan</h3><p>Skill gaps, a phased learning plan and certifications worth getting.</p></div>
+    <div class="feature"><div class="ic">🛠️</div><h3>Portfolio projects</h3><p>Projects from beginner to flagship that recruiters notice.</p></div>
+    <div class="feature"><div class="ic">📈</div><h3>Salary upgrade</h3><p>Indicative salary bands and tactics to raise your package.</p></div>
+  </section>
+</main>
+
+<!-- QUIZ -->
+<section id="quiz">
+  <div class="wrap" style="max-width:820px">
+    <div class="progress" id="progress"></div>
+    <div class="step-label" id="stepLabel"></div>
+    <div class="panel" id="panel"></div>
+    <div class="err" id="err"></div>
+    <div class="nav">
+      <button class="btn btn-ghost" id="backBtn" onclick="prevStep()">← Back</button>
+      <button class="btn btn-primary" id="nextBtn" onclick="nextStep()">Continue →</button>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section id="results"><div class="wrap" id="resultsInner"></div></section>
+
+<footer>
+  <div class="wrap">
+    <span>© Vardhasheela N · Bengaluru, India · <a href="/">vardhasheelan.com</a></span>
+    <span>Guidance is indicative. Salary figures are approximate ranges and differ by city, company and skill.</span>
+  </div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================
+   QUESTION DATA
+   ===================================================== */
+const OPTIONS = {
+  status:[
+    {v:'student',t:'Student',d:'Still studying'},
+    {v:'fresher',t:'Fresher',d:'Graduated, looking for first job'},
+    {v:'working',t:'Working professional',d:'Want to grow in my field'},
+    {v:'switcher',t:'Career switcher',d:'Want to move to a new field'},
+    {v:'break',t:'Returning after a break',d:'Restarting my career'}
+  ],
+  exp:[
+    {v:0,t:'0 years'},{v:1,t:'Under 2 years'},{v:3,t:'2–5 years'},{v:7,t:'5–10 years'},{v:12,t:'10+ years'}
+  ],
+  domain:[
+    {v:'software',t:'Software / IT development'},
+    {v:'itsupport',t:'Technical support / IT operations'},
+    {v:'data',t:'Data / analytics / MIS'},
+    {v:'aviation',t:'Aviation / hospitality / travel'},
+    {v:'bpo',t:'Customer service / BPO / KPO'},
+    {v:'sales',t:'Sales / marketing'},
+    {v:'finance',t:'Finance / accounting / banking'},
+    {v:'healthcare',t:'Healthcare / life sciences'},
+    {v:'education',t:'Education / training'},
+    {v:'creative',t:'Design / media / creative'},
+    {v:'ops',t:'Operations / HR / admin'},
+    {v:'engineering',t:'Core engineering (non-IT)'},
+    {v:'none',t:'Not working yet / other'}
+  ],
+  activities:[
+    {v:'troubleshoot',t:'Solving technical problems'},
+    {v:'code',t:'Writing code / scripts'},
+    {v:'customers',t:'Talking to customers / users'},
+    {v:'reports',t:'Excel, reports & numbers'},
+    {v:'manage',t:'Leading or coordinating people'},
+    {v:'content',t:'Writing / creating content'},
+    {v:'selling',t:'Selling / persuading'},
+    {v:'process',t:'Running processes & SOPs'},
+    {v:'research',t:'Researching / analysing'},
+    {v:'design',t:'Designing visuals or layouts'},
+    {v:'training',t:'Teaching / training others'},
+    {v:'documents',t:'Documentation & compliance'}
+  ],
+  interests:[
+    {v:'ai',t:'🤖 AI & automation'},{v:'data',t:'📊 Data & analytics'},{v:'cloud',t:'☁️ Cloud & DevOps'},
+    {v:'security',t:'🔐 Cybersecurity'},{v:'dev',t:'💻 Building software'},{v:'product',t:'🧩 Product management'},
+    {v:'ux',t:'🎨 UX / UI design'},{v:'marketing',t:'📣 Digital marketing'},{v:'sales',t:'🤝 Sales & partnerships'},
+    {v:'pm',t:'🗂️ Project management'},{v:'cs',t:'💬 Customer success'},{v:'aviation',t:'✈️ Aviation'},
+    {v:'business',t:'🚀 Starting a business'},{v:'content',t:'🎥 Content creation'},{v:'people',t:'🧑‍🏫 HR, training & L&D'},
+    {v:'finance',t:'💰 Finance & FinTech'},{v:'writing',t:'✍️ Writing & documentation'}
+  ],
+  style:[
+    {v:'technical',t:'Hands-on technical',d:'I like building & fixing things'},
+    {v:'analytical',t:'Analytical',d:'I like numbers, patterns, logic'},
+    {v:'people',t:'People-facing',d:'I get energy from people'},
+    {v:'creative',t:'Creative',d:'I like ideas, visuals, stories'},
+    {v:'leader',t:'Leading & organising',d:'I like owning outcomes'}
+  ],
+  skills:[
+    {v:'excel',t:'Excel / Sheets'},{v:'sql',t:'SQL'},{v:'python',t:'Python'},{v:'js',t:'JavaScript / web'},
+    {v:'cloud',t:'AWS / Azure / GCP'},{v:'linux',t:'Linux / command line'},{v:'networking',t:'Networking basics'},
+    {v:'bi',t:'Power BI / Tableau'},{v:'stats',t:'Statistics'},{v:'genai',t:'ChatGPT / AI tools'},
+    {v:'nocode',t:'No-code / automation tools'},{v:'figma',t:'Figma / Canva'},{v:'crm',t:'CRM (Salesforce, HubSpot, Zoho)'},
+    {v:'seo',t:'SEO / social media'},{v:'communication',t:'Communication'},{v:'presenting',t:'Presenting'},
+    {v:'writing',t:'Writing'},{v:'stakeholder',t:'Stakeholder management'},{v:'agile',t:'Agile / Jira'},
+    {v:'video',t:'Video editing'},{v:'accounting',t:'Accounting / finance'},{v:'support',t:'Ticketing / ITSM'}
+  ],
+  coding:[{v:1,t:'None'},{v:2,t:'Basic'},{v:3,t:'Comfortable'},{v:4,t:'Strong'},{v:5,t:'Expert'}],
+  goal:[
+    {v:'hike',t:'Bigger salary package',d:'Same or adjacent field'},
+    {v:'switch',t:'Switch to a new field',d:'Fresh direction'},
+    {v:'promotion',t:'Get promoted',d:'Grow where I am'},
+    {v:'first',t:'Land my first job',d:'Break into the industry'},
+    {v:'remote',t:'Remote / abroad role',d:'Global opportunities'},
+    {v:'business',t:'Build my own venture',d:'Freelance or startup'}
+  ],
+  hike:[{v:25,t:'20–30%'},{v:50,t:'30–60%'},{v:100,t:'Double (2x)'},{v:150,t:'More than 2x'}],
+  hours:[{v:4,t:'2–5 hrs/week'},{v:8,t:'5–10 hrs/week'},{v:15,t:'10–20 hrs/week'},{v:25,t:'20+ hrs/week'}],
+  timeline:[{v:3,t:'3 months'},{v:6,t:'6 months'},{v:12,t:'12 months'},{v:18,t:'18+ months'}],
+  budget:[{v:'free',t:'Free resources only'},{v:'low',t:'Up to ₹10k'},{v:'mid',t:'₹10k–50k'},{v:'high',t:'Above ₹50k'}],
+  market:[{v:'india',t:'India'},{v:'remote',t:'Remote (global)'},{v:'abroad',t:'Abroad (Gulf, Europe, US…)'}]
+};
+
+const STEPS = [
+  {title:'About you', sub:'A quick snapshot of where you are today.', qs:[
+    {id:'name',type:'text',label:'Your first name',hint:'(optional)',placeholder:'e.g. Priya'},
+    {id:'status',type:'cards',label:'Which best describes you?',req:true},
+    {id:'exp',type:'cards',label:'Total work experience',req:true},
+    {id:'market',type:'chips',label:'Where do you want to work?',req:true}
+  ]},
+  {title:'Your current work', sub:'This helps us find skills you can carry into your next role.', qs:[
+    {id:'domain',type:'select',label:'Current or most recent field',req:true},
+    {id:'role',type:'text',label:'Current or most recent job title',hint:'(optional)',placeholder:'e.g. Technical Support Engineer'},
+    {id:'activities',type:'multi',label:'What do you spend most of your working day on?',hint:'Pick up to 5',max:5,req:true}
+  ]},
+  {title:'Your interests', sub:'Be honest: what would you happily learn about on a weekend?', qs:[
+    {id:'interests',type:'multi',label:'Areas that excite you',hint:'Pick up to 5',max:5,req:true},
+    {id:'style',type:'cards',label:'How do you like to work?',req:true}
+  ]},
+  {title:'Your skills', sub:'Choose what you can already use at work. No need to be an expert.', qs:[
+    {id:'skills',type:'multi',label:'Skills you already have',hint:'Pick all that apply'},
+    {id:'coding',type:'scale',label:'How comfortable are you with coding?',req:true}
+  ]},
+  {title:'Your goals', sub:'Last step. This shapes your timeline and salary plan.', qs:[
+    {id:'goal',type:'cards',label:'What is your main goal right now?',req:true},
+    {id:'hike',type:'chips',label:'Salary increase you are aiming for',req:true},
+    {id:'hours',type:'chips',label:'Time you can give to learning',req:true},
+    {id:'timeline',type:'chips',label:'When do you want to make the move?',req:true},
+    {id:'budget',type:'chips',label:'Budget for courses & certifications',req:true}
+  ]}
+];
+
+/* =====================================================
+   CAREER PATH KNOWLEDGE BASE
+   salary: indicative India fixed CTC ranges in LPA by level
+   ===================================================== */
+const PATHS = [
+ {id:'data-analyst', name:'Data Analyst', tagline:'Turn business data into decisions using SQL, Excel and dashboards.',
+  interests:['data','finance','business'], styles:['analytical'], acts:['reports','research','process'],
+  domains:{data:3,finance:2,bpo:1.5,ops:1.5,sales:1,itsupport:1.5,healthcare:1,software:1},
+  core:['excel','sql','bi','stats','python','communication'], code:2, hours:260,
+  roles:['Junior Data Analyst / MIS Analyst','Data Analyst / BI Analyst','Senior Analyst / Analytics Lead'],
+  salary:[[4,8],[8,16],[16,30]],
+  learn:[
+   ['Foundations',['Advanced Excel: pivots, XLOOKUP, Power Query','SQL: joins, group by, window functions (practise daily on a free SQL site)','Basic statistics: averages, distributions, correlation']],
+   ['Build',['Power BI or Tableau: data models, DAX basics, dashboard design','Python with pandas for cleaning and analysis','Storytelling with data: turning a chart into a recommendation']],
+   ['Job-ready',['Business metrics for one industry (e-commerce, finance, healthcare)','Mock case interviews and SQL tests','Portfolio on GitHub or a public dashboard gallery']]],
+  projects:[
+   ['Sales performance dashboard','Clean a public retail dataset and build a Power BI dashboard covering revenue, top products and region trends.','Shows: Excel/BI, data cleaning, KPI thinking'],
+   ['Customer churn analysis','Use SQL and Python to find why customers leave a telecom or subscription dataset, then write 3 recommendations.','Shows: SQL, pandas, business insight'],
+   ['Analyse your own workplace process','Take a real (anonymised) process from your job, such as ticket resolution times or call volumes, and build an insights report.','Shows: domain knowledge recruiters can verify, your strongest interview story']],
+  certs:['Microsoft PL-300 (Power BI Data Analyst)','Google Data Analytics Certificate','Tableau Desktop Specialist'],
+  resources:['Kaggle datasets & micro-courses (free)','Mode / SQLBolt SQL tutorials (free)','Microsoft Learn: Power BI path (free)']},
+
+ {id:'data-scientist', name:'Data Scientist / ML Engineer', tagline:'Build predictive models and machine-learning systems.',
+  interests:['ai','data'], styles:['analytical','technical'], acts:['code','research','reports'],
+  domains:{data:3,software:2.5,engineering:1.5,finance:1,healthcare:1},
+  core:['python','sql','stats','cloud','communication'], code:3, hours:450,
+  roles:['Junior Data Scientist / ML Associate','Data Scientist / ML Engineer','Senior / Lead Data Scientist'],
+  salary:[[7,14],[14,30],[30,60]],
+  learn:[
+   ['Foundations',['Python, NumPy and pandas fluency','Statistics & probability: hypothesis tests, regression','Linear algebra & calculus intuition, just enough for ML']],
+   ['Build',['scikit-learn: regression, classification, trees, ensembles, model evaluation','Feature engineering & cross-validation','Intro deep learning with PyTorch']],
+   ['Job-ready',['MLOps basics: model serving with FastAPI, Docker, experiment tracking','One cloud ML service (SageMaker / Vertex AI)','Case studies: explaining model trade-offs to business people']]],
+  projects:[
+   ['House price or demand prediction','End-to-end regression project with EDA, feature engineering and model comparison.','Shows: ML fundamentals, evaluation'],
+   ['Text classifier for support tickets','Classify tickets or reviews by category and sentiment, then serve the model through a simple API.','Shows: NLP, deployment'],
+   ['Production-style ML app','Deploy a model with Docker on the cloud, with monitoring and a short write-up of the business impact.','Shows: MLOps, ownership: this is the project that gets interviews']],
+  certs:['AWS Certified Machine Learning Engineer – Associate','Google Professional ML Engineer','DeepLearning.AI specialisations'],
+  resources:['fast.ai Practical Deep Learning (free)','Andrew Ng ML Specialization (Coursera)','Kaggle competitions']},
+
+ {id:'ai-automation', name:'AI Automation / GenAI Engineer', tagline:'Build AI agents, chatbots and automated workflows with LLMs.',
+  interests:['ai','dev','business'], styles:['technical','creative'], acts:['code','troubleshoot','process'],
+  domains:{software:3,itsupport:2.5,data:2,bpo:1,ops:1.5,creative:1},
+  core:['python','genai','nocode','cloud','js','communication'], code:3, hours:320,
+  roles:['AI Automation Developer / Junior GenAI Engineer','GenAI Engineer / AI Solutions Engineer','Senior AI Engineer / AI Architect'],
+  salary:[[8,15],[15,35],[35,70]],
+  learn:[
+   ['Foundations',['Python + REST APIs + JSON','Prompt engineering patterns: few-shot, structured output, tool use','No-code automation: n8n, Make or Zapier']],
+   ['Build',['LLM APIs (Claude, OpenAI) and the tool-calling / agent pattern','RAG: embeddings, vector databases, chunking, evaluation','Frameworks: LangChain / LlamaIndex or the Model Context Protocol (MCP)']],
+   ['Job-ready',['Deploying AI apps: FastAPI, serverless, cost and latency control','Evaluation, guardrails and security (prompt injection, data privacy)','Package 2–3 real automations as case studies with measured time saved']]],
+  projects:[
+   ['Email / ticket triage automation','An n8n or Python workflow that reads incoming requests, classifies them with an LLM and routes them.','Shows: automation, LLM APIs, business value'],
+   ['RAG chatbot over documents','A chatbot that answers questions from a company handbook or product docs, with cited sources.','Shows: RAG, embeddings, evaluation'],
+   ['AI agent for a real business','An agent with tools (calendar, CRM, sheets) built for a small business or your current team, with before/after metrics.','Shows: end-to-end delivery: also works as freelance or agency work']],
+  certs:['AWS Certified AI Practitioner','Microsoft Azure AI Engineer (AI-102)','Anthropic / DeepLearning.AI short courses'],
+  resources:['DeepLearning.AI short courses (free)','Anthropic & OpenAI cookbooks on GitHub (free)','n8n community templates (free)']},
+
+ {id:'cloud-devops', name:'Cloud / DevOps Engineer', tagline:'Run and automate the infrastructure that modern apps depend on.',
+  interests:['cloud','dev','security'], styles:['technical'], acts:['troubleshoot','code','process'],
+  domains:{itsupport:3,software:2.5,engineering:1.5,data:1},
+  core:['linux','cloud','networking','python','support'], code:2, hours:340,
+  roles:['Cloud Support Associate / Junior DevOps','Cloud / DevOps Engineer','Senior DevOps / SRE / Cloud Architect'],
+  salary:[[5,10],[10,22],[22,45]],
+  learn:[
+   ['Foundations',['Linux administration & Bash scripting','Networking: DNS, HTTP, subnets, load balancers','AWS core: EC2, S3, IAM, VPC, CloudWatch']],
+   ['Build',['Git + CI/CD pipelines (GitHub Actions / Jenkins)','Docker, then Kubernetes basics','Infrastructure as Code with Terraform']],
+   ['Job-ready',['Monitoring & incident response (Prometheus, Grafana, on-call practices)','Cost optimisation and security best practices','Hands-on labs + a documented project you can demo in interviews']]],
+  projects:[
+   ['Static site on AWS with CI/CD','Host a site on S3 + CloudFront with automatic deploys from GitHub Actions.','Shows: AWS basics, CI/CD'],
+   ['Containerised app with Terraform','A 3-tier app on Docker, provisioned with Terraform and monitored with CloudWatch dashboards.','Shows: IaC, containers, monitoring'],
+   ['Automate a real ops task from your job','Script a repetitive support or ops task (user provisioning, log checks, health reports) and measure hours saved.','Shows: support→DevOps transition story, real impact']],
+  certs:['AWS Solutions Architect – Associate','HashiCorp Terraform Associate','Certified Kubernetes Administrator (CKA)'],
+  resources:['AWS Skill Builder (free tier)','KodeKloud / Linux Foundation labs','Cloud Resume Challenge (free)']},
+
+ {id:'cyber', name:'Cybersecurity Analyst', tagline:'Protect systems and data by detecting and responding to threats.',
+  interests:['security','cloud'], styles:['technical','analytical'], acts:['troubleshoot','research','documents'],
+  domains:{itsupport:3,software:2,finance:1,engineering:1},
+  core:['networking','linux','cloud','support','python'], code:2, hours:360,
+  roles:['SOC Analyst L1 / Security Associate','Security Analyst / Cloud Security Engineer','Senior Security Engineer / Security Architect'],
+  salary:[[4,8],[8,18],[18,40]],
+  learn:[
+   ['Foundations',['Networking & OS internals (TCP/IP, Windows, Linux)','Security fundamentals: CIA triad, common attacks, OWASP Top 10','Logs & SIEM basics']],
+   ['Build',['SIEM tools (Splunk, Microsoft Sentinel) and alert triage','Hands-on labs: TryHackMe / HackTheBox SOC paths','Cloud security: IAM, guardrails, posture management']],
+   ['Job-ready',['Incident response playbooks and reporting','Compliance basics: ISO 27001, SOC 2, HIPAA for regulated industries','Write-ups of the labs you completed, published on a blog or GitHub']]],
+  projects:[
+   ['Home SOC lab','Set up a SIEM with log sources, simulate attacks and document how you detected them.','Shows: detection & triage skills'],
+   ['Cloud security audit','Audit a sample AWS account for misconfigurations and write a remediation report.','Shows: cloud security, report writing'],
+   ['Security playbook for your team','Create a phishing or access-review runbook for your current workplace.','Shows: practical, internal-move ready']],
+  certs:['CompTIA Security+','Microsoft SC-200 (Security Operations Analyst)','ISC2 Certified in Cybersecurity (CC)'],
+  resources:['TryHackMe (free + paid)','Splunk free training','Professor Messer Security+ videos (free)']},
+
+ {id:'fullstack', name:'Full-Stack Developer', tagline:'Build web applications end to end, from interface to database.',
+  interests:['dev','ux','business'], styles:['technical','creative'], acts:['code','design','troubleshoot'],
+  domains:{software:3,itsupport:1.5,creative:1.5,data:1},
+  core:['js','python','sql','cloud','agile'], code:3, hours:420,
+  roles:['Junior Developer / Associate Software Engineer','Software Engineer / Full-Stack Developer','Senior Engineer / Tech Lead'],
+  salary:[[5,12],[12,28],[28,55]],
+  learn:[
+   ['Foundations',['HTML, CSS, JavaScript (ES6+)','Git & GitHub workflows','One backend language: Node.js or Python']],
+   ['Build',['React (or Next.js) for front end','REST APIs + a database (PostgreSQL / MongoDB)','Authentication, testing and deployment (Vercel, Render, AWS)']],
+   ['Job-ready',['Data structures & algorithms practice for interviews','System design basics','2 polished, deployed apps with clean README files']]],
+  projects:[
+   ['Personal portfolio site','A fast, responsive site with your projects and a contact form.','Shows: front-end fundamentals'],
+   ['Booking / tracker app','A full-stack CRUD app with login, a database and deployment, such as an appointment booking tool.','Shows: full-stack, auth, deployment'],
+   ['Real-user product','Ship an app that real users rely on (a small business, a college club, your team) and collect feedback.','Shows: product sense, the strongest signal for hiring managers']],
+  certs:['Meta Front-End / Back-End Developer certificates','AWS Developer – Associate','freeCodeCamp certifications'],
+  resources:['The Odin Project (free)','freeCodeCamp (free)','Frontend Masters (paid)']},
+
+ {id:'product', name:'Product Manager', tagline:'Decide what gets built and why, working between users, business and tech.',
+  interests:['product','business','ux','ai'], styles:['leader','analytical','people'], acts:['customers','manage','research'],
+  domains:{software:2.5,itsupport:2,data:2,sales:1.5,bpo:1,creative:1,finance:1},
+  core:['stakeholder','communication','agile','sql','presenting','writing'], code:1, hours:280,
+  roles:['Associate Product Manager / Product Analyst','Product Manager','Senior PM / Group Product Manager'],
+  salary:[[8,16],[18,35],[35,70]],
+  learn:[
+   ['Foundations',['Product thinking: user problems, jobs-to-be-done, prioritisation (RICE)','Writing PRDs & user stories','Agile & Scrum with Jira']],
+   ['Build',['Product analytics: funnels, retention, A/B tests; SQL basics','User research & interviews','Wireframing in Figma']],
+   ['Job-ready',['Product case interviews: design, metrics, strategy','Technical literacy: APIs, AI features, system basics','A public product teardown or a shipped side project']]],
+  projects:[
+   ['Product teardown','A detailed teardown of an app you use, with 3 improvement proposals, metrics and wireframes.','Shows: product thinking, communication'],
+   ['PRD for a real feature','Write a full PRD with user research for a feature at your company or a startup.','Shows: requirement writing, prioritisation'],
+   ['Ship a mini product','Launch a small no-code or AI-assisted product, get 50+ users and share your learnings.','Shows: execution, the best answer to “no PM experience”']],
+  certs:['Certified Scrum Product Owner (CSPO)','Product School certifications','Pragmatic Institute'],
+  resources:["Lenny's Newsletter & podcast","Reforge (paid)","'Inspired' by Marty Cagan"]},
+
+ {id:'ux', name:'UX / UI Designer', tagline:'Design digital products that are simple, useful and good-looking.',
+  interests:['ux','dev','content','product'], styles:['creative','people'], acts:['design','research','customers'],
+  domains:{creative:3,software:1.5,education:1,sales:1,aviation:1},
+  core:['figma','communication','presenting','writing'], code:1, hours:300,
+  roles:['Junior UX/UI Designer','Product Designer','Senior Product Designer / Design Lead'],
+  salary:[[4,8],[8,18],[18,38]],
+  learn:[
+   ['Foundations',['Design principles: hierarchy, typography, colour, spacing','Figma: components, auto-layout, prototyping','UX basics: personas, user flows, usability heuristics']],
+   ['Build',['User research & usability testing','Design systems & accessibility (WCAG)','Responsive & mobile-first design']],
+   ['Job-ready',['3 case studies showing process, not just screens','Portfolio site (Behance / Framer / your own site)','Design critique & presentation practice']]],
+  projects:[
+   ['Redesign a frustrating app screen','Pick a real app, run 5 user interviews and redesign one flow.','Shows: research → design process'],
+   ['End-to-end app concept','A complete mobile app case study from research to a hi-fi prototype.','Shows: full UX process'],
+   ['Freelance or non-profit project','Design for a real client and document the outcome.','Shows: real constraints, stakeholder handling']],
+  certs:['Google UX Design Certificate','Interaction Design Foundation courses','NN/g UX Certification (advanced)'],
+  resources:['Figma Learn (free)',"Laws of UX (free)","'Refactoring UI' (book)"]},
+
+ {id:'marketing', name:'Digital Marketing / Growth', tagline:'Grow brands and revenue through SEO, ads, content and analytics.',
+  interests:['marketing','content','business','sales'], styles:['creative','analytical'], acts:['content','selling','reports'],
+  domains:{sales:3,creative:2,bpo:1.5,aviation:1,education:1,ops:1},
+  core:['seo','writing','excel','genai','communication','figma'], code:1, hours:220,
+  roles:['Digital Marketing Executive','Performance / Growth Marketer','Growth Lead / Marketing Manager'],
+  salary:[[3,6],[6,14],[14,30]],
+  learn:[
+   ['Foundations',['Marketing funnel & customer journey','SEO & content writing','Social media strategy']],
+   ['Build',['Google Ads & Meta Ads campaign management','Google Analytics 4 & conversion tracking','Email marketing & marketing automation']],
+   ['Job-ready',['AI tools for content & creative testing','Growth experiments & CRO','Case studies with real numbers: reach, CTR, CAC, ROAS']]],
+  projects:[
+   ['Grow a niche page or blog','Take a new Instagram, YouTube or blog to 1,000 followers in 90 days and document what worked.','Shows: content & growth thinking'],
+   ['Run a small paid campaign','Run a ₹3–5k ad campaign for a local business and report CAC & ROAS.','Shows: performance marketing'],
+   ['Full marketing audit','Audit a brand’s SEO, social presence and funnel, then pitch a 90-day plan.','Shows: strategy, freelance pipeline']],
+  certs:['Google Ads & Analytics certifications (free)','HubSpot Inbound / Content Marketing (free)','Meta Blueprint'],
+  resources:['Google Skillshop (free)','HubSpot Academy (free)','Ahrefs blog & YouTube (free)']},
+
+ {id:'cs', name:'Customer Success Manager (SaaS)', tagline:'Keep customers successful, renewing and growing on a product.',
+  interests:['cs','sales','product','people'], styles:['people','leader'], acts:['customers','troubleshoot','training'],
+  domains:{bpo:3,itsupport:3,aviation:2,sales:2,education:1.5,healthcare:1},
+  core:['communication','crm','stakeholder','presenting','excel','support'], code:1, hours:180,
+  roles:['Customer Success Associate / Onboarding Specialist','Customer Success Manager','Senior CSM / CS Lead'],
+  salary:[[5,9],[9,18],[18,32]],
+  learn:[
+   ['Foundations',['SaaS basics: ARR, churn, NRR, renewals','CRM & CS tools (HubSpot, Salesforce, Gainsight)','Running structured customer calls']],
+   ['Build',['Onboarding & adoption playbooks','Account health scoring with spreadsheets or BI','Quarterly business reviews (QBRs) and executive communication']],
+   ['Job-ready',['Upsell / expansion conversations','Product knowledge of one SaaS category','Interview stories with metrics (CSAT, retention, time-to-resolution)']]],
+  projects:[
+   ['Customer onboarding playbook','Design a 30-day onboarding journey for a SaaS product you know.','Shows: process design, customer empathy'],
+   ['Churn-risk health score','Build a health-score model in Sheets from usage and ticket data.','Shows: data-driven CS'],
+   ['QBR deck','Create a mock quarterly business review for a client, with ROI story and next steps.','Shows: executive communication']],
+  certs:['Gainsight / SuccessHACKER CS certification','HubSpot Service Hub (free)','Salesforce Administrator (bonus)'],
+  resources:['Gainsight Pulse resources (free)','SaaStr blog (free)','CS-focused LinkedIn communities']},
+
+ {id:'pm', name:'Project / Program Manager', tagline:'Deliver complex projects on time by coordinating teams and risks.',
+  interests:['pm','people','business'], styles:['leader','people'], acts:['manage','process','documents'],
+  domains:{software:2,itsupport:2,ops:3,engineering:2.5,aviation:1.5,healthcare:1.5,finance:1.5,education:1},
+  core:['agile','stakeholder','excel','communication','presenting'], code:1, hours:200,
+  roles:['Project Coordinator / Associate PM','Project Manager / Scrum Master','Program Manager / Delivery Head'],
+  salary:[[5,10],[12,25],[25,50]],
+  learn:[
+   ['Foundations',['Project lifecycle: scope, schedule, budget, risks','Agile, Scrum and Kanban','Jira / Asana / MS Project']],
+   ['Build',['Stakeholder & risk management','Status reporting & dashboards','Vendor and resource planning']],
+   ['Job-ready',['PMP or CSM / PSM certification','Domain depth (IT, construction, healthcare)','STAR interview stories about delivering under pressure']]],
+  projects:[
+   ['Run an end-to-end mini project','Plan and deliver an event, migration or launch with a full project plan, RAID log and retro.','Shows: delivery discipline'],
+   ['Process improvement at work','Lead a small improvement in your team and measure the result.','Shows: leadership without title'],
+   ['Agile transformation case','Document how you would move a team from ad-hoc work to Scrum, with ceremonies and metrics.','Shows: Agile depth']],
+  certs:['PMP (PMI), after 3 years of experience','CAPM (for beginners)','Certified ScrumMaster (CSM) / PSM I'],
+  resources:['PMI resources','Scrum.org open assessments (free)','Atlassian Agile Coach (free)']},
+
+ {id:'saas-sales', name:'SaaS Sales / Business Development', tagline:'Sell technology products and build client relationships.',
+  interests:['sales','business','cs'], styles:['people','leader'], acts:['selling','customers','manage'],
+  domains:{sales:3,bpo:2.5,aviation:2,finance:1.5,education:1,healthcare:1},
+  core:['communication','crm','presenting','stakeholder','genai'], code:1, hours:150,
+  roles:['SDR / BDR (Sales Development Rep)','Account Executive','Senior AE / Sales Manager'],
+  salary:[[5,10],[10,25],[25,55]],
+  learn:[
+   ['Foundations',['B2B sales process: prospecting to close','Cold email & calling frameworks','CRM hygiene (HubSpot / Salesforce)']],
+   ['Build',['Discovery calls (SPIN, MEDDIC)','Demo & objection handling','LinkedIn social selling & AI prospecting tools']],
+   ['Job-ready',['Negotiation & closing','Know one SaaS vertical deeply','Proof of results: quota %, pipeline built, deals closed']]],
+  projects:[
+   ['Outbound campaign','Build a 100-lead list and sequence for a SaaS product; track reply and meeting rates.','Shows: prospecting skills'],
+   ['Mock discovery + demo recording','Record a 15-minute discovery and demo for a real product.','Shows: confidence on calls'],
+   ['Sell for a startup or agency','Land 1–2 real clients for a startup or freelance offer.','Shows: revenue, the only metric sales leaders trust']],
+  certs:['HubSpot Inbound Sales (free)','Salesforce Trailhead badges (free)','Sandler / MEDDIC training'],
+  resources:['30 Minutes to President’s Club podcast','Gong Labs blog (free)','Trailhead (free)']},
+
+ {id:'ba', name:'Business Analyst', tagline:'Bridge business needs and technology through requirements and analysis.',
+  interests:['data','product','pm','finance'], styles:['analytical','people'], acts:['documents','research','reports','customers'],
+  domains:{itsupport:2.5,software:2,finance:2.5,bpo:2,ops:2,healthcare:1.5,data:2},
+  core:['excel','sql','stakeholder','writing','agile','bi'], code:1, hours:220,
+  roles:['Junior Business Analyst','Business Analyst / Functional Consultant','Senior BA / Product Owner'],
+  salary:[[5,9],[9,18],[18,32]],
+  learn:[
+   ['Foundations',['Requirement gathering & documentation (BRD, FRD, user stories)','Process mapping with BPMN / flowcharts','Excel & SQL for analysis']],
+   ['Build',['Agile BA practices & Jira','Dashboards with Power BI','Domain knowledge: BFSI, healthcare or e-commerce']],
+   ['Job-ready',['UAT & test cases','Stakeholder workshops & presentations','Portfolio: requirement documents & process maps']]],
+  projects:[
+   ['As-is / to-be process map','Map a real process from your job and propose an improved version.','Shows: process analysis'],
+   ['Requirements for an app','Write a BRD + user stories + wireframes for a booking or CRM app.','Shows: documentation skills'],
+   ['Data-backed recommendation','Analyse a dataset and present a business case with ROI.','Shows: analysis + communication']],
+  certs:['IIBA ECBA / CCBA','PMI-PBA','Microsoft PL-300 (bonus)'],
+  resources:['IIBA BABOK guide','Microsoft Learn (free)','BA-focused YouTube channels (free)']},
+
+ {id:'tech-writer', name:'Technical Writer / Documentation Specialist', tagline:'Explain complex products clearly through docs, guides and tutorials.',
+  interests:['writing','content','dev','ai'], styles:['creative','analytical'], acts:['documents','content','training'],
+  domains:{itsupport:3,software:2,education:2,healthcare:1.5,engineering:1.5,creative:1},
+  core:['writing','communication','genai','js','support'], code:1, hours:180,
+  roles:['Junior Technical Writer','Technical Writer / Documentation Engineer','Senior Writer / Documentation Lead'],
+  salary:[[4,8],[8,16],[16,30]],
+  learn:[
+   ['Foundations',['Plain-language writing & style guides (Google, Microsoft)','Markdown, Git & docs-as-code','Information architecture']],
+   ['Build',['API documentation (OpenAPI / Swagger, Postman)','Tools: Confluence, GitBook, MadCap Flare','Screenshots, diagrams & short video tutorials']],
+   ['Job-ready',['AI-assisted documentation workflows','Writing samples covering how-to, concept and reference docs','Contribute to open-source documentation']]],
+  projects:[
+   ['Rewrite a confusing guide','Improve the documentation of an open-source tool and submit a pull request.','Shows: real published work'],
+   ['API docs from scratch','Document a public API with quick-start, reference and examples.','Shows: technical depth'],
+   ['Knowledge base for your team','Turn repeated support questions into a searchable knowledge base and measure ticket reduction.','Shows: business impact']],
+  certs:['Google Technical Writing courses (free)','Society for Technical Communication (CPTC)','Write the Docs community'],
+  resources:['Google Technical Writing One & Two (free)','Write the Docs (free)',"'Docs for Developers' (book)"]},
+
+ {id:'aviation', name:'Aviation Career Growth', tagline:'Grow within aviation: cabin crew, ground ops, training, airline management.',
+  interests:['aviation','people'], styles:['people','leader'], acts:['customers','process','training'],
+  domains:{aviation:3.5,bpo:1.5,ops:1.5,education:1},
+  core:['communication','presenting','stakeholder','excel'], code:1, hours:160,
+  roles:['Cabin Crew / Ground Staff / Customer Service Agent','Senior Crew / Purser / Duty Manager','Cabin Crew Trainer / Airline Ops or Station Manager'],
+  salary:[[3,7],[6,14],[12,25]],
+  learn:[
+   ['Foundations',['Grooming, communication & interview skills','Airline service, safety & emergency procedures basics','Customer handling & conflict resolution']],
+   ['Build',['Airline operations: ground handling, rostering, OCC basics','Aviation management short courses (IATA)','Leadership & crew resource management']],
+   ['Job-ready',['International airline applications (Gulf carriers) or trainer roles','IATA certification in your target area','Mock interviews & assessment-day preparation']]],
+  projects:[
+   ['Assessment-day preparation pack','Build your CV, a grooming checklist and 30 practised answers; record mock interviews.','Shows: readiness for airline recruitment'],
+   ['Service improvement proposal','Propose a passenger-experience improvement with data from your station or flights.','Shows: leadership potential'],
+   ['Train-the-trainer portfolio','Create and deliver a short training module (safety or service).','Shows: path to trainer / instructor roles']],
+  certs:['IATA Airline Customer Service / Cabin Crew courses','IATA Aviation Management Diploma','DGCA-approved training (role-specific)'],
+  resources:['IATA Training catalogue','Airline career pages & assessment-day guides','Career with Guidance YouTube channel']},
+
+ {id:'trainer', name:'Corporate Trainer / L&D Specialist', tagline:'Design and deliver learning programs that build skills inside companies.',
+  interests:['people','content','writing'], styles:['people','creative'], acts:['training','content','manage'],
+  domains:{education:3,aviation:2,bpo:2,ops:2,healthcare:1.5,itsupport:1.5,sales:1},
+  core:['presenting','communication','writing','figma','genai'], code:1, hours:180,
+  roles:['Trainer / L&D Associate','Corporate Trainer / Instructional Designer','L&D Manager / Head of Learning'],
+  salary:[[4,7],[7,14],[14,28]],
+  learn:[
+   ['Foundations',['Adult learning principles & the ADDIE model','Facilitation & presentation skills','Training needs analysis']],
+   ['Build',['Instructional design: storyboards, e-learning (Articulate, Canva)','LMS platforms & assessments','Measuring training impact (Kirkpatrick model)']],
+   ['Job-ready',['Specialise: soft skills, tech, sales or compliance training','AI tools for course creation','Portfolio: sample modules & feedback scores']]],
+  projects:[
+   ['Micro-course','Design a 20-minute e-learning module on a topic you know well.','Shows: instructional design'],
+   ['Live workshop','Run a free webinar or workshop and collect feedback scores.','Shows: facilitation'],
+   ['Onboarding program','Design a 2-week onboarding program for new joiners in your field.','Shows: program thinking']],
+  certs:['ATD Certified Professional in Talent Development','Articulate 360 training','SHRM / CIPD L&D modules'],
+  resources:['ATD resources','Articulate E-Learning Heroes (free)','Canva Design School (free)']},
+
+ {id:'entrepreneur', name:'Freelancer / Founder (Services or Content)', tagline:'Turn your skills into income through clients, products or content.',
+  interests:['business','content','marketing','ai'], styles:['creative','leader'], acts:['content','selling','customers'],
+  domains:{creative:2,sales:2,aviation:1.5,education:1.5,software:1.5,itsupport:1,bpo:1},
+  core:['communication','seo','genai','nocode','video','writing'], code:1, hours:200,
+  roles:['Freelancer / Side-hustle','Solo business with steady clients','Agency / product founder'],
+  salary:null,
+  learn:[
+   ['Foundations',['Pick one clear offer and one audience','Personal branding on LinkedIn / Instagram / YouTube','Simple website + booking/payment setup']],
+   ['Build',['Content system: a weekly posting cadence and repurposing','Sales conversations & pricing','AI and no-code tools to deliver faster']],
+   ['Job-ready',['Productise: packages, digital products, cohorts','Case studies & testimonials','Basic finance: GST, invoicing, cash flow']]],
+  projects:[
+   ['First paid offer','Package one service, price it and land 3 paying clients.','Shows: market validation'],
+   ['Content engine','Publish 30 pieces of content in 60 days in your niche.','Shows: audience building'],
+   ['Digital product','Launch a template, e-book or mini-course and make the first ₹25k.','Shows: scalable income']],
+  certs:['Not required: results and testimonials matter more','HubSpot content marketing (free)','Google Digital Garage (free)'],
+  resources:['YouTube Creator Academy (free)',"'The $100 Startup' (book)",'Indie hacker communities']}
+];
+
+const GOAL_PHRASE = {hike:'earn a bigger salary package',switch:'switch to a new field',promotion:'get promoted',first:'land your first job',remote:'move into a remote or overseas role',business:'build your own venture'};
+const SKILL_NAME = Object.fromEntries(OPTIONS.skills.map(s=>[s.v,s.t]));
+
+/* =====================================================
+   STATE & QUIZ RENDERING
+   ===================================================== */
+let step = 0;
+let A = {name:'',role:'',activities:[],interests:[],skills:[]};
+let results = null, active = 0, tab = 'overview';
+
+function startQuiz(){
+  show('quiz'); step = 0; renderStep(); window.scrollTo(0,0);
+}
+function goHome(){ show('home'); window.scrollTo(0,0); }
+function show(id){
+  ['home','quiz','results'].forEach(s=>document.getElementById(s).style.display = s===id?'block':'none');
+}
+
+function renderStep(){
+  const S = STEPS[step];
+  document.getElementById('progress').innerHTML = STEPS.map((_,i)=>`<div class="${i<=step?'on':''}"></div>`).join('');
+  document.getElementById('stepLabel').textContent = `Step ${step+1} of ${STEPS.length} · ${S.title}`;
+  document.getElementById('err').textContent='';
+  document.getElementById('backBtn').style.visibility = step===0?'hidden':'visible';
+  document.getElementById('nextBtn').textContent = step===STEPS.length-1?'See my career roadmap →':'Continue →';
+  let h = `<h2>${S.title}</h2><p class="sub">${S.sub}</p>`;
+  S.qs.forEach(q=>{ h += `<div class="q"><div class="ql">${q.label}${q.hint?`<span class="hint">${q.hint}</span>`:''}</div>${field(q)}</div>`; });
+  document.getElementById('panel').innerHTML = h;
+}
+
+function field(q){
+  const opts = OPTIONS[q.id]||[];
+  const val = A[q.id];
+  if(q.type==='text') return `<input type="text" id="f_${q.id}" placeholder="${q.placeholder||''}" value="${esc(val||'')}" oninput="A['${q.id}']=this.value">`;
+  if(q.type==='select') return `<select onchange="A['${q.id}']=this.value"><option value="">Choose one…</option>${opts.map(o=>`<option value="${o.v}" ${val===o.v?'selected':''}>${o.t}</option>`).join('')}</select>`;
+  if(q.type==='cards') return `<div class="cards">${opts.map(o=>`<button type="button" class="opt ${val===o.v?'on':''}" onclick="pick('${q.id}',${JSON.stringify(o.v).replace(/"/g,'&quot;')})"><b>${o.t}</b>${o.d?`<span>${o.d}</span>`:''}</button>`).join('')}</div>`;
+  if(q.type==='scale') return `<div class="scale">${opts.map(o=>`<button type="button" class="opt ${val===o.v?'on':''}" onclick="pick('${q.id}',${o.v})"><b>${o.t}</b></button>`).join('')}</div>`;
+  if(q.type==='chips') return `<div class="chips">${opts.map(o=>`<button type="button" class="chip ${val===o.v?'on':''}" onclick="pick('${q.id}',${JSON.stringify(o.v).replace(/"/g,'&quot;')})">${o.t}</button>`).join('')}</div>`;
+  if(q.type==='multi') return `<div class="chips">${opts.map(o=>`<button type="button" class="chip ${(val||[]).includes(o.v)?'on':''}" onclick="toggle('${q.id}','${o.v}',${q.max||99})">${o.t}</button>`).join('')}</div>`;
+}
+function pick(id,v){ A[id]=v; renderStepKeepScroll(); }
+function toggle(id,v,max){
+  const arr = A[id]||(A[id]=[]); const i = arr.indexOf(v);
+  if(i>-1) arr.splice(i,1);
+  else { if(arr.length>=max){ document.getElementById('err').textContent=`You can pick up to ${max}. Unselect one first.`; return; } arr.push(v); }
+  renderStepKeepScroll();
+}
+function renderStepKeepScroll(){ const y=window.scrollY; renderStep(); window.scrollTo(0,y); }
+
+function nextStep(){
+  const S = STEPS[step];
+  for(const q of S.qs){
+    if(!q.req) continue;
+    const v = A[q.id];
+    if(v===undefined||v===''||(Array.isArray(v)&&!v.length)){
+      document.getElementById('err').textContent = `Please answer: “${q.label}”`; return;
+    }
+  }
+  if(step<STEPS.length-1){ step++; renderStep(); window.scrollTo(0,0); }
+  else { compute(); }
+}
+function prevStep(){ if(step>0){ step--; renderStep(); window.scrollTo(0,0);} }
+
+/* =====================================================
+   MATCHING ENGINE
+   ===================================================== */
+function compute(){
+  const scored = PATHS.map(p=>{
+    let s = 0, why = [];
+    const intHits = p.interests.filter(i=>A.interests.includes(i));
+    s += intHits.length * 9 + (p.interests[0] && A.interests.includes(p.interests[0]) ? 6 : 0);
+    if(!intHits.length) s -= 12;
+    if(intHits.length) why.push(`Matches your interest in ${intHits.map(i=>label('interests',i).replace(/^\S+\s/,'')).join(', ')}`);
+    if(p.styles.includes(A.style)){ s += 10; why.push(`Suits your ${label('style',A.style).toLowerCase()} working style`); }
+    const dom = p.domains[A.domain]||0; s += dom*4;
+    if(dom>=2) why.push(`Your ${label('domain',A.domain)} background transfers well`);
+    const actHits = p.acts.filter(a=>A.activities.includes(a)); s += actHits.length*4;
+    if(actHits.length) why.push(`You already do related work: ${actHits.map(a=>label('activities',a).toLowerCase()).join(', ')}`);
+    const have = p.core.filter(k=>A.skills.includes(k)); s += have.length*3;
+    if(have.length>=2) why.push(`You already have ${have.length} of the ${p.core.length} core skills`);
+    const codeGap = p.code - A.coding; if(codeGap>0) s -= codeGap*3;
+    if(A.goal==='business' && p.id==='entrepreneur') { s += 14; why.unshift('Directly matches your goal of building your own venture'); }
+    if(A.goal!=='business' && p.id==='entrepreneur') s -= 6;
+    if(A.goal==='remote' && ['ai-automation','fullstack','tech-writer','ux','data-analyst','cloud-devops'].includes(p.id)) { s += 4; why.push('Has strong remote and global hiring demand'); }
+    if(A.hike>=100 && p.salary && p.salary[2][1]>=45) s += 3;
+    return {p,score:s,why,have,gap:p.core.filter(k=>!A.skills.includes(k))};
+  }).sort((a,b)=>b.score-a.score);
+  const top = scored.slice(0,3);
+  const max = top[0].score||1;
+  top.forEach((r,i)=>{ r.fit = Math.max(55, Math.min(96, Math.round(70 + (r.score/max)*26 - i*4))); });
+  results = top.map(enrich);
+  active = 0; tab = 'overview';
+  renderResults(); show('results'); window.scrollTo(0,0);
+}
+
+function levelFor(){ return A.exp>=7?2 : A.exp>=2?1 : 0; }
+
+function enrich(r){
+  const p = r.p;
+  const baseLvl = levelFor();
+  const domFit = p.domains[A.domain]||0;
+  // switching fields: entering level is often one below current seniority unless background transfers
+  // strong transfer keeps your seniority; weak transfer means entering one level lower
+  let nextLvl = domFit>=2.5 ? baseLvl : Math.max(0, baseLvl-1);
+  if(A.status==='student'||A.status==='fresher') nextLvl = 0;
+  // effort
+  const coverage = r.have.length / p.core.length;
+  let need = Math.round(p.hours * (1 - coverage*0.45) * (domFit>=2.5?0.85:1) * (Math.max(0,p.code-A.coding)>0?1.15:1));
+  const months = Math.ceil(need / (A.hours*4.3));
+  return {...r, nextLvl, baseLvl, need, months, coverage};
+}
+
+/* =====================================================
+   RESULTS RENDERING
+   ===================================================== */
+function renderResults(){
+  const nm = A.name?esc(A.name.trim()):'';
+  const r = results[active];
+  let h = `<div class="res-head"><div><h2>${nm?nm+', here':'Here'} is your career roadmap</h2><p>Based on your answers, these are the 3 paths with the strongest fit. Select one to see your full plan.</p></div>
+    <div class="res-actions"><button class="btn btn-ghost btn-sm" onclick="copyPlan()">📋 Copy my plan</button><button class="btn btn-ghost btn-sm" onclick="editAnswers()">✏️ Edit answers</button></div></div>`;
+
+  h += `<div class="summary"><div><h3>Your profile at a glance</h3>
+      <p>${profileSentence()}</p></div>
+      <div class="kv">
+        <span>Experience</span><span>${label('exp',A.exp)}${A.role?' · '+esc(A.role):''}</span>
+        <span>Main goal</span><span>${label('goal',A.goal)}</span>
+        <span>Target hike</span><span>${label('hike',A.hike)}</span>
+        <span>Learning time</span><span>${label('hours',A.hours)} · ${label('timeline',A.timeline)}</span>
+        <span>Market</span><span>${label('market',A.market)}</span>
+      </div></div>`;
+
+  h += `<div class="matches">${results.map((x,i)=>`<button class="match ${i===active?'on':''}" onclick="selectPath(${i})">
+      <div class="rank">${i===0?'Best match':'Match #'+(i+1)}</div><h3>${x.p.name}</h3>
+      <div class="fit"><div class="fitbar"><i style="width:${x.fit}%"></i></div>${x.fit}% fit</div></button>`).join('')}</div>`;
+
+  const tabs = [['overview','Next step'],['skills','Skills to learn'],['roadmap','Learning roadmap'],['projects','Projects'],['salary','Salary upgrade'],['plan','90-day plan']];
+  h += `<div class="tabs">${tabs.map(([k,t])=>`<button class="tab ${tab===k?'on':''}" onclick="setTab('${k}')">${t}</button>`).join('')}</div>`;
+  h += `<div class="detail">${renderTab(r)}</div>`;
+
+  h += `<div class="cta"><div><h3>Want a plan built around you, one-on-one?</h3><p>Book a personal consultation to review your CV, refine this roadmap and prepare for interviews.</p></div>
+     <a class="btn btn-accent" href="/#book">Book a consultation →</a></div>`;
+  document.getElementById('resultsInner').innerHTML = h;
+}
+
+function profileSentence(){
+  const st = {student:'a student',fresher:'a fresher',working:'a working professional',switcher:'a professional looking to switch fields',break:'a professional returning after a break'}[A.status];
+  const ints = A.interests.slice(0,3).map(i=>label('interests',i).replace(/^\S+\s/,'').toLowerCase());
+  return `You are ${st} with a background in ${label('domain',A.domain).toLowerCase()}, interested in ${ints.join(', ')}. You prefer ${label('style',A.style).toLowerCase()} work, and your main goal is to ${GOAL_PHRASE[A.goal]}.`;
+}
+
+function selectPath(i){ active=i; renderResults(); document.querySelector('.tabs').scrollIntoView({behavior:'smooth',block:'start'}); }
+function setTab(k){ tab=k; const y=window.scrollY; renderResults(); window.scrollTo(0,y); }
+function editAnswers(){ step=0; show('quiz'); renderStep(); window.scrollTo(0,0); }
+
+function renderTab(r){
+  const p = r.p;
+  if(tab==='overview'){
+    const sal = p.salary;
+    const ladder = p.roles.map((role,i)=>{
+      const cls = i===r.nextLvl?'next':'';
+      const tag = i===r.nextLvl?'Your next step':(i<r.nextLvl?'Already within reach':(i===r.nextLvl+1?'2–3 years after':'Long-term'));
+      return `<div class="rung ${cls}"><div class="tag">${tag}</div><b>${role}</b>${sal?`<div class="sal">≈ ₹${sal[i][0]}–${sal[i][1]} LPA</div>`:''}</div>`;
+    }).join('');
+    return `<h3>${p.name}</h3><p style="color:var(--muted);margin-top:-6px">${p.tagline}</p>
+      <h4>Your career ladder</h4><div class="ladder">${ladder}</div>
+      ${sal?`<p class="note">Indicative fixed-pay ranges for India. They vary by city, company type (startup, service, product, MNC) and skill depth. Check current numbers on AmbitionBox, Glassdoor or LinkedIn before negotiating.${A.market!=='india'?' For remote and overseas roles, pay is usually benchmarked in USD/AED/EUR and can be considerably higher. Research your target country separately.':''}</p>`:'<p class="note">Freelance and founder income depends on your offer, pricing and client base, not a salary band.</p>'}
+      <div class="grid2" style="margin-top:20px">
+        <div class="box tint"><h4 style="margin-top:0">Why this fits you</h4><ul class="clean">${r.why.slice(0,5).map(w=>`<li>${w}</li>`).join('')||'<li>Balanced match across your interests and skills</li>'}</ul></div>
+        <div class="box warm"><h4 style="margin-top:0">Your transition in one line</h4>
+          <p style="margin:0 0 10px">${transitionLine(r)}</p>
+          <p style="margin:0"><b>Estimated effort:</b> ~${r.need} hours of focused learning. At ${A.hours} hrs/week that is about <b>${r.months} month${r.months>1?'s':''}</b>.</p>
+          ${timelineCheck(r)}</div>
+      </div>`;
+  }
+  if(tab==='skills'){
+    const extra = p.core.length? '' : '';
+    return `<h3>Skills to learn for ${p.name}</h3>
+      <p style="color:var(--muted)">You already have <b>${r.have.length} of ${p.core.length}</b> core skills. Focus your learning on the highlighted gaps, starting from the left.</p>
+      <h4>✅ Skills you can build on</h4><div>${r.have.map(k=>`<span class="skill have">✓ ${SKILL_NAME[k]}</span>`).join('')||'<span style="color:var(--muted)">None yet. That is fine, everyone starts here.</span>'}</div>
+      <h4>🎯 Priority skill gaps</h4><div>${r.gap.map((k,i)=>`<span class="skill gap">${i+1}. ${SKILL_NAME[k]}</span>`).join('')||'<span style="color:var(--muted)">No core gaps. Focus on depth and proof.</span>'}</div>
+      ${p.code>A.coding?`<div class="box warn" style="margin-top:16px"><b>Coding gap:</b> this path expects ${label('coding',p.code).toLowerCase()} coding ability and you rated yourself "${label('coding',A.coding).toLowerCase()}". Start with Python basics for 30 minutes a day. It is the single biggest unlock for this path.</div>`:''}
+      <h4>🏅 Certifications worth considering</h4><ul class="clean">${certsFor(p).map(c=>`<li>${c}</li>`).join('')}</ul>
+      <h4>📖 Where to learn</h4><ul class="clean">${p.resources.map(c=>`<li>${c}</li>`).join('')}</ul>
+      <p class="note">${budgetNote()}</p>`;
+  }
+  if(tab==='roadmap'){
+    const total = Math.max(A.timeline, Math.min(r.months, 24));
+    const split = [0.35,0.4,0.25];
+    let start = 0;
+    const phases = p.learn.map((ph,i)=>{
+      const len = Math.max(1, Math.round(total*split[i]));
+      const s = start+1, e = i===2? total : start+len; start = e;
+      return `<div class="phase"><div class="when">Phase ${i+1}<small>Month ${s}${e>s?'–'+e:''}</small></div><div><b>${ph[0]}</b><ul>${ph[1].map(x=>`<li>${x}</li>`).join('')}</ul></div></div>`;
+    }).join('');
+    return `<h3>Your learning roadmap</h3>
+      <p style="color:var(--muted)">Paced for ${label('hours',A.hours)} across ${total} months. Build one portfolio project at the end of each phase.</p>
+      ${timelineCheck(r)}${phases}
+      <div class="box tint" style="margin-top:16px"><b>Weekly rhythm that works:</b> about 60% learning, 30% building, 10% sharing your progress publicly (LinkedIn posts, GitHub commits). Sharing brings recruiters to you.</div>`;
+  }
+  if(tab==='projects'){
+    return `<h3>Projects that get you hired</h3>
+      <p style="color:var(--muted)">Recruiters trust proof more than certificates. Build these in order; each one gives you a story for interviews.</p>
+      ${p.projects.map((pr,i)=>`<div class="proj"><span class="lvl l${i+1}">${['Beginner','Intermediate','Flagship'][i]}</span><b>${pr[0]}</b><p>${pr[1]}</p><div class="show">💡 ${pr[2]}</div></div>`).join('')}
+      <div class="box warm"><b>Make each project count:</b> write a short README or case study (problem → approach → result with a number), add screenshots or a 2-minute demo video, and post it on LinkedIn with what you learned.</div>`;
+  }
+  if(tab==='salary'){
+    return `<h3>Your salary upgrade plan</h3>
+      <p style="color:var(--muted)">Target: <b>${label('hike',A.hike)}</b> increase. ${hikeReality(r)}</p>
+      <div class="grid2">
+        <div class="box"><h4 style="margin-top:0">🎯 Moves that raise your package</h4><ul class="clean">${salaryMoves(r).map(x=>`<li>${x}</li>`).join('')}</ul></div>
+        <div class="box"><h4 style="margin-top:0">💬 Negotiation playbook</h4><ul class="clean">
+          <li>Research the band for the exact role and city before the first HR call</li>
+          <li>Let them name a number first. If pushed, quote a range whose lower end is your real target</li>
+          <li>Negotiate on fixed pay first, then joining bonus, ESOPs, notice-period buyout and remote days</li>
+          <li>Back your ask with proof: projects, certifications and measurable results</li>
+          <li>Competing offers are the strongest lever. Interview with 3–4 companies at the same time</li>
+          <li>Get the final offer in writing with a CTC breakup before you resign</li></ul></div>
+      </div>
+      <div class="box tint" style="margin-top:16px"><h4 style="margin-top:0">🔗 Profile checklist</h4>
+        <ul class="clean"><li>LinkedIn headline: "<i>${p.roles[r.nextLvl]} | ${r.have.slice(0,2).map(k=>SKILL_NAME[k]).concat(r.gap.slice(0,1).map(k=>SKILL_NAME[k])).join(' · ')||'Your top 3 skills'}</i>"</li>
+        <li>Rewrite CV bullets as achievements: action + tool + measurable result</li>
+        <li>Add a Featured section with your 2 best projects</li>
+        <li>Ask for 5 referrals from people already in ${p.name} roles</li></ul></div>`;
+  }
+  if(tab==='plan'){
+    const ph = p.learn[0][1];
+    return `<h3>Your first 90 days</h3><p style="color:var(--muted)">Small, consistent steps. Start this week.</p>
+      <div class="plan90">
+        <div class="box tint"><h4>Days 1–30 · Start</h4><ul class="clean">
+          <li>Block ${A.hours} hrs/week in your calendar for learning</li>
+          <li>Learn: ${ph[0]}</li><li>Learn: ${ph[1]}</li>
+          <li>Follow 20 people working as ${p.roles[r.nextLvl]}</li></ul></div>
+        <div class="box warm"><h4>Days 31–60 · Build</h4><ul class="clean">
+          <li>Learn: ${ph[2]}</li>
+          <li>Build: ${p.projects[0][0]}</li>
+          <li>Post your first progress update on LinkedIn</li>
+          <li>Have 3 coffee chats with people in this role</li></ul></div>
+        <div class="box"><h4>Days 61–90 · Prove</h4><ul class="clean">
+          <li>Start: ${p.projects[1][0]}</li>
+          <li>Update CV & LinkedIn for ${p.roles[r.nextLvl]}</li>
+          <li>${A.status==='working'&&A.goal==='promotion'?'Share your new skills with your manager and ask for a stretch assignment':'Apply to 5 roles a week and ask for referrals'}</li>
+          <li>Book a certification exam date: ${certsFor(p)[0]}</li></ul></div>
+      </div>
+      <p class="note">Tip: use “Copy my plan” at the top to save this roadmap to your notes.</p>`;
+  }
+}
+
+function transitionLine(r){
+  const p=r.p, from = A.role?esc(A.role):label('domain',A.domain);
+  if(A.status==='student'||A.status==='fresher') return `Start as <b>${p.roles[0]}</b>. Build 2 projects and one certification to stand out from other freshers.`;
+  if(A.status==='break') return `Restart as <b>${p.roles[r.nextLvl]}</b>. Refresh your skills, then present your past experience as an asset. Look for returnship programs too.`;
+  if(r.nextLvl<r.baseLvl) return `Moving from <b>${from}</b> to <b>${p.roles[r.nextLvl]}</b>. Switching fields can mean a short step back in title, but the higher ceiling usually makes up for it within 2–3 years. Lean on your transferable experience to negotiate.`;
+  return `Moving from <b>${from}</b> to <b>${p.roles[r.nextLvl]}</b>. Your background counts, so you can target this level directly.`;
+}
+function timelineCheck(r){
+  if(r.months <= A.timeline) return `<div class="box tint" style="margin-top:12px;padding:12px 14px">✅ Your ${A.timeline}-month timeline is realistic at your current pace.</div>`;
+  const hrs = Math.ceil(r.need/(A.timeline*4.3));
+  return `<div class="box warn" style="margin-top:12px;padding:12px 14px">⚠️ A ${A.timeline}-month timeline is ambitious. To hit it, aim for about <b>${hrs} hrs/week</b>, or plan for about ${r.months} months at your current pace.</div>`;
+}
+function hikeReality(r){
+  if(A.hike<=30) return 'Very achievable with a well-timed job switch or a strong appraisal backed by new skills.';
+  if(A.hike<=60) return 'Achievable mainly through a job switch to this path, with proof of skills and competing offers.';
+  return 'An ambitious but realistic target when you move into a higher-paying role level or domain. It usually takes a switch plus a strong portfolio, sometimes in two moves.';
+}
+function salaryMoves(r){
+  const m = [];
+  if(A.goal==='promotion') m.push('Ask your manager what “next level” means in writing, and track your progress against it monthly');
+  if(A.status==='working'||A.status==='switcher') m.push('A job switch usually brings a much bigger jump than an annual appraisal. Time your switch after your first flagship project');
+  m.push(`Target product companies and well-funded startups. They typically pay more than service firms for ${r.p.roles[r.nextLvl]} roles`);
+  if(A.market!=='india') m.push('For remote/global roles, apply on international job boards and price yourself against the global market, not local salaries');
+  if(r.p.salary && r.p.salary[2][1]>=40) m.push('Specialise early: niche skills inside this path (e.g. AI, cloud, security) attract premium offers');
+  m.push('Add one industry-recognised certification. It helps you clear HR filters and justify a higher band');
+  if(A.goal==='business'||A.interests.includes('business')) m.push('Freelance on the side with your new skill. It adds income and gives you a portfolio at the same time');
+  return m;
+}
+function certsFor(p){
+  if(A.budget==='free') return p.certs.filter(c=>/free/i.test(c)).concat(p.certs.filter(c=>!/free/i.test(c)).slice(0,1).map(c=>c+' (save up for this one later)'));
+  return p.certs;
+}
+function budgetNote(){
+  return {free:'Free-only budget: everything above can be learned free. Spend only on one exam when you are job-ready.',
+    low:'With up to ₹10k, put money into one certification exam and keep learning free.',
+    mid:'With ₹10–50k, consider one structured course with mentorship plus one certification.',
+    high:'With a bigger budget, a mentor-led program or bootcamp can speed things up. Check placement records before paying.'}[A.budget];
+}
+
+/* =====================================================
+   UTILITIES
+   ===================================================== */
+function label(key,v){ const o=(OPTIONS[key]||[]).find(x=>x.v===v); return o?o.t:''; }
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+
+function copyPlan(){
+  const r = results[active], p = r.p;
+  let t = `MY CAREER ROADMAP: ${p.name}\n(vardhasheelan.com/career-guidance)\n\n`;
+  t += `Next step: ${p.roles[r.nextLvl]}${p.salary?` (≈ ₹${p.salary[r.nextLvl][0]}–${p.salary[r.nextLvl][1]} LPA, indicative)`:''}\n`;
+  t += `Effort: ~${r.need} hours, about ${r.months} months at ${A.hours} hrs/week\n\n`;
+  t += `Skills I have: ${r.have.map(k=>SKILL_NAME[k]).join(', ')||'-'}\nSkills to learn: ${r.gap.map(k=>SKILL_NAME[k]).join(', ')||'-'}\n\n`;
+  p.learn.forEach((ph,i)=>{ t += `Phase ${i+1}: ${ph[0]}\n${ph[1].map(x=>'  - '+x).join('\n')}\n`; });
+  t += `\nProjects:\n${p.projects.map((x,i)=>`  ${i+1}. ${x[0]}: ${x[1]}`).join('\n')}\n`;
+  t += `\nCertifications: ${certsFor(p).join('; ')}\n`;
+  t += `\nOther strong matches: ${results.filter((_,i)=>i!==active).map(x=>x.p.name).join(', ')}\n`;
+  try{
+    navigator.clipboard.writeText(t).then(()=>toast('Plan copied. Paste it into your notes.')).catch(()=>fallbackCopy(t));
+  }catch(e){ fallbackCopy(t); }
+}
+function fallbackCopy(t){
+  const ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast('Plan copied. Paste it into your notes.'); }catch(e){ toast('Copy was blocked by your browser'); }
+  ta.remove();
+}
+</script>
+</body>
+</html>
