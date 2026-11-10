@@ -1058,6 +1058,12 @@ def wenixai_page():
 def wenixai_clean_url():
     return send_from_directory('public', 'wenixai.html')
 
+# ── CAREER GUIDANCE ASSESSMENT ────────────────────────────────────
+
+@app.route("/career-guidance")
+def career_guidance():
+    return render_template("career_guidance.html")
+
 @app.route("/robots.txt")
 def robots_txt():
     from flask import send_from_directory
@@ -1077,6 +1083,11 @@ def sitemap_xml():
     <loc>https://vardhasheelan.com/wenixai</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://vardhasheelan.com/career-guidance</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://vardhasheelan.com/jobs</loc>
