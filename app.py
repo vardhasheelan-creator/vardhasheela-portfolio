@@ -39,8 +39,10 @@ SCOPES             = ["https://www.googleapis.com/auth/calendar"]
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
 SESSION_DURATIONS = {
-    "30min": {"label": "30-min Clarity Call", "duration": 30, "price": 2500},
-    "1hr":   {"label": "1-hr Deep Dive",      "duration": 60, "price": 3000},
+    "15min":   {"label": "15-min Quick Call",       "duration": 15, "price": 499},
+    "30min":   {"label": "30-min Clarity Call",     "duration": 30, "price": 1499},
+    "1hr":     {"label": "1-hr Deep Dive",          "duration": 60, "price": 2999},
+    "package": {"label": "Interview-Ready Package (session 1 of 3)", "duration": 60, "price": 4999},
 }
 
 AVAILABILITY = {
