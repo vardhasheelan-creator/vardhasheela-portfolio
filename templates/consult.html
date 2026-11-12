@@ -470,6 +470,31 @@ header.top{position:sticky;}
   .nav-cta,header.top .btn{padding:9px 14px!important;font-size:11px!important;letter-spacing:.1em!important;}
   nav{padding-left:4%!important;padding-right:4%!important;}
 }
+
+/* ===== Pricing ladder + about ===== */
+.hero-prices{align-items:stretch;}
+.price-pill{position:relative;min-width:170px;overflow:visible!important;}
+.hero-prices{padding-top:14px;}
+.pp-pop{border-color:rgba(200,169,126,.75)!important;box-shadow:0 0 34px rgba(200,169,126,.28),inset 0 1px 0 rgba(255,255,255,.1)!important;}
+.pp-tag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#C8A97E;color:#1E1612;font:700 10px/1 Inter,sans-serif;letter-spacing:.16em;text-transform:uppercase;padding:6px 10px;border-radius:999px;white-space:nowrap;}
+.session-card{position:relative;text-align:left!important;}
+.session-card .sc-price,.session-card .sc-dur,.session-card .sc-name{text-align:left;}
+.sc-list{list-style:none;margin:.75rem 0 0;padding:.75rem 0 0;border-top:1px solid rgba(46,33,27,.10);}
+.sc-list li{position:relative;padding:3px 0 3px 22px;font-size:.8rem;line-height:1.45;color:var(--text);}
+.sc-list li::before{content:'✓';position:absolute;left:2px;top:3px;color:#8A6A4F;font-weight:700;}
+.sc-badge{position:absolute;top:-11px;right:14px;background:#2E211B;color:#E5CFA8;font:700 10px/1 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;padding:6px 10px;border-radius:999px;box-shadow:0 0 18px rgba(200,169,126,.4);}
+.sc-badge-alt{background:#C8A97E;color:#1E1612;}
+.session-card{overflow:visible!important;}
+.sc-assure{display:flex;flex-wrap:wrap;gap:8px 18px;margin:-.25rem 0 1.25rem;font-size:.78rem;color:#6B5F57;}
+.about-section{max-width:1000px;margin:0 auto;padding:4.5rem 5%;display:grid;grid-template-columns:300px 1fr;gap:3rem;align-items:center;position:relative;z-index:1;}
+.about-photo{position:relative;}
+.about-photo img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,.8);box-shadow:0 24px 60px rgba(46,33,27,.22),0 0 0 6px rgba(255,255,255,.45);}
+.about-photo::after{content:'';position:absolute;inset:-14px -14px 14px 14px;border:1px solid rgba(200,169,126,.6);border-radius:10px;z-index:-1;}
+.about-text p{font-size:1.02rem;line-height:1.75;color:var(--text);margin:1rem 0 1.25rem;}
+.about-proof{display:flex;flex-wrap:wrap;gap:10px;}
+.about-proof span{font-size:.82rem;font-weight:500;color:#2E211B;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.6);backdrop-filter:blur(12px);border:1px solid rgba(46,33,27,.10);}
+@media (max-width:760px){.about-section{grid-template-columns:1fr;gap:2rem;padding:3rem 6%;}.about-photo{max-width:260px;margin:0 auto;}}
+@media (max-width:560px){.session-cards{grid-template-columns:1fr!important;}.price-pill{min-width:0;flex:1 1 30%;padding:1rem .8rem!important;}.pp-tag{font-size:9px;}}
 </style>
 </head>
 <body>
@@ -488,7 +513,7 @@ header.top{position:sticky;}
   <div class="hero-glow"></div>
   <div class="hero-badge"><span class="live-dot"></span>Now accepting bookings · Mon–Fri · 4 PM – 9 PM IST</div>
   <h1>Book a 1-on-1 session<br/>with <em>Vardhasheela</em></h1>
-  <p class="hero-sub">For my YouTube community — let's talk career, English fluency, cabin crew prep, or anything else you're figuring out. Real conversation, real clarity.</p>
+  <p class="hero-sub">Crack your cabin crew interview, switch careers with confidence, or finally speak English fluently — with practical 1-on-1 guidance from a former cabin crew member turned tech engineer.</p>
   <div class="hero-tags">
     <span class="hero-tag">✈️ Cabin crew career</span>
     <span class="hero-tag">🛄 Ground staff guidance</span>
@@ -499,15 +524,38 @@ header.top{position:sticky;}
   </div>
   <div class="hero-prices">
     <div class="price-pill">
-      <div class="amt">₹2,500</div>
-      <div class="dur">30-min clarity call</div>
+      <div class="amt">₹499</div>
+      <div class="dur">15-min quick call</div>
+    </div>
+    <div class="price-pill pp-pop">
+      <div class="pp-tag">Most popular</div>
+      <div class="amt">₹1,499</div>
+      <div class="dur">30-min clarity call + written plan</div>
     </div>
     <div class="price-pill">
-      <div class="amt">₹3,000</div>
-      <div class="dur">1-hr deep dive</div>
+      <div class="amt">₹4,999</div>
+      <div class="dur">Interview-ready package</div>
     </div>
   </div>
   <a class="btn-book" href="#book">book your slot →</a>
+</div>
+
+<hr class="divider"/>
+
+<!-- ABOUT -->
+<div class="about-section">
+  <div class="about-photo"><img src="/assets/vardhasheela.jpeg" alt="Vardhasheela N"/></div>
+  <div class="about-text">
+    <div class="section-tag">who you'll be talking to</div>
+    <div class="section-title">I've sat on both sides of the interview table</div>
+    <p>I flew as cabin crew, trained new recruits on grooming and interviews, then taught myself Python and AWS to move into tech. In our session you get the honest, practical advice I wish someone had given me — no fluff, just your next steps.</p>
+    <div class="about-proof">
+      <span>✈️ Former cabin crew · Star Air</span>
+      <span>🎓 Trained new crew on grooming &amp; interviews</span>
+      <span>💻 Now a Technical Support Engineer</span>
+      <span>▶️ YouTube · @vardhasheela.n</span>
+    </div>
+  </div>
 </div>
 
 <hr class="divider"/>
@@ -702,19 +750,38 @@ header.top{position:sticky;}
       <div class="form-group">
         <label>Session type</label>
         <div class="session-cards">
-          <div class="session-card selected" id="sc-30" onclick="selectSession('30min')">
-            <div class="sc-price">₹2,500</div>
+          <div class="session-card" data-s="15min" onclick="selectSession('15min')">
+            <div class="sc-price">₹499</div>
+            <div class="sc-dur">15 minutes</div>
+            <div class="sc-name">Quick call</div>
+            <div class="sc-desc">One question, answered clearly.</div>
+            <ul class="sc-list"><li>Focused answer to your question</li><li>1–2 next steps you can act on today</li></ul>
+          </div>
+          <div class="session-card selected" data-s="30min" onclick="selectSession('30min')">
+            <div class="sc-badge">Most popular</div>
+            <div class="sc-price">₹1,499</div>
             <div class="sc-dur">30 minutes</div>
             <div class="sc-name">Clarity call</div>
-            <div class="sc-desc">One clear question, answered well. Quick and focused.</div>
+            <div class="sc-desc">Your situation, sorted into a clear plan.</div>
+            <ul class="sc-list"><li>Personal career or interview guidance</li><li>Written action plan within 24 hours</li><li>Session recording on request</li></ul>
           </div>
-          <div class="session-card" id="sc-1hr" onclick="selectSession('1hr')">
-            <div class="sc-price">₹3,000</div>
+          <div class="session-card" data-s="1hr" onclick="selectSession('1hr')">
+            <div class="sc-price">₹2,999</div>
             <div class="sc-dur">1 hour</div>
             <div class="sc-name">Deep dive</div>
-            <div class="sc-desc">Walk through your situation in depth with a full action plan.</div>
+            <div class="sc-desc">For serious candidates who want it all covered.</div>
+            <ul class="sc-list"><li>Mock interview with live feedback</li><li>CV / resume review</li><li>Written action plan within 24 hours</li></ul>
+          </div>
+          <div class="session-card" data-s="package" onclick="selectSession('package')">
+            <div class="sc-badge sc-badge-alt">Best value</div>
+            <div class="sc-price">₹4,999</div>
+            <div class="sc-dur">3 × 1-hour sessions</div>
+            <div class="sc-name">Interview-ready package</div>
+            <div class="sc-desc">Book session 1 now — we'll schedule 2 &amp; 3 together.</div>
+            <ul class="sc-list"><li>3 mock interviews with feedback</li><li>CV review + answer polishing</li><li>2 weeks of WhatsApp support</li></ul>
           </div>
         </div>
+        <div class="sc-assure"><span>✓ Free reschedule up to 12 hours before</span><span>✓ Secure UPI payment</span><span>✓ Microsoft Teams call</span></div>
         <input type="hidden" id="b-session" value="30min"/>
       </div>
 
@@ -763,7 +830,7 @@ header.top{position:sticky;}
           <div class="upi-info">
             <p>UPI ID: <strong>9113259228@kotakbank</strong></p>
             <p>Name: <strong>Vardhasheela N</strong></p>
-            <div class="upi-amount" id="pay-amount">₹2,500</div>
+            <div class="upi-amount" id="pay-amount">₹1,499</div>
             <p style="font-size:0.8rem;color:var(--muted)">Open any UPI app → Scan QR or enter UPI ID</p>
             <div class="upi-note">After paying, enter the transaction ID below</div>
           </div>
@@ -818,8 +885,10 @@ header.top{position:sticky;}
 <script>
 // ── State ────────────────────────────────────────────────────────
 const SESSIONS = {
-  '30min': {label:'30-min Clarity Call', price:'₹2,500'},
-  '1hr':   {label:'1-hr Deep Dive',      price:'₹3,000'},
+  '15min':   {label:'15-min Quick Call',       price:'₹499'},
+  '30min':   {label:'30-min Clarity Call',     price:'₹1,499'},
+  '1hr':     {label:'1-hr Deep Dive',          price:'₹2,999'},
+  'package': {label:'Interview-Ready Package', price:'₹4,999'},
 };
 let currentStep   = 1;
 let selectedGoal  = '';
@@ -921,8 +990,7 @@ function toggleChip(el, groupId) {
 function selectSession(type) {
   selectedSess = type;
   document.getElementById('b-session').value = type;
-  document.getElementById('sc-30').classList.toggle('selected', type==='30min');
-  document.getElementById('sc-1hr').classList.toggle('selected', type==='1hr');
+  document.querySelectorAll('.session-card[data-s]').forEach(function(c){ c.classList.toggle('selected', c.dataset.s===type); });
   document.getElementById('pay-amount').textContent = SESSIONS[type].price;
   if(document.getElementById('b-date').value) loadSlots();
 }
@@ -1154,6 +1222,9 @@ loadTestimonials();
      if(a.classList.contains('btn-book')) ev('book_slot_click'); },true);
   var _sb=window.submitBooking; if(_sb) window.submitBooking=function(){ ev('booking_submitted'); return _sb.apply(this,arguments); };
 }catch(e){} })();
+</script>
+<script>
+(function(){ try{ var m=location.search.match(/[?&]session=([a-z0-9]+)/i); if(m && SESSIONS[m[1]]) selectSession(m[1]); }catch(e){} })();
 </script>
 </body>
 </html>

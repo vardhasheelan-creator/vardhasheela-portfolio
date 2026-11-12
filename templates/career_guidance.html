@@ -998,8 +998,12 @@ function renderResults(){
   h += `<div class="tabs">${tabs.map(([k,t])=>`<button class="tab ${tab===k?'on':''}" onclick="setTab('${k}')">${t}</button>`).join('')}</div>`;
   h += `<div class="detail">${renderTab(r)}</div>`;
 
-  h += `<div class="cta"><div><h3>Want a plan built around you, one-on-one?</h3><p>Book a personal consultation to review your CV, refine this roadmap and prepare for interviews.</p></div>
-     <a class="btn btn-accent" href="/#book">Book a consultation →</a></div>`;
+  const OFFER = {aviation:['package','Interview-ready package','₹4,999','3 mock interviews, CV review and 2 weeks of WhatsApp support to get you airline-ready.'],
+                 entrepreneur:['1hr','1-hr deep dive','₹2,999','We map your offer, pricing and first clients together, with a written action plan.']};
+  const off = OFFER[r.p.id] || ['30min','30-min clarity call','₹1,499','We turn this roadmap into your personal plan, with a written action plan within 24 hours.'];
+  h += `<div class="cta"><div><h3>Your top match: ${r.p.name}. Want a plan built around you?</h3><p>Book a <b style="color:#E5CFA8">${off[1]} (${off[2]})</b> with Vardhasheela. ${off[3]}</p>
+     <p style="margin-top:10px;font-size:14px"><a href="/?session=15min#book" style="color:#E5CFA8">Just one quick question? 15-min call · ₹499 →</a></p></div>
+     <a class="btn btn-accent" href="/?session=${off[0]}#book">Book my session →</a></div>`;
   document.getElementById('resultsInner').innerHTML = h;
 }
 
